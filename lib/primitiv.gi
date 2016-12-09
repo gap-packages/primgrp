@@ -76,6 +76,10 @@ InstallGlobalFunction(NrPrimitiveGroups, function(deg)
   return PRIMLENGTHS[deg];
 end);
 
+InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
+  return deg in PRIMRANGE;
+end);
+
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
 local l,g,fac,mats,perms,v,t;
   l:=PRIMGrp(deg,num);

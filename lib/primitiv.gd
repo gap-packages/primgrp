@@ -102,6 +102,13 @@
 UnbindGlobal("PrimitiveGroup");
 DeclareGlobalFunction( "PrimitiveGroup" );
 
+# Availability test for the library
+# ensure that the dummy binds from the library are killed
+MakeReadWriteGlobal("PrimitiveGroupsAvailable");
+Unbind(PrimitiveGroupsAvailable);
+DeclareGlobalFunction("PrimitiveGroupsAvailable");
+
+
 
 #############################################################################
 ##
