@@ -79,14 +79,6 @@
 ##  increasing size, though it holds for many degrees.)
 ##  <#/GAPDoc>
 
-
-#############################################################################
-##
-## tell GAP about the component
-##
-DeclareComponent("prim","3.0");
-
-
 #############################################################################
 ##
 #F  PrimitiveGroup(<deg>,<nr>)
