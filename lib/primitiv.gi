@@ -215,6 +215,18 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
     fi;
   fi;
 
+  # AbelianInvariants
+  if Length(cand)>1 then
+    a:= AbelianInvariants(grp);
+    b:= [];
+    for i in [1..Length(cand)] do
+      b[i]:= AbelianInvariants(p[i]);
+    od;
+    s:= Filtered([1..Length(cand)], i->b[i] =a);
+    cand:= cand{s};
+    p:= p{s};
+  fi;
+
   if Length(cand)>1 then
     # sylow orbits
     gl:=Reversed(Set(Factors(Size(grp))));
