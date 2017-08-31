@@ -32,12 +32,10 @@ in the third cohort with socle <M>(A_7 \times A_7)</M>.
 <Example><![CDATA[
 gap> COHORTS_PRIMITIVE_GROUPS[49];
 [ [ rec( parameter := 7, series := "Z", width := 2 ), 
-      [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
-          18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 
-          33 ] ], 
-  [ rec( parameter := [ 2, 7 ], series := "L", width := 2 ), [ 34 ] ],
-  [ rec( parameter := 7, series := "A", width := 2 ), 
-      [ 35, 36, 37, 38 ] ], 
+      [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ] ], 
+  [ rec( parameter := [ 2, 7 ], series := "L", width := 2 ), [ 34 ] ], 
+  [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
   [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
 ]]></Example>
 </Description>
