@@ -57,11 +57,11 @@
   obtain  the following properties from the database without having to compute
   them anew:[133X
   
-  [33X[0;0Y[2XNrMovedPoints[102X  ([14XReference:  NrMovedPoints  (for  a  list  or  collection  of
-  permutations)[114X),    [2XSize[102X    ([14XReference:   Size[114X),   [2XTransitivity[102X   ([14XReference:
-  Transitivity  (for a group and an action domain)[114X), [2XONanScottType[102X ([14XReference:
-  ONanScottType[114X),  [2XIsSimpleGroup[102X  ([14XReference:  IsSimpleGroup[114X), [2XIsSolvableGroup[102X
-  ([14XReference:   IsSolvableGroup[114X),   and   [2XSocleTypePrimitiveGroup[102X  ([14XReference:
+  [33X[0;0Y[2XNrMovedPoints[102X   ([14XReference:  NrMovedPoints  for  a  list  or  collection  of
+  permutations[114X), [2XSize[102X ([14XReference: Size[114X), [2XTransitivity[102X ([14XReference: Transitivity
+  for a group and an action domain[114X), [2XONanScottType[102X ([14XReference: ONanScottType[114X),
+  [2XIsSimpleGroup[102X   ([14XReference:   IsSimpleGroup[114X),   [2XIsSolvableGroup[102X  ([14XReference:
+  IsSolvableGroup[114X),        and       [2XSocleTypePrimitiveGroup[102X       ([14XReference:
   SocleTypePrimitiveGroup[114X).[133X
   
   [33X[0;0Y(Note,  that for groups of degree up to 2499, O'Nan-Scott types 4a, 4b and 5

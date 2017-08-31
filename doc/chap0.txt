@@ -6,7 +6,7 @@
                     [1X[5XGAP[105X Primitive Permutation Groups Library[101X
   
   
-                                  Version 3.1
+                                 Version 3.1.0
   
   
                                  31 August 2017
@@ -71,7 +71,7 @@
   [5XPrimGrp[105X, please cite it in the following form:[133X
   
   [33X[0;0YA.   Hulpke,   C.  Roney-Dougal,  C.  Russell.  [13XPrimGrp  ---  GAP  Primitive
-  Permutation        Groups       Library,       Version       3.1;[113X       2017
+  Permutation       Groups       Library,       Version       3.1.0;[113X      2017
   ([7Xhttps://gap-packages.github.io/primgrp/[107X).[133X
   
   
