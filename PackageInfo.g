@@ -18,15 +18,15 @@ Subtitle := "GAP Primitive Permutation Groups Library",
 ##  See '?Extending: Version Numbers' in GAP help for an explanation
 ##  of valid version numbers. For an automatic package distribution update
 ##  you must provide a new version number even after small changes.
-Version := "3.1",
+Version := "3.1.0",
 ##  Release date of the current version in dd/mm/yyyy format.
 ##
-Date := "08/07/2016",
+Date := "31/08/2017",
 ##  Optional: if the package manual uses GAPDoc, you may duplicate the 
 ##  version and the release date as shown below to read them while building
 ##  the manual using GAPDoc facilities to distibute documents across files.
 ##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.1">
+##  <!ENTITY VERSION "3.1.0">
 ##  <!ENTITY RELEASEDATE "31 August 2017">
 ##  <!ENTITY RELEASEYEAR "2017">
 ##  <#/GAPDoc>
@@ -34,6 +34,12 @@ Date := "08/07/2016",
 PackageWWWHome :=
   Concatenation( "https://gap-packages.github.io/",
       LowercaseString( ~.PackageName ), "/" ),
+
+SourceRepository := rec(
+    Type := "git",
+    URL := Concatenation( "https://github.com/gap-packages/", LowercaseString(~.PackageName) ),
+),
+IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
 
 ##  URL of the archive(s) of the current package release, but *without*
 ##  the format extension(s), like '.tar.gz' or '-win.zip', which are given next.
@@ -43,7 +49,9 @@ PackageWWWHome :=
 ##  directory containing the package (in our "example" probably:
 ##  example/init.g, ...    or example-3.3/init.g, ...  )
 # 
-ArchiveURL := Concatenation( ~.PackageWWWHome, LowercaseString( ~.PackageName ), ~.Version ),
+ArchiveURL      := Concatenation( ~.SourceRepository.URL,
+                                 "/releases/download/v", ~.Version,
+                                 "/", LowercaseString(~.PackageName), "-", ~.Version ),
 
 ##  All provided formats as list of file extensions, separated by white
 ##  space or commas.
@@ -169,6 +177,7 @@ Persons := [
     FirstNames    := "Christopher",
     IsAuthor      := true,
     IsMaintainer  := true,
+    Email         := "cr66@st-andrews.ac.uk",
     Place         := "St Andrews",
     Institution   := "University of St Andrews"
      ),  
@@ -205,14 +214,9 @@ Status := "deposited",
 ##  and updating of the package in the GAP distribution.
 #
 README_URL := 
-  Concatenation( ~.PackageWWWHome, "README" ),
+  Concatenation( ~.PackageWWWHome, "README.md" ),
 PackageInfoURL := 
   Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-
-SourceRepository :=
-  rec( Type := "git", URL := "https://github.com/gap-packages/primgrp"),
-IssueTrackerURL := "https://github.com/gap-packages/primgrp/issues",
-SupportEmail := "support@gap-system.org",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
