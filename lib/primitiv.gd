@@ -154,19 +154,19 @@ DeclareGlobalFunction( "NrPrimitiveGroups" );
 
 
 ##  <#GAPDoc Label="[2]{primitiv}">
-##  The selection functions (see&nbsp;<Ref Sect="Selection Functions"/>) for
+##  The selection functions (see&nbsp;<Ref BookName="ref" Sect="Selection Functions"/>) for
 ##  the primitive groups library are <C>AllPrimitiveGroups</C> and
 ##  <C>OnePrimitiveGroup</C>.
 ##  They obtain the following properties from the database without having to
 ##  compute them anew: 
 ##  <P/>
-##  <Ref Attr="NrMovedPoints" Label="for a list or collection of permutations"/>,
-##  <Ref Attr="Size"/>,
-##  <Ref Attr="Transitivity" Label="for a group and an action domain"/>,
-##  <Ref Attr="ONanScottType"/>,
-##  <Ref Prop="IsSimpleGroup"/>,
-##  <Ref Prop="IsSolvableGroup"/>,
-##  and <Ref Attr="SocleTypePrimitiveGroup"/>.
+##  <Ref BookName="ref" Attr="NrMovedPoints" Label="for a list or collection of permutations"/>,
+##  <Ref BookName="ref" Attr="Size"/>,
+##  <Ref BookName="ref" Attr="Transitivity" Label="for a group and an action domain"/>,
+##  <Ref BookName="ref" Attr="ONanScottType"/>,
+##  <Ref BookName="ref" Prop="IsSimpleGroup"/>,
+##  <Ref BookName="ref" Prop="IsSolvableGroup"/>,
+##  and <Ref BookName="ref" Attr="SocleTypePrimitiveGroup"/>.
 ##  <P/>
 ##  (Note, that for groups of degree up to 2499, O'Nan-Scott types 4a, 4b and
 ##  5 cannot occur.)
@@ -276,6 +276,37 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##
 DeclareGlobalVariable("PrimitiveIndexIrreducibleSolvableGroup");
 
+#############################################################################
+##
+#A  PrimitiveIdentification( <G> )
+##
+##  <#GAPDoc Label="PrimitiveIdentification">
+##  <ManSection>
+##  <Attr Name="PrimitiveIdentification" Arg='G'/>
+##
+##  <Description>
+##  For a primitive permutation group for which an <M>S_n</M>-conjugate exists in
+##  the library of primitive permutation groups
+##  (see&nbsp;<Ref Sect="Primitive Permutation Groups"/>),
+##  this attribute returns the index position. That is <A>G</A> is
+##  conjugate to
+##  <C>PrimitiveGroup(NrMovedPoints(<A>G</A>),PrimitiveIdentification(<A>G</A>))</C>.
+##  <P/>
+##  Methods only exist if the primitive groups library is installed.
+##  <P/>
+##  Note: As this function uses the primitive groups library, the result is
+##  only guaranteed to the same extent as this library. If it is incomplete,
+##  <C>PrimitiveIdentification</C> might return an existing index number for a
+##  group not in the library.
+##  <Example><![CDATA[
+##  gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
+##  2
+##  ]]></Example>
+##  </Description>
+##  </ManSection>
+##  <#/GAPDoc>
+##
+DeclareAttribute( "PrimitiveIdentification", IsPermGroup );
 
 #############################################################################
 ##

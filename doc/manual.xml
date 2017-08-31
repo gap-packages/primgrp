@@ -1,0 +1,114 @@
+<?LaTeX ExtraPreamble="\usepackage[pdftex]{graphicx}"?>
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE Book SYSTEM "gapdoc.dtd"
+    [ 
+      <!ENTITY primgrp "<Package>PrimGrp</Package>">
+      <#Include Label="PKGVERSIONDATA">      
+    ] >
+
+<Book Name="primgrp">
+
+<TitlePage>
+  <Title>&primgrp;</Title>
+  <Subtitle>&GAP; Primitive Permutation Groups Library</Subtitle>
+  <Version>Version &VERSION;</Version>
+
+  <Author>Alexander Hulpke
+          <Email>hulpke@math.colostate.edu</Email>
+	      <Homepage>http://www.math.colostate.edu/~hulpke</Homepage>
+          <Address>
+            Department of Mathematics<Br/>
+            Colorado State University<Br/>
+            Fort Collins, CO, 80523-1874, USA
+          </Address> 	      
+  </Author>
+
+  <Author>Colva Roney-Dougal
+          <Email>colva@mcs.st-andrews.ac.uk</Email>
+	      <Homepage>http://www-groups.mcs.st-and.ac.uk/~colva/</Homepage>
+          <Address>
+            School of Mathematics and Statistics<Br/>
+            University of St Andrews<Br/>
+            North Haugh, St Andrews<Br/>
+            Fife, KY16 9SXS Scotland
+          </Address> 
+  </Author>
+
+  <Author>Christopher Russell
+          <Email>cr66@st-andrews.ac.uk</Email>
+          <Address>
+            School of Mathematics and Statistics<Br/>
+            University of St Andrews<Br/>
+            North Haugh, St Andrews<Br/>
+            Fife, KY16 9SXS Scotland
+          </Address> 
+  </Author>
+  
+  <Date>&RELEASEDATE;</Date>
+
+<Abstract>
+
+<Index Key="SCSCP package">&primgrp; package</Index> 
+
+The &GAP; package &primgrp; provides the library of primitive
+permutation groups which includes, up to permutation isomorphism
+(i.e., up to conjugacy in the corresponding symmetric group),
+all primitive permutation groups of degree &lt; 4096.
+
+</Abstract>
+
+<Copyright>
+  &copyright; 2007-&RELEASEYEAR; by Alexander Hulpke and Colva Roney-Dougal<P/>
+
+  &primgrp; is free software; you can redistribute it and/or modify it 
+  under the terms of the GNU General Public License as published by 
+  the Free Software Foundation; either version 2 of the License, or 
+  (at your option) any later version. For details, see the FSF's own site
+  <URL>http://www.gnu.org/licenses/gpl.html</URL>.
+  <P/>
+
+  If you obtained &primgrp;, we would be grateful for a short notification
+  sent to one of the authors.
+  <P/>
+
+  If you publish a result which was partially obtained with the usage of
+  &primgrp;, please cite it in the following form:
+  <P/>
+
+  A. Hulpke, C. Roney-Dougal, C. Russell.
+  <E>PrimGrp --- GAP Primitive Permutation Groups Library, 
+  Version &VERSION;;</E> &RELEASEYEAR; 
+  (<URL>https://gap-packages.github.io/primgrp/</URL>).
+</Copyright>
+  
+<Acknowledgements>
+The conversion of the &GAP; database of primitive permutation groups to
+a separate &GAP; package has been supported by the EPSRC Collaborative
+Computational Project EP/M022641/1 CoDiMa (CCP in the area of Computational
+Discrete Mathematics), <URL>http://www.codima.ac.uk/</URL>.
+</Acknowledgements>
+
+<Colophon>
+Versions history:
+<List>
+<Item>Version 3.1 - Autumn 2017.</Item> 
+</List> 
+</Colophon>
+
+</TitlePage>
+
+<TableOfContents/>
+
+<Body>
+
+<#Include SYSTEM "prim.xml">
+
+</Body>
+
+<Bibliography Databases="manualbib.xml"/>
+
+<TheIndex/>
+
+</Book>

@@ -13,7 +13,7 @@ PackageName := "PrimGrp",
 
 ##  This may be used by a default banner or on a Web page, should fit on
 ##  one line.
-Subtitle := "Primitive Permutation Groups Library",
+Subtitle := "GAP Primitive Permutation Groups Library",
 
 ##  See '?Extending: Version Numbers' in GAP help for an explanation
 ##  of valid version numbers. For an automatic package distribution update
@@ -27,7 +27,8 @@ Date := "08/07/2016",
 ##  the manual using GAPDoc facilities to distibute documents across files.
 ##  <#GAPDoc Label="PKGVERSIONDATA">
 ##  <!ENTITY VERSION "3.1">
-##  <!ENTITY RELEASEDATE "8 July 2016">
+##  <!ENTITY RELEASEDATE "31 August 2017">
+##  <!ENTITY RELEASEYEAR "2017">
 ##  <#/GAPDoc>
 
 PackageWWWHome :=
@@ -224,10 +225,10 @@ SupportEmail := "support@gap-system.org",
 # computing the Smith normal form of integer matrices and some related \
 # utilities.",
 AbstractHTML := 
-  "The <span class=\"pkgname\">Example</span> package, as its name suggests, \
-   is an example of how to create a <span class=\"pkgname\">GAP</span> \
-   package. It has little functionality except for being a package, however, \
-   it contains an extensive appendix with guidelines for package authors.",
+  "The <span class=\"pkgname\">PrimGrp</span> package provides the library \
+  of primitive permutation groups which includes, up to permutation isomorphism \
+  (i.e., up to conjugacy in the corresponding symmetric group), all primitive \
+  permutation groups of degree &lt; 4096.",
 
 ##  Here is the information on the help books of the package, used for
 ##  loading into GAP's online help and maybe for an online copy of the 
@@ -256,7 +257,7 @@ AbstractHTML :=
 # in case of several help books give a list of such records here:
 PackageDoc := rec(
   # use same as in GAP            
-  BookName  := "PrimGrp",
+  BookName  := "primgrp",
   # format/extension can be one of .tar.gz, .tar.bz2, -win.zip, .zoo.
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
