@@ -18,7 +18,7 @@ for i in [ 1 .. Length(tst) ] do
       # works for <100 chapters
       s:=Concatenation("0",s); 
     fi;
-    name := Filename( Directory( "tst" ), 
+    name := Filename( Directory( "tst/manualexamples/" ), 
                 Concatenation( LowercaseString(pkgname), s, ".tst" ) );
     output := OutputTextFile( name, false ); # to empty the file first
     SetPrintFormattingStatus( output, false ); # to avoid line breaks

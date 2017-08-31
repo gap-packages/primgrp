@@ -267,7 +267,7 @@ PackageDoc := rec(
   # a longer title of the book, this together with the book name should
   # fit on a single text line (appears with the '?books' command in GAP)
   # LongTitle := "Elementary Divisors of Integer Matrices",
-  LongTitle := "Primitive Permutation Groups Library",
+  LongTitle := "GAP Primitive Permutation Groups Library",
 ),
 
 
@@ -335,7 +335,7 @@ AvailabilityTest := ReturnTrue,
 ##  if the file contains the string 'gap> START_TEST('.
 ##  For deposited packages, these tests are run regularly, as a part of the
 ##  standard GAP test suite.
-# TestFile := "tst/testall.tst",
+TestFile := "tst/testinstall.g",
 
 ##  *Optional*: Here you can list some keyword related to the topic 
 ##  of the package.

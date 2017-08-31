@@ -18,3 +18,4 @@ doc/*.six
 doc/*.tex
 doc/*.toc
 doc/*.txt
+tst/manualexamples/*.tst
