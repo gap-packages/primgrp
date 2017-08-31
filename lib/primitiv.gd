@@ -102,12 +102,25 @@
 UnbindGlobal("PrimitiveGroup");
 DeclareGlobalFunction( "PrimitiveGroup" );
 
+#############################################################################
+##
+#F  PrimitiveGroupsAvailable(<deg>)
+##
+##  <ManSection>
+##  <Func Name="PrimitiveGroupsAvailable" Arg='deg'/>
+##
+##  <Description>
+##  To offer a clearer interface to the primitive groups library, this
+##  function checks whether the primitive groups of degree <A>deg</A> are
+##  available.
+##  </Description>
+##  </ManSection>
+##
 # Availability test for the library
 # ensure that the dummy binds from the library are killed
 MakeReadWriteGlobal("PrimitiveGroupsAvailable");
 Unbind(PrimitiveGroupsAvailable);
 DeclareGlobalFunction("PrimitiveGroupsAvailable");
-
 
 
 #############################################################################
