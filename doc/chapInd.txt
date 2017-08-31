@@ -1,0 +1,15 @@
+  
+  
+  [1XIndex[101X
+  
+  [2XCOHORTS_PRIMITIVE_GROUPS[102X 1.1-4 
+  [2XNrPrimitiveGroups[102X 1.1-2 
+  [2XPRIMITIVE_INDICES_MAGMA[102X 1.2-3 
+  [2XPrimitiveGroup[102X 1.1-1 
+  [2XPrimitiveGroupsIterator[102X 1.1-3 
+  [2XPrimitiveIdentification[102X 1.2-1 
+  [5XPrimGrp[105X package .-1 
+  [2XSimsNo[102X 1.2-2 
+  
+  
+  -------------------------------------------------------
