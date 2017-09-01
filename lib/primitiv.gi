@@ -52,7 +52,7 @@ local s,fname,ind,new;
     ind:=PRIMINDX[deg];
     new:=Filtered([1..Length(PRIMINDX)],i->PRIMINDX[i]=ind);
     fname:=Concatenation("gps",String(ind));
-    ReadGapRoot( Concatenation( "prim/grps/", fname, ".g" ) );
+    ReadPackage( "primgrp", Concatenation( "data/", fname, ".g" ) );
 
     # store the degree
     PRIMLOAD:=Filtered(PRIMLOAD,i->not i in new);
