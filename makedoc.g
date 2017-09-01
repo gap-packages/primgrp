@@ -38,6 +38,7 @@ end;
 
 PRIMGRPMANUALFILES:=[ 
 "../PackageInfo.g",
+"../lib/irredsol.gd",
 "../lib/primitiv.gd",
 ];
 

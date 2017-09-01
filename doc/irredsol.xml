@@ -1,0 +1,17 @@
+<Chapter Label="irredsol">
+<Heading>Irreducible Matrix Groups</Heading>
+
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+<Section Label="Irreducible Solvable Matrix Groups">
+<Heading>Irreducible Solvable Matrix Groups</Heading>
+
+<#Include Label="IrreducibleSolvableGroupMS">
+<#Include Label="NumberIrreducibleSolvableGroups">
+<#Include Label="AllIrreducibleSolvableGroups">
+<#Include Label="OneIrreducibleSolvableGroup">
+<#Include Label="PrimitiveIndexIrreducibleSolvableGroup">
+<#Include Label="IrreducibleSolvableGroup">
+
+</Section>
+
+</Chapter>

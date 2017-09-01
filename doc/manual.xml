@@ -104,6 +104,7 @@ Versions history:
 <Body>
 
 <#Include SYSTEM "prim.xml">
+<#Include SYSTEM "irredsol.xml">
 
 </Body>
 

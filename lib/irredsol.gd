@@ -169,10 +169,11 @@ DeclareSynonym("NrIrreducibleSolvableGroups",NumberIrreducibleSolvableGroups);
 ##  are particularly efficient, because the values can be read off the
 ##  information in the data base:
 ##  <C>DegreeOfMatrixGroup</C> (or
-##  <Ref Func="Dimension"/> or <Ref Func="DimensionOfMatrixGroup"/>) for the
+##  <Ref BookName="ref" Func="Dimension"/> or 
+##  <Ref BookName="ref" Func="DimensionOfMatrixGroup"/>) for the
 ##  linear degree,
-##  <Ref Func="Characteristic"/> for the field characteristic,
-##  <Ref Func="Size"/>, <C>IsPrimitiveMatrixGroup</C>
+##  <Ref BookName="ref" Func="Characteristic"/> for the field characteristic,
+##  <Ref BookName="ref" Func="Size"/>, <C>IsPrimitiveMatrixGroup</C>
 ##  (or <C>IsLinearlyPrimitive</C>), and
 ##  <C>MinimalBlockDimension</C>>.
 ##  </Description>
@@ -199,10 +200,11 @@ DeclareGlobalFunction("AllIrreducibleSolvableGroups");
 ##  are particularly efficient, because the values can be read off the
 ##  information in the data base:
 ##  <C>DegreeOfMatrixGroup</C> (or
-##  <Ref Func="Dimension"/> or <Ref Func="DimensionOfMatrixGroup"/>) for the
+##  <Ref BookName="ref" Func="Dimension"/> or 
+##  <Ref BookName="ref" Func="DimensionOfMatrixGroup"/>) for the
 ##  linear degree,
-##  <Ref Func="Characteristic"/> for the field characteristic,
-##  <Ref Func="Size"/>, <C>IsPrimitiveMatrixGroup</C>
+##  <Ref BookName="ref" Func="Characteristic"/> for the field characteristic,
+##  <Ref BookName="ref" Func="Size"/>, <C>IsPrimitiveMatrixGroup</C>
 ##  (or <C>IsLinearlyPrimitive</C>), and
 ##  <C>MinimalBlockDimension</C>>.
 ##  </Description>

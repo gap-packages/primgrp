@@ -264,7 +264,8 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##  number of the semidirect product <M>p^n:G</M> in the library of primitive
 ##  groups.
 ##  <P/>
-##  Searching for an index in this list with <Ref Func="Position"/> gives the
+##  Searching for an index in this list with 
+##  <Ref BookName="ref" Func="Position"/> gives the
 ##  translation in the other direction.
 ##  </Description>
 ##  </ManSection>
