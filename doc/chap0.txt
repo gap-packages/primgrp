@@ -6,10 +6,10 @@
                     [1X[5XGAP[105X Primitive Permutation Groups Library[101X
   
   
-                                 Version 3.1.0
+                                 Version 3.1.1
   
   
-                                 31 August 2017
+                                1 September 2017
   
   
                                 Alexander Hulpke
@@ -71,7 +71,7 @@
   [5XPrimGrp[105X, please cite it in the following form:[133X
   
   [33X[0;0YA.   Hulpke,   C.  Roney-Dougal,  C.  Russell.  [13XPrimGrp  ---  GAP  Primitive
-  Permutation       Groups       Library,       Version       3.1.0;[113X      2017
+  Permutation       Groups       Library,       Version       3.1.1;[113X      2017
   ([7Xhttps://gap-packages.github.io/primgrp/[107X).[133X
   
   
@@ -105,6 +105,14 @@
       1.2-1 PrimitiveIdentification
       1.2-2 SimsNo
       1.2-3 PRIMITIVE_INDICES_MAGMA
+  2 [33X[0;0YIrreducible Matrix Groups[133X
+    2.1 [33X[0;0YIrreducible Solvable Matrix Groups[133X
+      2.1-1 IrreducibleSolvableGroupMS
+      2.1-2 NumberIrreducibleSolvableGroups
+      2.1-3 AllIrreducibleSolvableGroups
+      2.1-4 OneIrreducibleSolvableGroup
+      2.1-5 PrimitiveIndexIrreducibleSolvableGroup
+      2.1-6 IrreducibleSolvableGroup
   
   
   [32X

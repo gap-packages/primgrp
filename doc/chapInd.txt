@@ -2,12 +2,18 @@
   
   [1XIndex[101X
   
+  [2XAllIrreducibleSolvableGroups[102X 2.1-3 
   [2XCOHORTS_PRIMITIVE_GROUPS[102X 1.1-4 
+  [2XIrreducibleSolvableGroup[102X 2.1-6 
+  [2XIrreducibleSolvableGroupMS[102X 2.1-1 
   [2XNrPrimitiveGroups[102X 1.1-2 
+  [2XNumberIrreducibleSolvableGroups[102X 2.1-2 
+  [2XOneIrreducibleSolvableGroup[102X 2.1-4 
   [2XPRIMITIVE_INDICES_MAGMA[102X 1.2-3 
   [2XPrimitiveGroup[102X 1.1-1 
   [2XPrimitiveGroupsIterator[102X 1.1-3 
   [2XPrimitiveIdentification[102X 1.2-1 
+  [2XPrimitiveIndexIrreducibleSolvableGroup[102X 2.1-5 
   [5XPrimGrp[105X package .-1 
   [2XSimsNo[102X 1.2-2 
   
