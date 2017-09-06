@@ -116,6 +116,11 @@ DeclareGlobalFunction( "PrimitiveGroup" );
 ##  </Description>
 ##  </ManSection>
 ##
+if IsBoundGlobal("PrimitiveGroupsAvailable") then
+  # redefine the dummy function from the library
+  MakeReadWriteGlobal("PrimitiveGroupsAvailable");
+  Unbind(PrimitiveGroupsAvailable);
+fi;
 DeclareGlobalFunction("PrimitiveGroupsAvailable");
 
 
