@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/gap-packages/primgrp.svg?branch=master)](https://travis-ci.org/gap-packages/primgrp)
+[![Code Coverage](https://codecov.io/github/gap-packages/primgrp/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/primgrp)
+
 # GAP Primitive Groups Library
 
 The PrimGrp package provides the library of primitive permutation 

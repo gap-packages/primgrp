@@ -1,6 +1,6 @@
 name: PrimGrp
-version: 3.1.1
-date: 01/09/2017
+version: 3.1.2
+date: 08/09/2017
 description: |
     GAP Primitive Permutation Groups Library
 
@@ -33,7 +33,7 @@ packageinfo: https://gap-packages.github.io/primgrp/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/primgrp/releases/download/v3.1.1/primgrp-3.1.1.tar.gz
+      url: https://github.com/gap-packages/primgrp/releases/download/v3.1.2/primgrp-3.1.2.tar.gz
 
 abstract: |
     The <span class="pkgname">PrimGrp</span> package provides the library   of primitive permutation groups which includes, up to permutation isomorphism   (i.e., up to conjugacy in the corresponding symmetric group), all primitive   permutation groups of degree &lt; 4096.
