@@ -196,12 +196,18 @@ DeclareGlobalFunction( "PrimitiveGroupsIterator" );
 ##
 #F  AllPrimitiveGroups(<attr1>,<val1>,<attr2>,<val2>,...)
 ##
+##  <#GAPDoc Label="AllPrimitiveGroups">
 ##  <ManSection>
 ##  <Func Name="AllPrimitiveGroups" Arg='attr1,val1,attr2,val2,...'/>
 ##
 ##  <Description>
+##  This is a selection function which permits to select all groups
+##  from the Primitive Group Library that have a given set of properties. 
+##  It accepts arguments as specified in Section 
+##  <Ref BookName="ref" Sect="Selection Functions"/> of the &GAP; reference manual.
 ##  </Description>
 ##  </ManSection>
+##  <#/GAPDoc>
 ##
 DeclareGlobalFunction( "AllPrimitiveGroups" );
 
@@ -209,12 +215,18 @@ DeclareGlobalFunction( "AllPrimitiveGroups" );
 ##
 #F  OnePrimitiveGroup(<attr1>,<val1>,<attr2>,<val2>,...)
 ##
+##  <#GAPDoc Label="OnePrimitiveGroup">
 ##  <ManSection>
 ##  <Func Name="OnePrimitiveGroup" Arg='attr1,val1,attr2,val2,...'/>
 ##
 ##  <Description>
+##  This is a selection function which permits to select at most one group
+##  from the Primitive Group Library that have a given set of properties. 
+##  It accepts arguments as specified in Section 
+##  <Ref BookName="ref" Sect="Selection Functions"/> of the &GAP; reference manual.
 ##  </Description>
 ##  </ManSection>
+##  <#/GAPDoc>
 ##
 DeclareGlobalFunction( "OnePrimitiveGroup" );
 

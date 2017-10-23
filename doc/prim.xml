@@ -9,6 +9,8 @@
 <#Include Label="[2]{primitiv}">
 <#Include Label="PrimitiveGroup">
 <#Include Label="NrPrimitiveGroups">
+<#Include Label="AllPrimitiveGroups">
+<#Include Label="OnePrimitiveGroup">
 <#Include Label="PrimitiveGroupsIterator">
 
 <ManSection>
