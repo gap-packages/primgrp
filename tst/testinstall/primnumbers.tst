@@ -174,4 +174,19 @@ gap> List([1..4095],NrPrimitiveGroups);
   2, 2, 2, 2, 18, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
   2, 22, 4, 32, 4, 2, 2, 2, 2, 26, 4, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
   2, 10, 4, 2, 2, 2, 2, 6, 12, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10, 4, 26, 4, 6 ]
+gap> ForAll( [1..1000], n -> NrPrimitiveGroups( n ) =
+>                            Length( AllPrimitiveGroups( NrMovedPoints, n )));
+true
+gap> ForAll( [1001..2000], n -> NrPrimitiveGroups( n ) =
+>                            Length( AllPrimitiveGroups( NrMovedPoints, n )));
+true
+gap> ForAll( [2001..3000], n -> NrPrimitiveGroups( n ) =
+>                            Length( AllPrimitiveGroups( NrMovedPoints, n )));
+true
+gap> ForAll( [3001..4000], n -> NrPrimitiveGroups( n ) =
+>                            Length( AllPrimitiveGroups( NrMovedPoints, n )));
+true
+gap> ForAll( [4001..4095], n -> NrPrimitiveGroups( n ) =
+>                            Length( AllPrimitiveGroups( NrMovedPoints, n )));
+true
 gap> STOP_TEST( "primnumbers.tst", 1);
