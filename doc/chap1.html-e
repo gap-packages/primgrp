@@ -27,8 +27,10 @@
 <div class="ContSSBlock">
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X7BCEA0C57B6D9F42">1.1-1 PrimitiveGroup</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X8564FECC8477F199">1.1-2 NrPrimitiveGroups</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X7B1D4C0483A7F444">1.1-3 PrimitiveGroupsIterator</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X81329B9B7F5FF8DE">1.1-4 COHORTS_PRIMITIVE_GROUPS</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X86EF380E8007D304">1.1-3 AllPrimitiveGroups</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X82870C177DB70470">1.1-4 OnePrimitiveGroup</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X7B1D4C0483A7F444">1.1-5 PrimitiveGroupsIterator</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X81329B9B7F5FF8DE">1.1-6 COHORTS_PRIMITIVE_GROUPS</a></span>
 </div></div>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap1.html#X7DA239CC848F6CAE">1.2 <span class="Heading">Index numbers of primitive groups</span></a>
 </span>
@@ -127,16 +129,30 @@ AGL(2, 5)
 (A(5) x A(5)):2
 </pre></div>
 
+<p><a id="X86EF380E8007D304" name="X86EF380E8007D304"></a></p>
+
+<h5>1.1-3 AllPrimitiveGroups</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AllPrimitiveGroups</code>( <var class="Arg">attr1</var>, <var class="Arg">val1</var>, <var class="Arg">attr2</var>, <var class="Arg">val2</var>, <var class="Arg">...</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<p>This is a selection function which permits to select all groups from the Primitive Group Library that have a given set of properties. It accepts arguments as specified in Section <a href="../../../doc/ref/chap50.html#X82676ED5826E9E2E"><span class="RefLink">Reference: Selection Functions</span></a> of the <strong class="pkg">GAP</strong> reference manual.</p>
+
+<p><a id="X82870C177DB70470" name="X82870C177DB70470"></a></p>
+
+<h5>1.1-4 OnePrimitiveGroup</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OnePrimitiveGroup</code>( <var class="Arg">attr1</var>, <var class="Arg">val1</var>, <var class="Arg">attr2</var>, <var class="Arg">val2</var>, <var class="Arg">...</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<p>This is a selection function which permits to select at most one group from the Primitive Group Library that have a given set of properties. It accepts arguments as specified in Section <a href="../../../doc/ref/chap50.html#X82676ED5826E9E2E"><span class="RefLink">Reference: Selection Functions</span></a> of the <strong class="pkg">GAP</strong> reference manual.</p>
+
 <p><a id="X7B1D4C0483A7F444" name="X7B1D4C0483A7F444"></a></p>
 
-<h5>1.1-3 PrimitiveGroupsIterator</h5>
+<h5>1.1-5 PrimitiveGroupsIterator</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; PrimitiveGroupsIterator</code>( <var class="Arg">attr1</var>, <var class="Arg">val1</var>, <var class="Arg">attr2</var>, <var class="Arg">val2</var>, <var class="Arg">...</var> )</td><td class="tdright">( function )</td></tr></table></div>
 <p>returns an iterator through <code class="code">AllPrimitiveGroups(<var class="Arg">attr1</var>,<var class="Arg">val1</var>,<var class="Arg">attr2</var>,<var class="Arg">val2</var>,...)</code> without creating all these groups at the same time.</p>
 
 <p><a id="X81329B9B7F5FF8DE" name="X81329B9B7F5FF8DE"></a></p>
 
-<h5>1.1-4 COHORTS_PRIMITIVE_GROUPS</h5>
+<h5>1.1-6 COHORTS_PRIMITIVE_GROUPS</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; COHORTS_PRIMITIVE_GROUPS</code></td><td class="tdright">( global variable )</td></tr></table></div>
 <p>In <a href="chapBib.html#biBDixonMortimer88">[DM88]</a> the primitive groups are sorted in "cohorts" according to their socle. For each degree less than 2500, the variable <code class="func">COHORTS_PRIMITIVE_GROUPS</code> contains a list of the cohorts for the primitive groups of this degree. Each cohort is represented by a list of length 2, the first entry specifies the socle type (see <code class="func">SocleTypePrimitiveGroup</code> (<a href="../../../doc/ref/chap43.html#X7E89A46A86A3F4A2"><span class="RefLink">Reference: SocleTypePrimitiveGroup</span></a>)), the second entry listing the index numbers of the groups in this degree.</p>
