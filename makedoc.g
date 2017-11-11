@@ -54,7 +54,7 @@ bookname:="primgrp";
 MakeGAPDocDoc( path, main, PRIMGRPMANUALFILES, bookname, "../../..", "MathJax" );  
 CopyHTMLStyleFiles( path );
 GAPDocManualLab( "primgrp" );; 
-ExtractMyManualExamples( "primgrp", main, PRIMGRPMANUALFILES);
+#ExtractMyManualExamples( "primgrp", main, PRIMGRPMANUALFILES);
 end;
 
 
