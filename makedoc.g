@@ -5,8 +5,9 @@
 ###########################################################################
 
 ExtractMyManualExamples:=function( pkgname, main, files )
-local path, tst, i, s, name, output, ch, a;
-path:=Directory( "doc" );
+local path, tst, i, s, basename, name, output, ch, a, comment;
+path:=Directory( 
+        Concatenation(PackageInfo(pkgname)[1].InstallationPath, "/doc") );
 Print("Extracting manual examples for ", pkgname, " package ...\n" );
 tst:=ExtractExamples( path, main, files, "Chapter" );
 Print(Length(tst), " chapters detected\n");
@@ -18,15 +19,21 @@ for i in [ 1 .. Length(tst) ] do
       # works for <100 chapters
       s:=Concatenation("0",s); 
     fi;
-    name := Filename( Directory( "tst/manualexamples/" ), 
-                Concatenation( LowercaseString(pkgname), s, ".tst" ) );
+    basename:=Concatenation( LowercaseString(pkgname), s, ".tst" );
+    name := Filename( 
+              Directory( 
+                Concatenation( PackageInfo(pkgname)[1].InstallationPath, 
+                               "/tst/manualexamples" ) ), basename );
     output := OutputTextFile( name, false ); # to empty the file first
     SetPrintFormattingStatus( output, false ); # to avoid line breaks
     ch := tst[i];
     AppendTo(output, "# ", pkgname, ", chapter ",i,"\n");
+    AppendTo(output, "gap> START_TEST( \"", basename, "\");\n");
     for a in ch do
-      AppendTo(output, "\n# ",a[2], a[1]);
+      comment := a[2][1]{[PositionSublist(a[2][1],LowercaseString(pkgname))..Length(a[2][1])]};
+      AppendTo(output, "\n# ", comment, ":", a[2][2], "-", a[2][3], a[1]);
     od;
+    AppendTo(output, "gap> STOP_TEST(\"", basename, "\", 1 );\n");
     Print("extracted ", Length(ch), " examples \n");
   else
     Print("no examples \n" );    
@@ -54,7 +61,7 @@ bookname:="primgrp";
 MakeGAPDocDoc( path, main, PRIMGRPMANUALFILES, bookname, "../../..", "MathJax" );  
 CopyHTMLStyleFiles( path );
 GAPDocManualLab( "primgrp" );; 
-#ExtractMyManualExamples( "primgrp", main, PRIMGRPMANUALFILES);
+ExtractMyManualExamples( "primgrp", main, PRIMGRPMANUALFILES);
 end;
 
 
