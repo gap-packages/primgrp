@@ -31,9 +31,9 @@
 
 <h2><strong class="pkg">GAP</strong> Primitive Permutation Groups Library</h2>
 
-<p>Version 3.2.0</p>
+<p>Version 3.3.0</p>
 
-<p>11 November 2017</p>
+<p>10 December 2017</p>
 
 </div>
 <p><b>Alexander Hulpke
@@ -74,7 +74,7 @@
 
 <p>If you publish a result which was partially obtained with the usage of <strong class="pkg">PrimGrp</strong>, please cite it in the following form:</p>
 
-<p>A. Hulpke, C. Roney-Dougal, C. Russell. <em>PrimGrp --- GAP Primitive Permutation Groups Library, Version 3.2.0;</em> 2017 (<span class="URL"><a href="https://gap-packages.github.io/primgrp/">https://gap-packages.github.io/primgrp/</a></span>).</p>
+<p>A. Hulpke, C. Roney-Dougal, C. Russell. <em>PrimGrp --- GAP Primitive Permutation Groups Library, Version 3.3.0;</em> 2017 (<span class="URL"><a href="https://gap-packages.github.io/primgrp/">https://gap-packages.github.io/primgrp/</a></span>).</p>
 
 <p><a id="X82A988D47DFAFCFA" name="X82A988D47DFAFCFA"></a></p>
 <h3>Acknowledgements</h3>
