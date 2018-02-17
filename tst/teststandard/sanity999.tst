@@ -1,4 +1,4 @@
-gap> START_TEST("sanity.tst");
+gap> START_TEST("sanity999.tst");
 
 #
 # Disable warnings which depend on Conway Polynomial databases 
@@ -9,17 +9,7 @@ gap> SetInfoLevel(InfoWarning,0);
 #
 # Define a function to check the primitive groups of degree n
 #
-gap> checkdegree := function(n) 
->     local g;
->     for g in AllPrimitiveGroups(DegreeOperation,n) do
->         if MovedPoints(g) <> [1..n] or not IsTransitive(g,[1..n]) 
->            or not IsPrimitive(g,[1..n]) then
->             Error("Failure at ",g," degree ",n,"\n");
->         fi;
->     od;
-> end;;
-
-#
+gap> ReadPackage("primgrp", "tst/testutils.g");
 gap> checkdegree(2);
 gap> checkdegree(3);
 gap> checkdegree(4);
@@ -1021,4 +1011,4 @@ gap> checkdegree(999);
 
 #
 gap> SetInfoLevel(InfoWarning,iW);
-gap> STOP_TEST( "sanity.tst", 1);
+gap> STOP_TEST( "sanity999.tst", 1);
