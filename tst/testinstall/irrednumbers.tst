@@ -10,4 +10,7 @@ gap> Sum( List( n, t -> NumberIrreducibleSolvableGroups( t[1], t[2] )));
 gap> ForAll(n, t -> NumberIrreducibleSolvableGroups( t[1], t[2] ) =
 > Length( AllIrreducibleSolvableGroups( Dimension, t[1], Characteristic,t[2] )));
 true
+gap> ForAll(n, t -> IsSolvable(OneIrreducibleSolvableGroup(
+>                                Dimension, t[1], Characteristic,t[2] )));
+true
 gap> STOP_TEST( "irrednumbers.tst", 1);
