@@ -28,9 +28,9 @@
 
 <h2><strong class="pkg">GAP</strong> Primitive Permutation Groups Library</h2>
 
-<p>Version 3.3.0</p>
+<p>Version 3.3.1</p>
 
-<p>10 December 2017</p>
+<p>17 February 2018</p>
 
 </div>
 <p><b>Alexander Hulpke
@@ -63,7 +63,7 @@
 
 <p><a id="X81488B807F2A1CF1" name="X81488B807F2A1CF1"></a></p>
 <h3>Copyright</h3>
-<p>© 2007-2017 by Alexander Hulpke and Colva Roney-Dougal</p>
+<p>© 2007-2018 by Alexander Hulpke and Colva Roney-Dougal</p>
 
 <p><strong class="pkg">PrimGrp</strong> is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. For details, see the FSF's own site <span class="URL"><a href="http://www.gnu.org/licenses/gpl.html">http://www.gnu.org/licenses/gpl.html</a></span>.</p>
 
@@ -71,7 +71,7 @@
 
 <p>If you publish a result which was partially obtained with the usage of <strong class="pkg">PrimGrp</strong>, please cite it in the following form:</p>
 
-<p>A. Hulpke, C. Roney-Dougal, C. Russell. <em>PrimGrp --- GAP Primitive Permutation Groups Library, Version 3.3.0;</em> 2017 (<span class="URL"><a href="https://gap-packages.github.io/primgrp/">https://gap-packages.github.io/primgrp/</a></span>).</p>
+<p>A. Hulpke, C. Roney-Dougal, C. Russell. <em>PrimGrp --- GAP Primitive Permutation Groups Library, Version 3.3.1;</em> 2018 (<span class="URL"><a href="https://gap-packages.github.io/primgrp/">https://gap-packages.github.io/primgrp/</a></span>).</p>
 
 <p><a id="X82A988D47DFAFCFA" name="X82A988D47DFAFCFA"></a></p>
 <h3>Acknowledgements</h3>
