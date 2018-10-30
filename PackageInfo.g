@@ -67,7 +67,7 @@ Persons := [
     FirstNames    := "Colva M.",
     IsAuthor      := true,
     IsMaintainer  := false,
-    Email         := "colva@mcs.st-andrews.ac.uk",
+    Email         := "colva.roney-dougal@st-andrews.ac.uk",
     WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~colva/",
     PostalAddress := Concatenation( [
                      "School of Mathematics and Statistics\n",
