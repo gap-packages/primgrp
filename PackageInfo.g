@@ -11,6 +11,7 @@ PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
 Version := "3.3.2",
 Date := "27/10/2018",
+License := "GPL-2.0-or-later",
 ##  <#GAPDoc Label="PKGVERSIONDATA">
 ##  <!ENTITY VERSION "3.3.2">
 ##  <!ENTITY RELEASEDATE "27 October 2018">
