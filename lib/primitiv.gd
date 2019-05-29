@@ -44,7 +44,7 @@
 ##  </List>
 ##  <P/>
 ##  Not all groups are named, those which do have names use ATLAS notation.
-##  Not all names are necessary unique!
+##  Not all names are necessarily unique!
 ##  <P/>
 ##  The list given in <Cite Key="RoneyDougal05"/> is believed to be complete,
 ##  correcting various omissions in <Cite Key="DixonMortimer88"/>,
