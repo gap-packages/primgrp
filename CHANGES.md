@@ -1,6 +1,6 @@
 # CHANGES to the 'primgrp' GAP package
 
-## X.Y.Z (2019-MM-DD)
+## 3.4.0 (2019-12-03)
 
   - Fix the names of PrimitiveGroup(125,17) and PrimitiveGroup(81,125)
   - Improve performance of PrimitiveIdentification
