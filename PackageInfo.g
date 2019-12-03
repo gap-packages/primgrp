@@ -9,12 +9,13 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "3.3.2",
-Date := "27/10/2018",
+Version := "3.4.0",
+Date := "03/12/2019",
+License := "GPL-2.0-or-later",
 ##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.3.2">
-##  <!ENTITY RELEASEDATE "27 October 2018">
-##  <!ENTITY RELEASEYEAR "2018">
+##  <!ENTITY VERSION "3.4.0">
+##  <!ENTITY RELEASEDATE "3 December 2019">
+##  <!ENTITY RELEASEYEAR "2019">
 ##  <#/GAPDoc>
 
 PackageWWWHome :=
@@ -67,7 +68,7 @@ Persons := [
     FirstNames    := "Colva M.",
     IsAuthor      := true,
     IsMaintainer  := false,
-    Email         := "colva@mcs.st-andrews.ac.uk",
+    Email         := "colva.roney-dougal@st-andrews.ac.uk",
     WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~colva/",
     PostalAddress := Concatenation( [
                      "School of Mathematics and Statistics\n",

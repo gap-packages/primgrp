@@ -28,7 +28,7 @@
         in [RDU03].[133X
   
   [33X[0;0YNot  all groups are named, those which do have names use ATLAS notation. Not
-  all names are necessary unique![133X
+  all names are necessarily unique![133X
   
   [33X[0;0YThe  list  given  in  [RD05]  is believed to be complete, correcting various
   omissions in [DM88], [Sho92] and [The97].[133X

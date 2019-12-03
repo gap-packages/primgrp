@@ -6,10 +6,10 @@
                     [1X[5XGAP[105X Primitive Permutation Groups Library[101X
   
   
-                                 Version 3.3.2
+                                 Version 3.4.0
   
   
-                                27 October 2018
+                                3 December 2019
   
   
                                 Alexander Hulpke
@@ -29,7 +29,7 @@
   
   
   Colva Roney-Dougal
-      Email:    [7Xmailto:colva@mcs.st-andrews.ac.uk[107X
+      Email:    [7Xmailto:colva.roney-dougal@st-andrews.ac.uk[107X
       Homepage: [7Xhttp://www-groups.mcs.st-and.ac.uk/~colva/[107X
       Address:  [33X[0;14YSchool of Mathematics and Statistics[133X
                 [33X[0;14YUniversity of St Andrews[133X
@@ -56,7 +56,7 @@
   
   -------------------------------------------------------
   [1XCopyright[101X
-  [33X[0;0Y© 2007-2018 by Alexander Hulpke and Colva Roney-Dougal[133X
+  [33X[0;0Y© 2007-2019 by Alexander Hulpke and Colva Roney-Dougal[133X
   
   [33X[0;0Y[5XPrimGrp[105X is free software; you can redistribute it and/or modify it under the
   terms  of  the  GNU General Public License as published by the Free Software
@@ -71,7 +71,7 @@
   [5XPrimGrp[105X, please cite it in the following form:[133X
   
   [33X[0;0YA.   Hulpke,   C.  Roney-Dougal,  C.  Russell.  [13XPrimGrp  ---  GAP  Primitive
-  Permutation       Groups       Library,       Version       3.3.2;[113X      2018
+  Permutation       Groups       Library,       Version       3.4.0;[113X      2019
   ([7Xhttps://gap-packages.github.io/primgrp/[107X).[133X
   
   
@@ -81,13 +81,6 @@
   separate   [5XGAP[105X  package  has  been  supported  by  the  EPSRC  Collaborative
   Computational  Project EP/M022641/1 CoDiMa (CCP in the area of Computational
   Discrete Mathematics), [7Xhttp://www.codima.ac.uk/[107X.[133X
-  
-  
-  -------------------------------------------------------
-  [1XColophon[101X
-  [33X[0;0YVersions history:[133X
-  
-  [30X    [33X[0;6YVersion 3.1 - Autumn 2017.[133X
   
   
   -------------------------------------------------------
