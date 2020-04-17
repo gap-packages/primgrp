@@ -31,4 +31,8 @@ gap> G := PrimitiveGroup(2304, 10);
 2F(4, 2)
 
 #
+gap> G := PrimitiveGroup(625,672);
+5^4:4.(S5 wr 2)
+
+#
 gap> STOP_TEST("bugfix.tst", 1);
