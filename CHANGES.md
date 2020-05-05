@@ -1,5 +1,7 @@
 # CHANGES to the 'primgrp' GAP package
 
+## 3.4.1 (2020-05-05)
+
   - Fix name of PrimitiveGroup(625,672);
 
 ## 3.4.0 (2019-12-03)
