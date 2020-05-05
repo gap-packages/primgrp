@@ -9,13 +9,13 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "3.4.0",
-Date := "03/12/2019",
+Version := "3.4.1",
+Date := "05/05/2020",
 License := "GPL-2.0-or-later",
 ##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.4.0">
-##  <!ENTITY RELEASEDATE "3 December 2019">
-##  <!ENTITY RELEASEYEAR "2019">
+##  <!ENTITY VERSION "3.4.1">
+##  <!ENTITY RELEASEDATE "5 May 2020">
+##  <!ENTITY RELEASEYEAR "2020">
 ##  <#/GAPDoc>
 
 PackageWWWHome :=
