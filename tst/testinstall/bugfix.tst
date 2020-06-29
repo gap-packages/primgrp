@@ -34,5 +34,13 @@ gap> G := PrimitiveGroup(2304, 10);
 gap> G := PrimitiveGroup(625,672);
 5^4:4.(S5 wr 2)
 
+# Fix of the bug reported by Ali Reza Rahimipour on 12 June 2020
+gap> G := PrimitiveGroup(1600,17);
+PSU(3, 4)
+gap> G := PrimitiveGroup(1600,18);
+PSU(3, 4):2
+gap> G := PrimitiveGroup(1600,19);
+PSU(3, 4):4
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
