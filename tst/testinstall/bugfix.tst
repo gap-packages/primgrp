@@ -42,5 +42,17 @@ PSU(3, 4):2
 gap> G := PrimitiveGroup(1600,19);
 PSU(3, 4):4
 
+# not really a bug, but: ensure consisting naming for O+(8,2) and friends;
+# PrimitiveGroup(960,7) used to have the name "OPlus(8, 2)"
+gap> degs := [ 119, 120, 135, 136, 765, 960, 1071, 1120, 1575, 1632 ];;
+gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(+1,8,2)));
+[ PSO+(8, 2), PSO+(8, 2), PSO+(8, 2), POmega+(8, 2):2, POmega+(8, 2):2 ]
+gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(+1,8,2))/2);
+[ O+(8, 2), O+(8, 2), O+(8, 2), POmega+(8, 2), POmega+(8, 2) ]
+gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(-1,8,2)));
+[ PSO-(8, 2), PSO-(8, 2), PSO-(8, 2), PSO-(8,2), POmega-(8, 2):2 ]
+gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(-1,8,2))/2);
+[ O-(8, 2), O-(8, 2), O-(8, 2), POmega-(8, 2), POmega-(8, 2) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
