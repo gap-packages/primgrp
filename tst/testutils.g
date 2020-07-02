@@ -38,6 +38,49 @@ end;
 # 2. Checking names of primitive groups
 #
 
+AGL := {d,q} -> SemidirectProduct(GL(d, GF(q)), GF(q)^d);
+ASL := {d,q} -> SemidirectProduct(SL(d, GF(q)), GF(q)^d);
+
+ASigmaL := function(d, q)
+    local G, V;
+    G := SigmaL(d, q);
+    V := FieldOfMatrixGroup(G) ^ DimensionOfMatrixGroup(G);
+    return SemidirectProduct(G, V);
+end;
+
+AGammaL := function(d, q)
+    local G, V;
+    G := GammaL(d, q);
+    V := FieldOfMatrixGroup(G) ^ DimensionOfMatrixGroup(G);
+    return SemidirectProduct(G, V);
+end;
+
+if not IsBound(PSigmaL) then
+  PSigmaL := function(d, q)
+      local G, gens;
+      if d = 1 then return TrivialGroup(IsPermGroup); fi;
+      G := SigmaL(d, q);
+      gens := GeneratorsOfGroup(G);
+      if not IsPrimeInt(q) then
+          gens := gens{[1..Length(gens)-1]}; # HACK: last generator is Frobenius
+      fi;
+      return G / Center(Subgroup(G, gens));
+  end;
+fi;
+
+if not IsBound(PSigmaL) then
+  PGammaL := function(d, q)
+      local G, gens;
+      if d = 1 then return TrivialGroup(IsPermGroup); fi;
+      G := GammaL(d, q);
+      gens := GeneratorsOfGroup(G);
+      if not IsPrimeInt(q) then
+          gens := gens{[1..Length(gens)-1]}; # HACK: last generator is Frobenius
+      fi;
+      return G / Center(Subgroup(G, gens));
+  end;
+fi;
+
 takeCfromcyclicgroup := function( str )
 local pos;
 repeat
@@ -163,6 +206,7 @@ PrimGrpNamesCheckDegree := function(deg)
     od;
     Print("                                                      \r");
 end;
+
 
 PrimGrpNamesCheck := function(i,j)
 local k;
