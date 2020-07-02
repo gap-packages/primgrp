@@ -7,6 +7,11 @@
 # 1. Consistency check: each group of degree n should act
 # transitively and primitively on [1..n]
 #
+
+######################################################################
+#
+# Consistency check for a given degree
+#
 PrimGrpConsistencyCheckDegree := function(deg) 
     local i, g;
     for i in [1..NrPrimitiveGroups(deg)] do
@@ -25,6 +30,10 @@ PrimGrpConsistencyCheckDegree := function(deg)
     Print("                                                      \r");
 end;
 
+######################################################################
+#
+# Consistency check for a range of degrees
+#
 PrimGrpConsistencyCheck := function(i,j)
 local k;
 for k in [i..j] do
@@ -38,8 +47,13 @@ end;
 # 2. Checking names of primitive groups
 #
 
+######################################################################
+#
+# Constructors for some groups
+#
 AGL := {d,q} -> SemidirectProduct(GL(d, GF(q)), GF(q)^d);
 ASL := {d,q} -> SemidirectProduct(SL(d, GF(q)), GF(q)^d);
+L   := {d,q} -> SimpleGroup("L", d, q);
 
 ASigmaL := function(d, q)
     local G, V;
@@ -81,11 +95,49 @@ if not IsBound(PSigmaL) then
   end;
 fi;
 
-takeCfromcyclicgroup := function( str )
+######################################################################
+#
+# Try to evaluate the name of the primitive group and compare
+# its structure description with the given one
+#
+ComparePrimGrpByStructure := function (name, desc)
+local n, g, r;
+n := ReplacedString( name, "A(",   "AlternatingGroup(" );
+n := ReplacedString( n,    "Alt(", "AlternatingGroup(" );
+n := ReplacedString( n,    "C(",   "CyclicGroup("      );
+n := ReplacedString( n,    "D(",   "DihedralGroup("    );
+n := ReplacedString( n,    "M(",   "MathieuGroup("     );
+n := ReplacedString( n,    "Q(",   "QuaternionGroup("  );
+n := ReplacedString( n,    "S(",   "SymmetricGroup("   );
+n := ReplacedString( n,    "Sym(", "SymmetricGroup("   );
+BreakOnError := false;
+r := CALL_WITH_CATCH( EvalString, [ n ] );
+BreakOnError := true;
+if r[1] then
+    g := r[2];
+    if IsGroup(g) then # some names may evaluate to a number
+        return StructureDescription( g ) = desc;
+    else
+        return fail;
+    fi;
+else
+    return fail;
+fi;
+end;
+
+
+######################################################################
+#
+# Remove C from cyclic groups in structure descriptions
+#
+# Deals with comparing names like "7:3" with description "C7 : C3"
+#
+DropCfromCyclicGroups := function( str )
 local pos;
 repeat
   pos:=Position(str,'C');
   if pos <> fail then
+    # Is C followed by a digit?
     if IsDigitChar(str[pos+1]) then
       str := Concatenation(str{[1..pos-1]},str{[pos+1..Length(str)]});
     fi;
@@ -94,7 +146,11 @@ until pos = fail;
 return str;
 end;
 
-comparenames := function(name,desc)
+######################################################################
+#
+# Compare the name with the structure description
+#
+ComparePrimGrpByNames := function(name,desc)
 local n, d;
 n := ReplacedString(name," ","");
 n := ReplacedString(n,"Alt","A");
@@ -111,73 +167,14 @@ elif StartsWith(n,"M_") then
 elif StartsWith(n,"D(") and EndsWith(n,")") and StartsWith(d,"D") then
   n := Concatenation( "D", String(EvalString(n{[3..Length(n)-1]}) ) );
 fi;
-return n=d or n=takeCfromcyclicgroup(d);
+return n=d or n=DropCfromCyclicGroups(d);
 end;
 
-findaffinegroups := function(type,name)
+
+######################################################################
 #
-# For a finite field F
-# AGL(d,F) = SemidirectProduct(GL(d, F), F^d)
-# ASL(d,F) = SemidirectProduct(SL(d, F), F^d)
+# Names check for a given degree
 #
-local n, old, new, pos, pos2, d, f, arguments;
-n := ShallowCopy(name);
-old := Concatenation( type, "(");
-pos := PositionSublist( n, old );
-if pos = 1 then
-  pos2 := Position( n, ')' );
-  arguments := n{[ Length(old)+1 .. pos2-1]};
-  arguments := ReplacedString(arguments," ","");
-  arguments := SplitString(arguments,",");
-  new := Concatenation(
-            "SemidirectProduct(",
-            type{[2..3]}, # will be GL or SL
-            "(", arguments[1], ",",
-            "GF(", arguments[2], ")),",
-            "GF(", arguments[2], ")^", arguments[1], ")"
-            );
-  n := Concatenation( new, n{[pos2+1 .. Length(n)]});
-fi;
-return n;
-end;
-
-findsimplegroups := function(type,name)
-local n, old, new, pos;
-n := ShallowCopy(name);
-old := Concatenation( type, "(");
-new := Concatenation( "SimpleGroup(\"",type,"\",");
-pos := PositionSublist( name, old );
-if pos = 1 then
-    n := Concatenation(new, n{[Length(old)+1 .. Length(n)]});
-fi;
-return n;
-end;
-
-comparestructure := function (name, desc)
-local n, g, r;
-n := ReplacedString(name,"A(","AlternatingGroup(");
-n := ReplacedString(n,"C(","CyclicGroup(");
-n := ReplacedString(n,"M(","MathieuGroup(");
-n := ReplacedString(n,"Q(","QuaternionGroup(");
-n := ReplacedString(n,"S(","SymmetricGroup(");
-n := findaffinegroups("AGL",n);
-n := findaffinegroups("ASL",n);
-n := findsimplegroups("L",n);
-BreakOnError := false;
-r := CALL_WITH_CATCH( EvalString, [ n ] );
-BreakOnError := true;
-if r[1] then
-    g := r[2];
-    if IsGroup(g) then
-        return StructureDescription( g ) = desc;
-    else
-        return fail; # some may evaluate to a number
-    fi;         
-else
-    return fail; 
-fi;      
-end;
-
 PrimGrpNamesCheckDegree := function(deg) 
     local i, g, r, names, name;
     for i in [1..NrPrimitiveGroups(deg)] do
@@ -189,10 +186,10 @@ PrimGrpNamesCheckDegree := function(deg)
                  Print("WARNING : ", [deg,i], " has multiple names ", Name(g), "\n");
             fi;
             for name in names do
-                if comparenames( name, StructureDescription(g) ) then
+                if ComparePrimGrpByNames( name, StructureDescription(g) ) then
                     continue;
-                else 
-                    r := comparestructure( name, StructureDescription(g) );
+                else # if string transformations did not help
+                    r := ComparePrimGrpByStructure( name, StructureDescription(g) );
                     if r = true then
                         continue;
                     elif r = false then
@@ -207,7 +204,10 @@ PrimGrpNamesCheckDegree := function(deg)
     Print("                                                      \r");
 end;
 
-
+######################################################################
+#
+# Names check for a range of degrees
+#
 PrimGrpNamesCheck := function(i,j)
 local k;
 for k in [i..j] do
@@ -216,7 +216,10 @@ od;
 Print("\n");
 end;
 
-
+######################################################################
+#
+# Print all names of primitive groups
+#
 PrimGrpNames:=function()
 local deg, i, g;
 for deg in [1..4095] do
