@@ -59,4 +59,8 @@ gap> G := PrimitiveGroup(100,14);
 Alt(6)^2.4
 
 #
+gap> G := PrimitiveGroup(289,35);
+17^2:SL(2,3)
+
+#
 gap> STOP_TEST("bugfix.tst", 1);
