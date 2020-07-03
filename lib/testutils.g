@@ -103,6 +103,7 @@ ComparePrimGrpByStructure := function (name, desc)
 local n, g, r;
 n := ReplacedString( name, "A(",   "AlternatingGroup(" );
 n := ReplacedString( n,    "Alt(", "AlternatingGroup(" );
+n := ReplacedString( n,    "Aut(", "AutomorphismGroup(");
 n := ReplacedString( n,    "C(",   "CyclicGroup("      );
 n := ReplacedString( n,    "D(",   "DihedralGroup("    );
 n := ReplacedString( n,    "M(",   "MathieuGroup("     );
