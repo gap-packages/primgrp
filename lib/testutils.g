@@ -15,7 +15,6 @@
 PrimGrpConsistencyCheckDegree := function(deg) 
     local i, g;
     for i in [1..NrPrimitiveGroups(deg)] do
-        Print("Degree ", deg, " : ", i, "/", NrPrimitiveGroups(deg), "\r");
         g := PrimitiveGroup(deg,i);
         if MovedPoints(g) <> [1..deg] then
             Print("PrimitiveGroup(",deg,",",i,") is not acting on ", [1..deg], "\n");
@@ -27,7 +26,6 @@ PrimGrpConsistencyCheckDegree := function(deg)
             Print("PrimitiveGroup(",deg,",",i,") is not primitive on ", [1..deg], "\n");
         fi;
     od;
-    Print("                                                      \r");
 end;
 
 ######################################################################
@@ -35,11 +33,12 @@ end;
 # Consistency check for a range of degrees
 #
 PrimGrpConsistencyCheck := function(i,j)
-local k;
-for k in [i..j] do
-    PrimGrpConsistencyCheckDegree(k);
+local deg;
+for deg in [i..j] do
+    Print("Degree ", deg, " : ", NrPrimitiveGroups(deg), " groups \r");
+    PrimGrpConsistencyCheckDegree(deg);
 od;
-Print("\n");
+Print("                                                           \r");
 end;
 
 ######################################################################
