@@ -55,4 +55,8 @@ gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(-1,8,2))/2);
 [ O-(8, 2), O-(8, 2), O-(8, 2), POmega-(8, 2), POmega-(8, 2) ]
 
 #
+gap> G := PrimitiveGroup(100,14);
+Alt(6)^2.4
+
+#
 gap> STOP_TEST("bugfix.tst", 1);
