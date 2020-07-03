@@ -231,3 +231,41 @@ for deg in [1..4095] do
     od;
 od;
 end;
+
+######################################################################
+#
+# Report duplicated names of primitive groups
+#
+PrimGrpNamesDuplicates:=function()
+local deg, i, ids, id, g, h, r, dups, name, x, y, z;
+r:=[];
+for deg in [1..4095] do
+    for i in [1..NrPrimitiveGroups(deg)] do
+        g := PrimitiveGroup(deg,i);
+        if HasName(g) then
+            Add(r, [deg, i, Name(g)] );
+        fi;
+    od;
+od;
+dups := Set( List( Filtered( Collected( List( r,
+                                         x->x[3]) ),
+                   y->y[2]>1),
+             z->z[1]) );
+for name in dups do
+  Print( name, " : ");
+  ids := Filtered(r, x -> x[3]=name);
+  ids := List(ids, x -> x{[1,2]});
+  Print(ids, "\n");
+  g := PrimitiveGroup (ids[1][1], ids[1][2]);
+  for id in ids{[2..Length(ids)]} do
+    h := PrimitiveGroup (id[1], id[2]);
+    if StructureDescription(g) <> StructureDescription(h) then
+      if IsomorphismGroups(g,h) = fail then
+        Print("  ", ids[1], " non-isomorphic to ", id, " : \n",
+             "    ", StructureDescription(g), "\n",
+             "    ", StructureDescription(h), "\n");
+      fi;
+    fi;
+  od;
+od;
+end;
