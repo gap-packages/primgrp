@@ -234,10 +234,14 @@ end;
 #
 # Report duplicated names of primitive groups
 #
-PrimGrpNamesDuplicates:=function()
+# The arguments are used to restrict the check to degrees [d1..d2]
+# (this is useful to check only a specific degree, or to check the
+# testing code on a subset of the library).
+#
+PrimGrpNamesDuplicates:=function(d1,d2)
 local deg, i, ids, id, g, h, r, dups, name, x, y, z;
 r:=[];
-for deg in [1..4095] do
+for deg in [d1..d2] do
     for i in [1..NrPrimitiveGroups(deg)] do
         g := PrimitiveGroup(deg,i);
         if HasName(g) then
