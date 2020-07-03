@@ -177,7 +177,6 @@ end;
 PrimGrpNamesCheckDegree := function(deg) 
     local i, g, r, names, name;
     for i in [1..NrPrimitiveGroups(deg)] do
-        Print("Degree ", deg, " : ", i, "/", NrPrimitiveGroups(deg), "\r");
         g := PrimitiveGroup(deg,i);
         if HasName(g) then
             names := SplitString( Name(g), "=" );
@@ -200,7 +199,6 @@ PrimGrpNamesCheckDegree := function(deg)
             od;
         fi;
     od;
-    Print("                                                      \r");
 end;
 
 ######################################################################
@@ -208,11 +206,12 @@ end;
 # Names check for a range of degrees
 #
 PrimGrpNamesCheck := function(i,j)
-local k;
-for k in [i..j] do
-    PrimGrpNamesCheckDegree(k);
+local deg;
+for deg in [i..j] do
+    Print("Degree ", deg, " : ", NrPrimitiveGroups(deg), " groups \r");
+    PrimGrpNamesCheckDegree(deg);
 od;
-Print("\n");
+Print("                                                           \r");
 end;
 
 ######################################################################
