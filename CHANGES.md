@@ -2,6 +2,8 @@
 
 ## 3.4.2 (2020-XX-XX)
 
+  - Rename PrimitiveGroup(960,7) from OPlus(8, 2) to O+(8, 2)
+    to be consistent with all other groups related to O+ or O-
   - Fix names of PrimitiveGroup(1600,i) for i in [17..19]
 
 ## 3.4.1 (2020-05-05)
