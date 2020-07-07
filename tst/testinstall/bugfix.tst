@@ -54,6 +54,10 @@ gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(-1,8,2)));
 gap> AllPrimitiveGroups(NrMovedPoints, degs, Size, Size(SO(-1,8,2))/2);
 [ O-(8, 2), O-(8, 2), O-(8, 2), POmega-(8, 2), POmega-(8, 2) ]
 
+# Fix an error in the name reported by Andries Brouwer
+gap> G := PrimitiveGroup(81,103);
+3^4:(2^3:Sym(4)):Sym(3)
+
 #
 gap> G := PrimitiveGroup(100,14);
 Alt(6)^2.4
