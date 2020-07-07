@@ -59,6 +59,10 @@ gap> G := PrimitiveGroup(100,14);
 Alt(6)^2.4
 
 #
+gap> G := PrimitiveGroup(121,38);
+11^2:(5 x Q_24)
+
+#
 gap> G := PrimitiveGroup(289,35);
 17^2:SL(2,3)
 
