@@ -2,7 +2,8 @@
 
 ## 3.4.2 (2020-XX-XX)
 
-  - Fix the names of PrimitiveGroup(289,35) and PrimitiveGroup(100,14)
+  - Fix the names of PrimitiveGroup(i,j) for (i,j) in
+    { (100,14), (121,38), (289,35) }
   - Rename PrimitiveGroup(960,7) from OPlus(8, 2) to O+(8, 2)
     to be consistent with all other groups related to O+ or O-
   - Fix names of PrimitiveGroup(1600,i) for i in [17..19]
