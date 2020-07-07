@@ -4,6 +4,7 @@
 
   - Unify notation for names that involve Mathieu groups to use
     M(n), instead of a mix of M(n) and M_n
+  - Fix the name of PrimitiveGroup(81,103) [Reported by Andries Brouwer]
   - Fix the names of PrimitiveGroup(i,j) for (i,j) in
     { (100,14), (121,38), (289,35) }
   - Rename PrimitiveGroup(960,7) from OPlus(8, 2) to O+(8, 2)
