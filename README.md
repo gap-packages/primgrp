@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gap-packages/primgrp.svg?branch=master)](https://travis-ci.org/gap-packages/primgrp)
+[![Build Status](https://github.com/gap-packages/primgrp/workflows/CI/badge.svg?branch=master)](https://github.com/gap-packages/primgrp/actions?query=workflow%3ACI+branch%3Amaster)
 [![Code Coverage](https://codecov.io/github/gap-packages/primgrp/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/primgrp)
 
 # GAP Primitive Groups Library
