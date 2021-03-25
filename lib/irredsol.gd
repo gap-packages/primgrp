@@ -226,7 +226,11 @@ DeclareGlobalFunction("OneIrreducibleSolvableGroup");
 ##  </Description>
 ##  </ManSection>
 ##
-DeclareSynonymAttr ("DegreeOfMatrixGroup", DimensionOfMatrixGroup);
+if not IsBound(DegreeOfMatrixGroup) then
+    # DegreeOfMatrixGroup is also declared identically in irredsol, so to
+    # avoid warnings we only define it if necessary
+    DeclareSynonymAttr("DegreeOfMatrixGroup", DimensionOfMatrixGroup);
+fi;
 
 #############################################################################
 ##
