@@ -1,6 +1,6 @@
 ###########################################################################
 ##
-#W makedoc.g               The PrimGrp package          Alexander Konovalov
+#W makedoc.g               The PrimGrp package           Olexandr Konovalov
 ##
 ###########################################################################
 
