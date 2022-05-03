@@ -1,6 +1,6 @@
 # CHANGES to the 'primgrp' GAP package
 
-## 3.4.2 (2020-XX-XX)
+## 3.4.2 (2022-05-03)
 
   - Unify notation for names that involve Mathieu groups to use
     M(n), instead of a mix of M(n) and M_n
@@ -10,6 +10,7 @@
   - Rename PrimitiveGroup(960,7) from OPlus(8, 2) to O+(8, 2)
     to be consistent with all other groups related to O+ or O-
   - Fix names of PrimitiveGroup(1600,i) for i in [17..19]
+  - Fix PrimitiveGroup(1140,2) wrongly named Sym(40) instead of Sym(20)
 
 ## 3.4.1 (2020-05-05)
 
