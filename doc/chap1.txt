@@ -125,7 +125,7 @@
   
   [1X1.1-6 COHORTS_PRIMITIVE_GROUPS[101X
   
-  [33X[1;0Y[29X[2XCOHORTS_PRIMITIVE_GROUPS[102X[32X global variable[133X
+  [33X[1;0Y[29X[2XCOHORTS_PRIMITIVE_GROUPS[102X [32X global variable[133X
   
   [33X[0;0YIn  [DM88]  the  primitive  groups  are sorted in [21Xcohorts[121X according to their
   socle. For each degree less than 2500, the variable [2XCOHORTS_PRIMITIVE_GROUPS[102X
@@ -197,7 +197,7 @@
   
   [1X1.2-3 PRIMITIVE_INDICES_MAGMA[101X
   
-  [33X[1;0Y[29X[2XPRIMITIVE_INDICES_MAGMA[102X[32X global variable[133X
+  [33X[1;0Y[29X[2XPRIMITIVE_INDICES_MAGMA[102X [32X global variable[133X
   
   [33X[0;0YThe system [5XMagma[105X also provides a list of primitive groups (see [RDU03]). For
   historical  reasons, its indexing up to degree 999 differs from the one used

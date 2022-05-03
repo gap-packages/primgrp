@@ -6,10 +6,10 @@
                     [1X[5XGAP[105X Primitive Permutation Groups Library[101X
   
   
-                                 Version 3.4.1
+                                 Version 3.4.2
   
   
-                                   5 May 2020
+                                   3 May 2022
   
   
                                 Alexander Hulpke
@@ -56,7 +56,7 @@
   
   -------------------------------------------------------
   [1XCopyright[101X
-  [33X[0;0Y© 2007-2020 by Alexander Hulpke and Colva Roney-Dougal[133X
+  [33X[0;0Y© 2007-2022 by Alexander Hulpke and Colva Roney-Dougal[133X
   
   [33X[0;0Y[5XPrimGrp[105X is free software; you can redistribute it and/or modify it under the
   terms  of  the  GNU General Public License as published by the Free Software
@@ -71,7 +71,7 @@
   [5XPrimGrp[105X, please cite it in the following form:[133X
   
   [33X[0;0YA.   Hulpke,   C.  Roney-Dougal,  C.  Russell.  [13XPrimGrp  ---  GAP  Primitive
-  Permutation       Groups       Library,       Version       3.4.1;[113X      2020
+  Permutation       Groups       Library,       Version       3.4.2;[113X      2022
   ([7Xhttps://gap-packages.github.io/primgrp/[107X).[133X
   
   

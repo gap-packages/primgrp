@@ -62,7 +62,7 @@
   
   [1X2.1-5 PrimitiveIndexIrreducibleSolvableGroup[101X
   
-  [33X[1;0Y[29X[2XPrimitiveIndexIrreducibleSolvableGroup[102X[32X global variable[133X
+  [33X[1;0Y[29X[2XPrimitiveIndexIrreducibleSolvableGroup[102X [32X global variable[133X
   
   [33X[0;0YThis  variable  provides  a  way  to get from irreducible solvable groups to
   primitive groups and vice versa. For the group [22XG[122X = [10XIrreducibleSolvableGroup(

@@ -9,13 +9,13 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "3.4.1",
-Date := "05/05/2020",
+Version := "3.4.2",
+Date := "03/05/2022",
 License := "GPL-2.0-or-later",
 ##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.4.1">
-##  <!ENTITY RELEASEDATE "5 May 2020">
-##  <!ENTITY RELEASEYEAR "2020">
+##  <!ENTITY VERSION "3.4.2">
+##  <!ENTITY RELEASEDATE "3 May 2022">
+##  <!ENTITY RELEASEYEAR "2022">
 ##  <#/GAPDoc>
 
 PackageWWWHome :=
@@ -50,11 +50,11 @@ Persons := [
     ),
   rec( 
     LastName      := "Konovalov",
-    FirstNames    := "Alexander",
+    FirstNames    := "Olexandr",
     IsAuthor      := false,
     IsMaintainer  := true,
-    Email         := "alexk@mcs.st-andrews.ac.uk",
-    WWWHome       := "http://www.cs.st-andrews.ac.uk/~alexk/",
+    Email         := "obk1@st-andrews.ac.uk",
+    WWWHome       := "https://alex-konovalov.github.io/",
     PostalAddress := Concatenation( [
                      "School of Computer Science\n",
                      "University of St Andrews\n",
@@ -113,7 +113,7 @@ PackageDoc := rec(
 
 
 Dependencies := rec(
-  GAP := "4.9.0",
+  GAP := "4.10.0",
   NeededOtherPackages := [["GAPDoc", "1.5"]],
   SuggestedOtherPackages := [],
   ExternalConditions := []
