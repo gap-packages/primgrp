@@ -33,7 +33,7 @@ PRIMGRP:=[];
 ##  Queue of order in which the groups were loaded.
 PRIMLOAD:=[];
 
-BIND_GLOBAL("PrimGrpLoad",function(deg)
+BindGlobal("PrimGrpLoad",function(deg)
 local s,fname,ind,new;
   if not IsBound(PRIMGRP[deg]) then
     if not (deg in PRIMRANGE and IsBound(PRIMINDX[deg])) then
@@ -61,7 +61,7 @@ local s,fname,ind,new;
   fi;
 end);
 
-BIND_GLOBAL("PRIMGrp",function(deg,nr)
+BindGlobal("PRIMGrp",function(deg,nr)
   PrimGrpLoad(deg);
   if nr>PRIMLENGTHS[deg] then
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
