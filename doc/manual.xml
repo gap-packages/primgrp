@@ -17,7 +17,7 @@
 
   <Author>Alexander Hulpke
           <Email>hulpke@math.colostate.edu</Email>
-	      <Homepage>http://www.math.colostate.edu/~hulpke</Homepage>
+	      <Homepage>https://www.math.colostate.edu/~hulpke/</Homepage>
           <Address>
             Department of Mathematics<Br/>
             Colorado State University<Br/>
@@ -66,7 +66,7 @@ all primitive permutation groups of degree &lt; 4096.
   under the terms of the GNU General Public License as published by 
   the Free Software Foundation; either version 2 of the License, or 
   (at your option) any later version. For details, see the FSF's own site
-  <URL>http://www.gnu.org/licenses/gpl.html</URL>.
+  <URL>https://www.gnu.org/licenses/gpl.html</URL>.
   <P/>
 
   If you obtained &primgrp;, we would be grateful for a short notification
@@ -87,7 +87,7 @@ all primitive permutation groups of degree &lt; 4096.
 The conversion of the &GAP; database of primitive permutation groups to
 a separate &GAP; package has been supported by the EPSRC Collaborative
 Computational Project EP/M022641/1 CoDiMa (CCP in the area of Computational
-Discrete Mathematics), <URL>http://www.codima.ac.uk/</URL>.
+Discrete Mathematics), <URL>https://www.codima.ac.uk/</URL>.
 </Acknowledgements>
 
 </TitlePage>

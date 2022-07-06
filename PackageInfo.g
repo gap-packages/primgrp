@@ -41,7 +41,7 @@ Persons := [
     IsAuthor     := true,
     IsMaintainer := true,
     Email        := "hulpke@math.colostate.edu",
-    WWWHome      := "http://www.math.colostate.edu/~hulpke",
+    WWWHome      := "https://www.math.colostate.edu/~hulpke/",
     Place        := "Fort Collins, CO",
     Institution  := Concatenation( [
       "Department of Mathematics, ",
