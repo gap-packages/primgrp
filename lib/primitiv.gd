@@ -99,7 +99,7 @@
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-UnbindGlobal("PrimitiveGroup");
+UNBIND_GLOBAL("PrimitiveGroup");
 DeclareGlobalFunction( "PrimitiveGroup" );
 
 #############################################################################
