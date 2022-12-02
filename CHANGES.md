@@ -1,5 +1,11 @@
 # CHANGES to the 'primgrp' GAP package
 
+## 3.X.Y (YYYY-MM-DD)
+
+  - Ship data files compressed to save disk space
+  - Update some links
+  - Minor janitorial changes
+
 ## 3.4.2 (2022-05-03)
 
   - Unify notation for names that involve Mathieu groups to use
