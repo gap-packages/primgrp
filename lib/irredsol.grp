@@ -9,12 +9,12 @@
 ##  This file contains the  functions and  data for the  irreducible solvable
 ##  matrix group library.  It contains  exactly one member  for each of  the
 ##  372  conjugacy  classes of  irreducible  solvable subgroups of  $GL(n,p)$
-##  where $1 < n$, $p$ is a prime, and $p^n < 256$.  
+##  where $1 < n$, $p$ is a prime, and $p^n < 256$.
 ##
 ##  By well known  theory, this data also  doubles as a  library of primitive
-##  solvable permutation groups of non-prime degree <256. 
+##  solvable permutation groups of non-prime degree <256.
 ##
-##  This file contains the data  from Mark Short's thesis,  plus  two  groups 
+##  This file contains the data  from Mark Short's thesis,  plus  two  groups
 ##  missing from that list, subsequently discovered by Alexander Hulpke.
 ##
 
@@ -65,7 +65,7 @@ InstallValue(PrimitiveIndexIrreducibleSolvableGroup,
 ##  set of one of these JS-maximals, called its guardian (a group may be a
 ##  subgroup of several JS-maximals but it only has one guardian).
 ##
-InstallValue(IrredSolJSGens, 
+InstallValue(IrredSolJSGens,
 [
  [], # GL(1,*)
  [   # GL(2,*)
@@ -360,7 +360,7 @@ InstallValue(IrredSolJSGens,
 ##            [4..]: the group's generators in normal form
 ##                   (with respect to its guardian's AG-system)
 ##
-InstallValue (IrredSolGroupList, 
+InstallValue (IrredSolGroupList,
 [
  [], # GL(1,*)
  [   # GL(2,*)
@@ -429,7 +429,7 @@ InstallValue (IrredSolGroupList,
    [  96, 0, 2, 1,0, 0,1 ], # guardian
    [ 144, 0, 3, 1,0,0,0,0, 0,1,0,0,0, 0,0,1,0,0, 0,0,0,1,0, 0,0,0,0,2]
        # guardian
-  ], 
+  ],
   [], # GL(2,8)
   [], # GL(2,9)
   [], # GL(2,10)

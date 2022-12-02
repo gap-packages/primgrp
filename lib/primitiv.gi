@@ -44,9 +44,10 @@ local s,fname,ind,new;
     s:=Sum(Filtered(PRIMGRP,i->IsBound(i)),Length);
     if IsBound(PRIMLOAD[1]) then
       while s>200 do
-	s:=s-PRIMLENGTHS[PRIMLOAD[1]];
-	Unbind(PRIMGRP[PRIMLOAD[1]]);
-	PRIMLOAD:=PRIMLOAD{[2..Length(PRIMLOAD)]};      od;
+        s:=s-PRIMLENGTHS[PRIMLOAD[1]];
+        Unbind(PRIMGRP[PRIMLOAD[1]]);
+        PRIMLOAD:=PRIMLOAD{[2..Length(PRIMLOAD)]};
+      od;
     fi;
 
     ind:=PRIMINDX[deg];
@@ -103,7 +104,7 @@ local l,g,fac,mats,perms,v,t;
       mats:=List(l[9],i->ImmutableMatrix(GF(fac[1]),i));
       v:=Elements(GF(fac[1])^Length(fac));
       perms:=List(mats,i->Permutation(i,v,OnRight));
-      t:=First(v,i->not IsZero(i)); # one nonzero translation 
+      t:=First(v,i->not IsZero(i)); # one nonzero translation
                                     #suffices as matrix
                                     # action is irreducible
       Add(perms,Permutation(t,v,function(i,j) return i+j;end));
@@ -111,7 +112,7 @@ local l,g,fac,mats,perms,v,t;
       SetSize(g, l[2]);
     else
       g:= Image(IsomorphismPermGroup(CyclicGroup(deg)));
-    fi; 
+    fi;
     if IsString(l[7]) and Length(l[7])>0 then
       SetName(g, l[7]);
     fi;
@@ -128,8 +129,8 @@ local l,g,fac,mats,perms,v,t;
   SetONanScottType(g,l[4]);
   SetSocleTypePrimitiveGroup(g,rec(series:=l[8][1],
                                    parameter:=l[8][2],
-				   width:=l[8][3]));
-  
+                                   width:=l[8][3]));
+
   if l[3] = 0 then
     SetIsSimpleGroup(g, false);
     SetIsSolvableGroup(g, false);
@@ -201,7 +202,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
 
     # in product action case, some tests on the socle quotient.
     if ONanScottType(grp) = "4c" then
-     #first we just identify its isomorphism type 
+     #first we just identify its isomorphism type
       s:= Socle(grp);
       s_quot:= FactorGroup(grp, s);
       a:= IdGroup(s_quot);
@@ -232,12 +233,12 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
     gl:=Reversed(Set(Factors(Size(grp))));
     while Length(cand)>1 and Length(gl)>0 do
       a:=Collected(List(Orbits(SylowSubgroup(grp,gl[1]),MovedPoints(grp)),
-	                Length));
+                        Length));
       b:=[];
       for i in [1..Length(cand)] do
-	b[i]:=Collected(List(Orbits(SylowSubgroup(p[i],gl[1]),
-	                            MovedPoints(p[i])),
-			  Length));
+        b[i]:=Collected(List(Orbits(SylowSubgroup(p[i],gl[1]),
+                                    MovedPoints(p[i])),
+                          Length));
       od;
       s:=Filtered([1..Length(cand)],i->b[i]=a);
       cand:=cand{s};
@@ -249,7 +250,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
   if Length(cand) > 1 then
     # Some further tests for the sylow subgroups
     for q in Set(Factors(Size(grp)/Size(Socle(grp)))) do
-      if q=1 then 
+      if q=1 then
         q:=2;
       fi;
 
@@ -258,37 +259,37 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
       a:=List(LowerCentralSeries(ag),Size);
       b:=[];
       for i in [1..Length(cand)] do
-	bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-	b[i]:=List(LowerCentralSeries(bg),Size);
+        bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
+        b[i]:=List(LowerCentralSeries(bg),Size);
       od;
       s:=Filtered([1..Length(cand)],i->b[i]=a);
       cand:=cand{s};
       p:=p{s};
 
       if Length(cand)>1 then
-	# Frattini subgroup
-	a:=Size(FrattiniSubgroup(ag));
-	b:=[];
-	for i in [1..Length(cand)] do
-	  bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-	  b[i]:=Size(FrattiniSubgroup(bg));
-	od;
-	s:=Filtered([1..Length(cand)],i->b[i]=a);
-	cand:=cand{s};
-	p:=p{s};
+        # Frattini subgroup
+        a:=Size(FrattiniSubgroup(ag));
+        b:=[];
+        for i in [1..Length(cand)] do
+          bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
+          b[i]:=Size(FrattiniSubgroup(bg));
+        od;
+        s:=Filtered([1..Length(cand)],i->b[i]=a);
+        cand:=cand{s};
+        p:=p{s};
       fi;
 
       if Length(cand)>1 and Size(ag)<512 then
-	# Isomorphism type of 2-Sylow
-	a:=IdGroup(ag);
-	b:=[];
-	for i in [1..Length(cand)] do
-	  bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-	  b[i]:=IdGroup(bg);
-	od;
-	s:=Filtered([1..Length(cand)],i->b[i]=a);
-	cand:=cand{s};
-	p:=p{s};
+        # Isomorphism type of 2-Sylow
+        a:=IdGroup(ag);
+        b:=[];
+        for i in [1..Length(cand)] do
+          bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
+          b[i]:=IdGroup(bg);
+        od;
+        s:=Filtered([1..Length(cand)],i->b[i]=a);
+        cand:=cand{s};
+        p:=p{s};
       fi;
 
     od;
@@ -337,7 +338,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
     for i in [1..Length(cand)] do
       if not IsBound(PGICS[cand[i]]) then
         PGICS[cand[i]]:=Collected(List(ConjugacyClasses(p[i]:onlysizes),
-		  j->[CycleStructurePerm(Representative(j)),Size(j)]));
+                  j->[CycleStructurePerm(Representative(j)),Size(j)]));
       fi;
       b[i]:=PGICS[cand[i]];
     od;
@@ -347,7 +348,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
     p:=p{s};
   fi;
 
-  if Length(cand)>1 and ForAll(p,i->ONanScottType(i)="1") 
+  if Length(cand)>1 and ForAll(p,i->ONanScottType(i)="1")
      and ONanScottType(grp)="1" then
     gl:=Factors(NrMovedPoints(grp));
     gl:=GL(Length(gl),gl[1]);
@@ -355,7 +356,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
     s:=List(p,i->Subgroup(gl,LinearActionLayer(i,Pcgs(Socle(i)))));
     b:=Subgroup(gl,LinearActionLayer(grp,Pcgs(Socle(grp))));
     s:=Filtered([1..Length(cand)],
-	i->RepresentativeAction(Image(hom,gl),Image(hom,s[i]),Image(hom,b))<>fail);
+        i->RepresentativeAction(Image(hom,gl),Image(hom,s[i]),Image(hom,b))<>fail);
     cand:=cand{s};
     p:=p{s};
   fi;
@@ -392,20 +393,20 @@ BindGlobal("PriGroItNext",function(it)
 local g;
   it!.next:=fail;
   repeat
-    if it!.degi>Length(it!.deg) then 
+    if it!.degi>Length(it!.deg) then
       it!.next:=false;
     else
       g:=PrimitiveGroup(it!.deg[it!.degi],it!.gut[it!.deg[it!.degi]][it!.nr]);
       if ForAll(it!.prop,i->STGSelFunc(i[1](g),i[2])) then
-	it!.next:=g;
+        it!.next:=g;
       fi;
       it!.nr:=it!.nr+1;
       if it!.nr>Length(it!.gut[it!.deg[it!.degi]]) then
-	it!.degi:=it!.degi+1;
-	it!.nr:=1;
-	while it!.degi<=Length(it!.deg) and Length(it!.gut[it!.deg[it!.degi]])=0 do
-	  it!.degi:=it!.degi+1;
-	od;
+        it!.degi:=it!.degi+1;
+        it!.nr:=1;
+        while it!.degi<=Length(it!.deg) and Length(it!.gut[it!.deg[it!.degi]])=0 do
+          it!.degi:=it!.degi+1;
+        od;
       fi;
     fi;
   until it!.degi>Length(it!.deg) or it!.next<>fail;
@@ -441,7 +442,7 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
     else
       # b is a function (wondering, whether anyone will ever use it...)
       f:=true;
-      deg:=Filtered(deg,p); 
+      deg:=Filtered(deg,p);
     fi;
   else
     f:=true; #warnung weil kein Degree angegeben ?
@@ -449,22 +450,22 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
     for a in [Size,Order] do
       p:=Position(arglis,a);
       if p<>fail then
-	p:=arglis[p+1];
-	if IsInt(p) then
-	  p:=[p];
-	fi;
-	  
-	if IsList(p) then
-	  deg := Filtered( deg,
-	       d -> ForAny( p, k -> 0 = k mod d ) );
-	  b := false;
-	  f := not IsSubset( PRIMRANGE, p );
-	fi;
+        p:=arglis[p+1];
+        if IsInt(p) then
+          p:=[p];
+        fi;
+
+        if IsList(p) then
+          deg := Filtered( deg,
+               d -> ForAny( p, k -> 0 = k mod d ) );
+          b := false;
+          f := not IsSubset( PRIMRANGE, p );
+        fi;
       fi;
     od;
     if b then
       Info(InfoWarning,1,"No degree restriction given!\n",
-	   "#I  A search over the whole library will take a long time!");
+           "#I  A search over the whole library will take a long time!");
     fi;
   fi;
   gut:=[];
@@ -480,45 +481,45 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
       # get all cheap properties first
 
       if a=NrMovedPoints then
-	nr:=0; # done already 
+        nr:=0; # done already
       elif a=Size or a=Transitivity or a=ONanScottType then
-	if a=Size then
-	  nr:=2;
-	elif a=Transitivity then
-	  nr:=6;
-	elif a=ONanScottType then
-	  nr:=4;
-	  if b=1 or b=2 or b=5 then
-	    b:=String(b);
-	  elif b=3 then
-	    b:=["3a","3b"];
-	  elif b=4 then
-	    b:=["4a","4b","4c"];
-	  fi;
-	fi;
-	gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[nr],b));
+        if a=Size then
+          nr:=2;
+        elif a=Transitivity then
+          nr:=6;
+        elif a=ONanScottType then
+          nr:=4;
+          if b=1 or b=2 or b=5 then
+            b:=String(b);
+          elif b=3 then
+            b:=["3a","3b"];
+          elif b=4 then
+            b:=["4a","4b","4c"];
+          fi;
+        fi;
+        gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[nr],b));
       elif a=IsSimpleGroup or a=IsSimple then
-	gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[3] mod 2=1,b));
+        gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[3] mod 2=1,b));
       elif a=IsSolvableGroup or a=IsSolvable then
-	gut[i]:=Filtered(gut[i],j->STGSelFunc(QuoInt(PRIMGrp(i,j)[3],2)=1,b));
+        gut[i]:=Filtered(gut[i],j->STGSelFunc(QuoInt(PRIMGrp(i,j)[3],2)=1,b));
       elif a=SocleTypePrimitiveGroup then
-	if IsFunction(b) then
-	  # for a function we have to translate the list form into records
-	  RFL:=function(lst)
-	    return rec(series:=lst[1],parameter:=lst[2],width:=lst[3]);
-	  end;
-	  gut[i]:=Filtered(gut[i],j->b(RFL(PRIMGrp(i,j)[8])));
-	else
-	  # otherwise we may bring b into the form we want
-	  if IsRecord(b) then
-	    b:=[b];
-	  fi;
-	  if IsList(b) and IsRecord(b[1]) then
-	    b:=List(b,i->[i.series,i.parameter,i.width]);
-	  fi;
-	  gut[i]:=Filtered(gut[i],j->PRIMGrp(i,j)[8] in b);
-	fi;
-      
+        if IsFunction(b) then
+          # for a function we have to translate the list form into records
+          RFL:=function(lst)
+            return rec(series:=lst[1],parameter:=lst[2],width:=lst[3]);
+          end;
+          gut[i]:=Filtered(gut[i],j->b(RFL(PRIMGrp(i,j)[8])));
+        else
+          # otherwise we may bring b into the form we want
+          if IsRecord(b) then
+            b:=[b];
+          fi;
+          if IsList(b) and IsRecord(b[1]) then
+            b:=List(b,i->[i.series,i.parameter,i.width]);
+          fi;
+          gut[i]:=Filtered(gut[i],j->PRIMGrp(i,j)[8] in b);
+        fi;
+
       fi;
     od;
   od;
@@ -536,7 +537,7 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
     if not arglis[2*i-1] in
       [NrMovedPoints,Size,Transitivity,ONanScottType,IsSimpleGroup,IsSimple,
        IsSolvableGroup,IsSolvable,SocleTypePrimitiveGroup] then
-      Add(p,arglis{[2*i-1,2*i]}); 
+      Add(p,arglis{[2*i-1,2*i]});
     fi;
   od;
 
@@ -607,7 +608,7 @@ end);
 
 BindGlobal("NrAffinePrimitiveGroups",
 function(x)
-  if x=1 then 
+  if x=1 then
     return 1;
   else
    return Length(AllPrimitiveGroups(NrMovedPoints,x,ONanScottType,"1"));
@@ -628,4 +629,3 @@ end);
 ##
 #E  primitiv.gi
 ##
-

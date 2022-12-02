@@ -9,12 +9,12 @@
 ##  This file contains the  functions and  data for the  irreducible solvable
 ##  matrix group library.  It  contains  exactly one member  for each of  the
 ##  372  conjugacy  classes of  irreducible  solvable subgroups of  $GL(n,p)$
-##  where $1 < n$, $p$ is a prime, and $p^n < 256$.  
+##  where $1 < n$, $p$ is a prime, and $p^n < 256$.
 ##
 ##  By well-known  theory, this data also  doubles as a  library of primitive
-##  solvable permutation groups of non-prime degree $<256$. 
+##  solvable permutation groups of non-prime degree $<256$.
 ##
-##  This file contains the data  from Mark Short's thesis,  plus  two  groups 
+##  This file contains the data  from Mark Short's thesis,  plus  two  groups
 ##  missing from that list, subsequently discovered by Alexander Hulpke.
 ##
 
@@ -89,7 +89,7 @@ DeclareGlobalVariable ("IrredSolGroupList");
 ##  <Ref Func="IrreducibleSolvableGroup"/>,
 ##  <Ref Func="IrreducibleSolvableGroupMS"/> returns a representative of the
 ##  same conjugacy class of subgroups of GL(<A>n</A>, <A>p</A>) as
-##  <Ref Func="IrreducibleSolvableGroup"/> did before. 
+##  <Ref Func="IrreducibleSolvableGroup"/> did before.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -110,13 +110,13 @@ DeclareGlobalFunction("IrreducibleSolvableGroup");
 ##  where <A>n</A> is an integer <M>&gt; 1</M>, <A>p</A> is a prime,
 ##  and <M><A>p</A>^{<A>n</A>} &lt; 256</M>.
 ##  <P/>
-##  The numbering of the representatives should be 
-##  considered arbitrary. However, it is guaranteed that the <A>i</A>-th 
+##  The numbering of the representatives should be
+##  considered arbitrary. However, it is guaranteed that the <A>i</A>-th
 ##  group on this list will lie in the same conjugacy class in all future
 ##  versions of &GAP;, unless two (or more) groups on the list are discovered
 ##  to be duplicates,
 ##  in which case <Ref Func="IrreducibleSolvableGroupMS"/> will return
-##  <K>fail</K> for all but one of the duplicates. 
+##  <K>fail</K> for all but one of the duplicates.
 ##  <P/>
 ##  For values of <A>n</A>, <A>p</A>, and <A>i</A> admissible to
 ##  <Ref Func="IrreducibleSolvableGroup"/>,
@@ -125,7 +125,7 @@ DeclareGlobalFunction("IrreducibleSolvableGroup");
 ##  <Ref Func="IrreducibleSolvableGroup"/>.
 ##  Note that it currently adds two more groups (missing from the
 ##  original list by Mark Short) for <A>n</A> <M>= 2</M>,
-##  <A>p</A> <M>= 13</M>. 
+##  <A>p</A> <M>= 13</M>.
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -141,9 +141,9 @@ DeclareGlobalFunction("IrreducibleSolvableGroupMS");
 ##  <Func Name="NumberIrreducibleSolvableGroups" Arg='n, p'/>
 ##
 ##  <Description>
-##  This function returns the number of conjugacy classes of 
-##  irreducible solvable subgroup of 
-##  GL(<A>n</A>, <A>p</A>). 
+##  This function returns the number of conjugacy classes of
+##  irreducible solvable subgroup of
+##  GL(<A>n</A>, <A>p</A>).
 ##  </Description>
 ##  </ManSection>
 ##  <#/GAPDoc>
@@ -165,11 +165,11 @@ DeclareSynonym("NrIrreducibleSolvableGroups",NumberIrreducibleSolvableGroups);
 ##  of matrix groups over a prime field such that
 ##  <M>f(G) = v</M> or <M>f(G) \in v</M>, for all pairs <M>(f,v)</M> in
 ##  (<A>func1</A>, <A>val1</A>), (<A>func2</A>, <A>val2</A>), <M>\ldots</M>.
-##  The following possibilities for the functions <M>f</M> 
+##  The following possibilities for the functions <M>f</M>
 ##  are particularly efficient, because the values can be read off the
 ##  information in the data base:
 ##  <C>DegreeOfMatrixGroup</C> (or
-##  <Ref BookName="ref" Func="Dimension"/> or 
+##  <Ref BookName="ref" Func="Dimension"/> or
 ##  <Ref BookName="ref" Func="DimensionOfMatrixGroup"/>) for the
 ##  linear degree,
 ##  <Ref BookName="ref" Func="Characteristic"/> for the field characteristic,
@@ -200,7 +200,7 @@ DeclareGlobalFunction("AllIrreducibleSolvableGroups");
 ##  are particularly efficient, because the values can be read off the
 ##  information in the data base:
 ##  <C>DegreeOfMatrixGroup</C> (or
-##  <Ref BookName="ref" Func="Dimension"/> or 
+##  <Ref BookName="ref" Func="Dimension"/> or
 ##  <Ref BookName="ref" Func="DimensionOfMatrixGroup"/>) for the
 ##  linear degree,
 ##  <Ref BookName="ref" Func="Characteristic"/> for the field characteristic,
@@ -256,7 +256,7 @@ DeclareAttribute("MinimalBlockDimension", IsMatrixGroup);
 ##  <Prop Name="IsPrimitiveMatrixGroup" Arg='G'/>
 ##
 ##  <Description>
-##  <K>true</K> if <A>G</A> is primitive over <C>FieldOfMatrixGroup(G)</C> 
+##  <K>true</K> if <A>G</A> is primitive over <C>FieldOfMatrixGroup(G)</C>
 ##  </Description>
 ##  </ManSection>
 ##

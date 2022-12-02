@@ -89,7 +89,7 @@
 ##
 ##  <Description>
 ##  returns the primitive permutation  group of degree <A>deg</A> with number <A>nr</A>
-##  from the list. 
+##  from the list.
 ##  <P/>
 ##  The arrangement of the groups of degrees not greater than 50
 ##  differs from the arrangement of primitive
@@ -159,7 +159,7 @@ DeclareGlobalFunction( "NrPrimitiveGroups" );
 ##  the primitive groups library are <C>AllPrimitiveGroups</C> and
 ##  <C>OnePrimitiveGroup</C>.
 ##  They obtain the following properties from the database without having to
-##  compute them anew: 
+##  compute them anew:
 ##  <P/>
 ##  <Ref BookName="ref" Attr="NrMovedPoints" Label="for a list or collection of permutations"/>,
 ##  <Ref BookName="ref" Attr="Size"/>,
@@ -202,8 +202,8 @@ DeclareGlobalFunction( "PrimitiveGroupsIterator" );
 ##
 ##  <Description>
 ##  This is a selection function which permits to select all groups
-##  from the Primitive Group Library that have a given set of properties. 
-##  It accepts arguments as specified in Section 
+##  from the Primitive Group Library that have a given set of properties.
+##  It accepts arguments as specified in Section
 ##  <Ref BookName="ref" Sect="Selection Functions"/> of the &GAP; reference manual.
 ##  </Description>
 ##  </ManSection>
@@ -221,8 +221,8 @@ DeclareGlobalFunction( "AllPrimitiveGroups" );
 ##
 ##  <Description>
 ##  This is a selection function which permits to select at most one group
-##  from the Primitive Group Library that have a given set of properties. 
-##  It accepts arguments as specified in Section 
+##  from the Primitive Group Library that have a given set of properties.
+##  It accepts arguments as specified in Section
 ##  <Ref BookName="ref" Sect="Selection Functions"/> of the &GAP; reference manual.
 ##  </Description>
 ##  </ManSection>
@@ -281,7 +281,7 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##  number of the semidirect product <M>p^n:G</M> in the library of primitive
 ##  groups.
 ##  <P/>
-##  Searching for an index in this list with 
+##  Searching for an index in this list with
 ##  <Ref BookName="ref" Func="Position"/> gives the
 ##  translation in the other direction.
 ##  </Description>

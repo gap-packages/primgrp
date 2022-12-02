@@ -10,12 +10,12 @@
 ##  This file contains the  functions and  data for the  irreducible solvable
 ##  matrix group library.  It contains  exactly one member  for each of  the
 ##  372  conjugacy  classes of  irreducible  solvable subgroups of  $GL(n,p)$
-##  where $1 < n$, $p$ is a prime, and $p^n < 256$.  
+##  where $1 < n$, $p$ is a prime, and $p^n < 256$.
 ##
 ##  By well known  theory, this data also  doubles as a  library of primitive
-##  solvable permutation groups of non-prime degree <256. 
+##  solvable permutation groups of non-prime degree <256.
 ##
-##  This file contains the data  from Mark Short's thesis,  plus  two  groups 
+##  This file contains the data  from Mark Short's thesis,  plus  two  groups
 ##  missing from that list, subsequently discovered by Alexander Hulpke.
 ##
 
@@ -93,14 +93,13 @@ end ); # IrreducibleSolvableGroupMS( n, p, k )
 ##  of GL(n,p)
 ##
 InstallGlobalFunction( NumberIrreducibleSolvableGroups, function ( n, p )
-	return Length (IrredSolGroupList[ n ][ p ]);
+    return Length (IrredSolGroupList[ n ][ p ]);
 end);
-	
-	
+
 
 #############################################################################
 ##
-#F  AllIrreducibleSolvableGroups(...)  
+#F  AllIrreducibleSolvableGroups(...)
 #F                                     select all irreducible solvable groups
 ##
 InstallGlobalFunction (AllIrreducibleSolvableGroups, function ( arg )
@@ -280,11 +279,11 @@ InstallGlobalFunction (AllIrreducibleSolvableGroups, function ( arg )
 
     return grplist;
 end); # AllIrreducibleSolvableGroups( fun1, val1, fun2, val2, ... )
-    
+
 
 #############################################################################
 ##
-#F  OneIrreducibleSolvableGroup(...)  
+#F  OneIrreducibleSolvableGroup(...)
 ##                                     extract one irreducible solvable group
 ##
 InstallGlobalFunction(OneIrreducibleSolvableGroup, function ( arg )
