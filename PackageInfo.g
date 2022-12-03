@@ -12,11 +12,6 @@ Subtitle := "GAP Primitive Permutation Groups Library",
 Version := "3.4.2",
 Date := "03/05/2022",
 License := "GPL-2.0-or-later",
-##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.4.2">
-##  <!ENTITY RELEASEDATE "3 May 2022">
-##  <!ENTITY RELEASEYEAR "2022">
-##  <#/GAPDoc>
 
 PackageWWWHome :=
   Concatenation( "https://gap-packages.github.io/",
@@ -125,5 +120,21 @@ AvailabilityTest := ReturnTrue,
 TestFile := "tst/testall.g",
 
 Keywords := ["primitive permutation group"],
+
+AutoDoc := rec(
+    entities := rec(
+        VERSION := ~.Version,
+        RELEASEDATE := function(date)
+          local day, month, year, allMonths;
+          day := Int(date{[1,2]});
+          month := Int(date{[4,5]});
+          year := Int(date{[7..10]});
+          allMonths := [ "January", "February", "March", "April", "May", "June", "July",
+                         "August", "September", "October", "November", "December"];
+          return Concatenation(String(day)," ", allMonths[month], " ", String(year));
+        end(~.Date),
+        RELEASEYEAR := ~.Date{[7..10]},
+    ),
+),
 
 ));
