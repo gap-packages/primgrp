@@ -4,8 +4,8 @@
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd"
     [ 
+      <#Include SYSTEM "_entities.xml">
       <!ENTITY primgrp "<Package>PrimGrp</Package>">
-      <#Include Label="PKGVERSIONDATA">      
     ] >
 
 <Book Name="primgrp">
