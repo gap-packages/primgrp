@@ -24,41 +24,18 @@ Unbind(PRIMGRP);
 ##  7: name
 ##  8: socle type
 ##  9: generators
-PRIMGRP:=[];
-
-#############################################################################
-##
-#V  PRIMLOAD
-##
-##  Queue of order in which the groups were loaded.
-PRIMLOAD:=[];
+BindGlobal("PRIMGRP", []);
 
 BindGlobal("PrimGrpLoad",function(deg)
-local s,fname,ind,new;
+local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
     if not (deg in PRIMRANGE and IsBound(PRIMINDX[deg])) then
       Error("Primitive groups of degree ",deg," are not known!");
     fi;
 
-    # are there too many groups stored?
-    s:=Sum(Filtered(PRIMGRP,i->IsBound(i)),Length);
-    if IsBound(PRIMLOAD[1]) then
-      while s>200 do
-        s:=s-PRIMLENGTHS[PRIMLOAD[1]];
-        Unbind(PRIMGRP[PRIMLOAD[1]]);
-        PRIMLOAD:=PRIMLOAD{[2..Length(PRIMLOAD)]};
-      od;
-    fi;
-
     ind:=PRIMINDX[deg];
-    new:=Filtered([1..Length(PRIMINDX)],i->PRIMINDX[i]=ind);
     fname:=Concatenation("gps",String(ind));
     ReadPackage( "primgrp", Concatenation( "data/", fname, ".g" ) );
-
-    # store the degree
-    PRIMLOAD:=Filtered(PRIMLOAD,i->not i in new);
-    Append(PRIMLOAD,new);
-
   fi;
 end);
 
