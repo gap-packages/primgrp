@@ -4,8 +4,7 @@
 checkdegree := function(n) 
     local g;
     for g in AllPrimitiveGroups(DegreeOperation,n) do
-        if MovedPoints(g) <> [1..n] or not IsTransitive(g,[1..n]) 
-           or not IsPrimitive(g,[1..n]) then
+        if MovedPoints(g) <> [1..n] or not (IsNaturalAlternatingGroup(g) or IsNaturalSymmetricGroup(g) or IsPrimitive(g)) then
             Error("Failure at ",g," degree ",n,"\n");
         fi;
     od;
