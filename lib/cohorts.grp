@@ -4529,8 +4529,8 @@ COHORTS_PRIMITIVE_GROUPS[1549]:= [
 [ rec( series:= "A", parameter:= 1549, width:= 1),[ 19, 20 ]]];
 COHORTS_PRIMITIVE_GROUPS[1550]:= [
 [ rec( series:= "L", parameter:= [ 2, 1549 ], width:= 1),[ 1, 2 ]],
-[ rec( series:= "L", parameter:= [ 4, 5 ], width:= 1),[ 3, 4, 5, 6 ]],
-[ rec( series:= "A", parameter:= 1550, width:= 1),[ 7, 8 ]]];
+[ rec( series:= "L", parameter:= [ 4, 5 ], width:= 1),[ 3, 4, 5, 6, 7 ]],
+[ rec( series:= "A", parameter:= 1550, width:= 1),[ 8, 9 ]]];
 COHORTS_PRIMITIVE_GROUPS[1551]:= [
 [ rec( series:= "A", parameter:= 1551, width:= 1),[ 1, 2 ]]];
 COHORTS_PRIMITIVE_GROUPS[1552]:= [
@@ -4591,7 +4591,8 @@ COHORTS_PRIMITIVE_GROUPS[1574]:= [
 [ rec( series:= "A", parameter:= 1574, width:= 1),[ 1, 2 ]]];
 COHORTS_PRIMITIVE_GROUPS[1575]:= [
 [ rec( series:= "D", parameter:= [ 4, 2 ], width:= 1),[ 1, 2, 3, 4 ]],
-[ rec( series:= "A", parameter:= 1575, width:= 1),[ 5, 6 ]]];
+[ rec( series:= "A", parameter:= 1575, width:= 1),[ 5, 6 ]],
+[ rec( series:= "2A", parameter:= [ 3, 5 ], width:= 1),[ 7, 8 ]]];
 COHORTS_PRIMITIVE_GROUPS[1576]:= [
 [ rec( series:= "A", parameter:= 1576, width:= 1),[ 1, 2 ]]];
 COHORTS_PRIMITIVE_GROUPS[1577]:= [
