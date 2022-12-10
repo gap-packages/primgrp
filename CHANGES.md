@@ -1,7 +1,9 @@
 # CHANGES to the 'primgrp' GAP package
 
-## 3.X.Y (YYYY-MM-DD)
+## 3.4.3 (2022-12-10)
 
+  - Fix inconsistencies in `COHORTS_PRIMITIVE_GROUPS` in degrees 1550 and 1575
+  - Fix socle type for natural An/Sn in degree >= 2500
   - Ship data files compressed to save disk space
   - Update some links
   - Minor janitorial changes
