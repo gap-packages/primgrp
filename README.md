@@ -17,7 +17,7 @@ Full information and documentation can be found in the manual, available
 as PDF `doc/manual.pdf` or as HTML `doc/chap0.html`, or on the package
 homepage at
 
-  <http://gap-packages.github.io/primgrp/>
+  <https://gap-packages.github.io/primgrp/>
 
 
 ## Bug reports and feature requests

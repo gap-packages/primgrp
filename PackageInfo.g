@@ -9,14 +9,9 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "3.4.2",
-Date := "03/05/2022",
+Version := "3.4.3",
+Date := "10/12/2022",
 License := "GPL-2.0-or-later",
-##  <#GAPDoc Label="PKGVERSIONDATA">
-##  <!ENTITY VERSION "3.4.2">
-##  <!ENTITY RELEASEDATE "3 May 2022">
-##  <!ENTITY RELEASEYEAR "2022">
-##  <#/GAPDoc>
 
 PackageWWWHome :=
   Concatenation( "https://gap-packages.github.io/",
@@ -41,7 +36,7 @@ Persons := [
     IsAuthor     := true,
     IsMaintainer := true,
     Email        := "hulpke@math.colostate.edu",
-    WWWHome      := "http://www.math.colostate.edu/~hulpke",
+    WWWHome      := "https://www.math.colostate.edu/~hulpke/",
     Place        := "Fort Collins, CO",
     Institution  := Concatenation( [
       "Department of Mathematics, ",
@@ -105,7 +100,7 @@ AbstractHTML :=
 PackageDoc := rec(
   BookName  := "primgrp",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "GAP Primitive Permutation Groups Library",
@@ -125,5 +120,21 @@ AvailabilityTest := ReturnTrue,
 TestFile := "tst/testall.g",
 
 Keywords := ["primitive permutation group"],
+
+AutoDoc := rec(
+    entities := rec(
+        VERSION := ~.Version,
+        RELEASEDATE := function(date)
+          local day, month, year, allMonths;
+          day := Int(date{[1,2]});
+          month := Int(date{[4,5]});
+          year := Int(date{[7..10]});
+          allMonths := [ "January", "February", "March", "April", "May", "June", "July",
+                         "August", "September", "October", "November", "December"];
+          return Concatenation(String(day)," ", allMonths[month], " ", String(year));
+        end(~.Date),
+        RELEASEYEAR := ~.Date{[7..10]},
+    ),
+),
 
 ));

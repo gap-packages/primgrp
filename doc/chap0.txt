@@ -6,10 +6,10 @@
                     [1X[5XGAP[105X Primitive Permutation Groups Library[101X
   
   
-                                 Version 3.4.2
+                                 Version 3.4.3
   
   
-                                   3 May 2022
+                                10 December 2022
   
   
                                 Alexander Hulpke
@@ -22,7 +22,7 @@
   
   Alexander Hulpke
       Email:    [7Xmailto:hulpke@math.colostate.edu[107X
-      Homepage: [7Xhttp://www.math.colostate.edu/~hulpke[107X
+      Homepage: [7Xhttps://www.math.colostate.edu/~hulpke/[107X
       Address:  [33X[0;14YDepartment of Mathematics[133X
                 [33X[0;14YColorado State University[133X
                 [33X[0;14YFort Collins, CO, 80523-1874, USA[133X
@@ -62,7 +62,7 @@
   terms  of  the  GNU General Public License as published by the Free Software
   Foundation;  either  version 2 of the License, or (at your option) any later
   version.      For      details,      see      the     FSF's     own     site
-  [7Xhttp://www.gnu.org/licenses/gpl.html[107X.[133X
+  [7Xhttps://www.gnu.org/licenses/gpl.html[107X.[133X
   
   [33X[0;0YIf  you obtained [5XPrimGrp[105X, we would be grateful for a short notification sent
   to one of the authors.[133X
@@ -71,7 +71,7 @@
   [5XPrimGrp[105X, please cite it in the following form:[133X
   
   [33X[0;0YA.   Hulpke,   C.  Roney-Dougal,  C.  Russell.  [13XPrimGrp  ---  GAP  Primitive
-  Permutation       Groups       Library,       Version       3.4.2;[113X      2022
+  Permutation       Groups       Library,       Version       3.4.3;[113X      2022
   ([7Xhttps://gap-packages.github.io/primgrp/[107X).[133X
   
   
@@ -80,7 +80,7 @@
   [33X[0;0YThe  conversion  of  the  [5XGAP[105X  database of primitive permutation groups to a
   separate   [5XGAP[105X  package  has  been  supported  by  the  EPSRC  Collaborative
   Computational  Project EP/M022641/1 CoDiMa (CCP in the area of Computational
-  Discrete Mathematics), [7Xhttp://www.codima.ac.uk/[107X.[133X
+  Discrete Mathematics), [7Xhttps://www.codima.ac.uk/[107X.[133X
   
   
   -------------------------------------------------------
