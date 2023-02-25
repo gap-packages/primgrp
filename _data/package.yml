@@ -1,6 +1,6 @@
 name: PrimGrp
-version: 3.4.3
-date: 2022-12-10
+version: 3.4.4
+date: 2023-02-25
 description: |
     GAP Primitive Permutation Groups Library
 
@@ -16,7 +16,7 @@ maintainers:
     - name: Alexander Hulpke
       url: https://www.math.colostate.edu/~hulpke/
     - name: Olexandr Konovalov
-      url: https://alex-konovalov.github.io/
+      url: https://olexandr-konovalov.github.io/
     - name: Christopher Russell
       url: mailto:cr66@st-andrews.ac.uk
 
@@ -33,7 +33,7 @@ packageinfo: https://gap-packages.github.io/primgrp/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/primgrp/releases/download/v3.4.3/primgrp-3.4.3.tar.gz
+      url: https://github.com/gap-packages/primgrp/releases/download/v3.4.4/primgrp-3.4.4.tar.gz
 
 abstract: |
     The <span class="pkgname">PrimGrp</span> package provides the library   of primitive permutation groups which includes, up to permutation isomorphism   (i.e., up to conjugacy in the corresponding symmetric group), all primitive   permutation groups of degree &lt; 4096.

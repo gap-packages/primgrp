@@ -9,8 +9,8 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "3.4.3",
-Date := "10/12/2022",
+Version := "3.4.4",
+Date := "25/02/2023",
 License := "GPL-2.0-or-later",
 
 PackageWWWHome :=
@@ -49,7 +49,7 @@ Persons := [
     IsAuthor      := false,
     IsMaintainer  := true,
     Email         := "obk1@st-andrews.ac.uk",
-    WWWHome       := "https://alex-konovalov.github.io/",
+    WWWHome       := "https://olexandr-konovalov.github.io/",
     PostalAddress := Concatenation( [
                      "School of Computer Science\n",
                      "University of St Andrews\n",
