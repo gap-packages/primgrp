@@ -29,6 +29,9 @@ BindGlobal("PRIMGRP", []);
 BindGlobal("PrimGrpLoad",function(deg)
 local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
+    if deg > 4095 then
+      Error("This method is not for primitive groups of degree greater than 4095!\n");
+    fi;
     if not (deg in PRIMRANGE and IsBound(PRIMINDX[deg])) then
       Error("Primitive groups of degree ",deg," are not known!");
     fi;
@@ -40,6 +43,21 @@ local s,fname,ind;
 end);
 
 BindGlobal("PRIMGrp",function(deg,nr)
+  local filename,strm,r,l;
+  if deg > 4095 then
+    filename := Concatenation(GAPInfo.PackagesInfo.primgrp[1].InstallationPath,"/data/ExtendedPrimitiveGroupsData/PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
+    strm:=InputTextFile(filename);;
+    if strm = fail then
+      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from XYZ\n");
+    fi;
+    r:=EvalString(ReadAll(strm));;
+    CloseStream(strm);;
+    if not "name" in RecNames(r) then
+      r.name:="";
+    fi;
+    l:=[r.id, r.size, r.SimpleSolvable, r.ONanScottType, r.suborbits, r.transitivity, r.name, r.SocleType, r.generators];
+    return l;
+  fi;
   PrimGrpLoad(deg);
   if nr>PRIMLENGTHS[deg] then
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
@@ -59,7 +77,8 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t;
+local l,g,fac,mats,perms,v,t,filename,strm,r;
+
   l:=PRIMGrp(deg,num);
 
   # special case: Symmetric and Alternating Group
@@ -75,7 +94,7 @@ local l,g,fac,mats,perms,v,t;
   elif l[9] = "pgl" then
     g:= PGL(2, deg-1);
     SetName(g, Concatenation("PGL(2,", String(deg-1), ")"));
-  elif l[4] = "1" then
+  elif l[4] = "1" and deg <= 4095 then
     if Length(l[9]) > 0 then
       fac:= Factors(deg);
       mats:=List(l[9],i->ImmutableMatrix(GF(fac[1]),i));
@@ -134,14 +153,18 @@ PGICS:=[];
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom;
+local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr;
   dom:=MovedPoints(grp);
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
   fi;
   deg:=Length(dom);
-  PrimGrpLoad(deg);
-  PD:=PRIMGRP[deg];
+  if deg <= 4095 then
+    PrimGrpLoad(deg);
+    PD:=PRIMGRP[deg];
+  else
+    PD:=List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
+  fi;
 
   if IsNaturalAlternatingGroup(grp) then
     SetSize(grp, Factorial(deg)/2);
