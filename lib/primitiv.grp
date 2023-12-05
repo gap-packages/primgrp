@@ -16,7 +16,7 @@
 #V  PRIMRANGE
 ##
 ##  range of the library
-BindGlobal("PRIMRANGE",[1..4095]);
+BindGlobal("PRIMRANGE",[1..8191]);
 
 #############################################################################
 ##
