@@ -55,6 +55,9 @@ BindGlobal("PRIMGrp",function(deg,nr)
     if not "name" in RecNames(r) then
       r.name:="";
     fi;
+    if IsString(r.size) then
+      r.size:=EvalString(r.size);
+    fi;
     l:=[r.id, r.size, r.SimpleSolvable, r.ONanScottType, r.suborbits, r.transitivity, r.name, r.SocleType, r.generators];
     return l;
   fi;
