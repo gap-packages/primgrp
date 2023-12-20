@@ -69,6 +69,9 @@ BindGlobal("PRIMGrp",function(deg,nr)
 end);
 
 InstallGlobalFunction(NrPrimitiveGroups, function(deg)
+  if deg > 8191 then
+    Error("Only groups of degree at most 8191 are known!\n");
+  fi;
   if not IsBound(PRIMLENGTHS[deg]) then
     PrimGrpLoad(deg);
   fi;
@@ -156,7 +159,7 @@ PGICS:=[];
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr;
+local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,conj;
   dom:=MovedPoints(grp);
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
@@ -324,6 +327,44 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr;
     s:= Filtered([1..Length(cand)], i->b[i]=a);
     cand:= cand{s};
     p:= p{s};
+  fi;
+
+  # The following case has trouble computing the conjugacy classes, so use a Sylow subgroup to look at a single conjugacy class
+  if Length(cand)>1 and deg=5832 and cand=[12,13] then
+    # Klassen
+    conj :=[];
+    c := List(List(ConjugacyClasses(SylowSubgroup(grp, 17)), Representative), t -> ConjugacyClass(grp, t));;
+    for x in c do
+      if not ForAny(conj, t -> x = t) then
+        Add(conj, x);
+      fi;
+    od;
+    a:=Collected(List(conj,i->[CycleStructurePerm(Representative(i)),Size(i)]));
+
+    # use caching
+    if deg<>PRILD then
+      PRILD:=deg;
+      PGICS:=[];
+    fi;
+
+    b:=[];
+    for i in [1..Length(cand)] do
+      if not IsBound(PGICS[cand[i]]) then
+        conj :=[];
+        c := List(List(ConjugacyClasses(SylowSubgroup(p[i], 17)), Representative), t -> ConjugacyClass(p[i], t));;
+        for x in c do
+          if not ForAny(conj, t -> x = t) then
+            Add(conj, x);
+          fi;
+        od;
+        PGICS[cand[i]]:=Collected(List(conj,i->[CycleStructurePerm(Representative(i)),Size(i)]));
+      fi;
+      b[i]:=PGICS[cand[i]];
+    od;
+
+    s:=Filtered([1..Length(cand)],i->b[i]=a);
+    cand:=cand{s};
+    p:=p{s};
   fi;
 
   if Length(cand)>1 then
