@@ -48,7 +48,8 @@ BindGlobal("PRIMGrp",function(deg,nr)
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
   fi;
   if deg > 4095 then
-    filename := Concatenation(GAPInfo.PackagesInfo.primgrp[1].InstallationPath,"/data/ExtendedPrimitiveGroupsData/PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
+    filename := Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
+    filename := Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
     strm:=InputTextFile(filename);;
     if strm = fail then
       Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411367\n");
