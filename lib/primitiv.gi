@@ -52,7 +52,7 @@ BindGlobal("PRIMGrp",function(deg,nr)
     filename := Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
     strm:=InputTextFile(filename);;
     if strm = fail then
-      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411367\n");
+      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411367");
     fi;
     r:=EvalString(ReadAll(strm));;
     CloseStream(strm);;
