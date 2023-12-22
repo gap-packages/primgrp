@@ -70,7 +70,7 @@ end);
 
 InstallGlobalFunction(NrPrimitiveGroups, function(deg)
   if deg > 8191 then
-    Error("Only groups of degree at most 8191 are known!\n");
+    Error("Only groups of degree at most 8191 are known!");
   fi;
   if not IsBound(PRIMLENGTHS[deg]) then
     PrimGrpLoad(deg);
