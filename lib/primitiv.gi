@@ -30,7 +30,7 @@ BindGlobal("PrimGrpLoad",function(deg)
 local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
     if deg > 4095 then
-      Error("This method is not for primitive groups of degree greater than 4095!\n");
+      Error("This method is not for primitive groups of degree greater than 4095!");
     fi;
     if not (deg in PRIMRANGE and IsBound(PRIMINDX[deg])) then
       Error("Primitive groups of degree ",deg," are not known!");
