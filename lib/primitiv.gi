@@ -51,7 +51,7 @@ BindGlobal("PRIMGrp",function(deg,nr)
     filename := Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
     filename := Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
     if filename = fail then
-      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411367");
+      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
     fi;
     strm:=InputTextFile(filename);;
     r:=EvalString(ReadAll(strm));;
