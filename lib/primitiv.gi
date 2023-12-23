@@ -53,13 +53,11 @@ BindGlobal("PRIMGrp",function(deg,nr)
     if filename = fail then
       Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411367");
     fi;
+    strm:=InputTextFile(filename);;
     r:=EvalString(ReadAll(strm));;
     CloseStream(strm);;
     if not "name" in RecNames(r) then
       r.name:="";
-    fi;
-    if IsString(r.size) then
-      r.size:=EvalString(r.size);
     fi;
     l:=[r.id, r.size, r.SimpleSolvable, r.ONanScottType, r.suborbits, r.transitivity, r.name, r.SocleType, r.generators];
     return l;
