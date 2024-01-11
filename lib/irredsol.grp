@@ -22,7 +22,7 @@
 ##
 #V  PrimitiveIndexIrreducibleSolvableGroup
 ##
-InstallValue(PrimitiveIndexIrreducibleSolvableGroup,
+BindGlobal("PrimitiveIndexIrreducibleSolvableGroup",
   [,,,[1,2],,,,[1,2],[1,2,3,4,5,6,7],,,,,,,
   [1,2,3,4,5,6,7,8,9,10],,,,,,,,,
   [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],,
@@ -65,7 +65,7 @@ InstallValue(PrimitiveIndexIrreducibleSolvableGroup,
 ##  set of one of these JS-maximals, called its guardian (a group may be a
 ##  subgroup of several JS-maximals but it only has one guardian).
 ##
-InstallValue(IrredSolJSGens,
+BindGlobal("IrredSolJSGens",
 [
  [], # GL(1,*)
  [   # GL(2,*)
@@ -360,7 +360,7 @@ InstallValue(IrredSolJSGens,
 ##            [4..]: the group's generators in normal form
 ##                   (with respect to its guardian's AG-system)
 ##
-InstallValue (IrredSolGroupList,
+BindGlobal("IrredSolGroupList",
 [
  [], # GL(1,*)
  [   # GL(2,*)
