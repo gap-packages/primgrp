@@ -288,7 +288,7 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##  </ManSection>
 ##  <#/GAPDoc>
 ##
-DeclareGlobalVariable("PrimitiveIndexIrreducibleSolvableGroup");
+#DeclareGlobalVariable("PrimitiveIndexIrreducibleSolvableGroup");
 
 #############################################################################
 ##

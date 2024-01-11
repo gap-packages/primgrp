@@ -38,7 +38,7 @@
 ##  </Description>
 ##  </ManSection>
 ##
-DeclareGlobalVariable("IrredSolJSGens");
+#DeclareGlobalVariable("IrredSolJSGens");
 
 #############################################################################
 ##
@@ -68,7 +68,7 @@ DeclareGlobalVariable("IrredSolJSGens");
 ##  </Description>
 ##  </ManSection>
 ##
-DeclareGlobalVariable ("IrredSolGroupList");
+#DeclareGlobalVariable ("IrredSolGroupList");
 
 
 #############################################################################
