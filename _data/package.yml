@@ -57,13 +57,15 @@ citeas: |
 
 bibtex: |
     @misc{ PrimGrp3.4.4,
-      author =           {Hulpke, A. and Konovalov, O. and Roney\texttt{\symbol{45}}Dougal, C. M. and Russell, C.},
-      title =            {{PrimGrp}, GAP Primitive Permutation Groups Library, {V}ersion 3.4.4},
+      author =           {Hulpke,  A.  and Konovalov, O. and Roney-Dougal, C. M.
+                          and Russell, C.},
+      title =            {{PrimGrp},  GAP  Primitive Permutation Groups Library,
+                          {V}ersion 3.4.4},
       month =            {Feb},
       year =             {2023},
       note =             {GAP package},
-      howpublished =     {\href                                             {https://gap-packages.github.io/primgrp/}
-                          {\texttt{https://gap\texttt{\symbol{45}}packages.github.io/}\discretionary
+      howpublished =     {\href        {https://gap-packages.github.io/primgrp/}
+                          {\texttt{https://gap-packages.github.io/}\discretionary
                           {}{}{}\texttt{primgrp/}}},
       keywords =         {primitive permutation group},
       printedkey =       {HKRR23}
