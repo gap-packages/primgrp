@@ -58,7 +58,25 @@ Persons := [
     Place         := "St Andrews",
     Institution   := "University of St Andrews"
      ),  
-  rec( 
+
+  rec(  # contributed groups of order 4096-8191
+    IsAuthor := true,
+    IsMaintainer := true,
+    FirstNames := "Jesse",
+    LastName := "Lansdown",
+    WWWHome := "https://www.jesselansdown.com",
+    Email := "jesse.lansdown@canterbury.ac.nz",
+    PostalAddress := Concatenation(
+               "Jesse Lansdown\n",
+               "School of Mathematics and Statistics\n",
+               "University of Canterbury\n",
+               "Christchurch 8140\n",
+               "New Zealand"),
+    Place := "Christchurch",
+    Institution := "University of Canterbury",
+  ),
+
+  rec(  # contributed groups of order <= 4095
     LastName      := "Roney-Dougal",
     FirstNames    := "Colva M.",
     IsAuthor      := true,
@@ -73,15 +91,16 @@ Persons := [
     Place         := "St Andrews",
     Institution   := "University of St Andrews"
      ),  
-  rec( 
+
+  rec(  # contributed groups of order <= 4095
     LastName      := "Russell",
     FirstNames    := "Christopher",
     IsAuthor      := true,
-    IsMaintainer  := true,
-    Email         := "cr66@st-andrews.ac.uk",
+    IsMaintainer  := false,
+    Email         := "chriswgrussell@hotmail.co.uk",
     Place         := "St Andrews",
     Institution   := "University of St Andrews"
-     ),  
+     ),
 ],
 
 Status := "deposited",
