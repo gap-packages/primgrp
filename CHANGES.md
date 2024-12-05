@@ -1,5 +1,12 @@
 # CHANGES to the 'primgrp' GAP package
 
+## 4.0.0 (2024-12-06)
+
+  - Add support the primitive groups of degree 4096 to 8191; these
+    must be downloaded separately, see README.md for details
+  - Add Jesse Lansdown as package author
+  - Stop using `InstallValue`
+
 ## 3.4.3 (2022-12-10)
 
   - Fix inconsistencies in `COHORTS_PRIMITIVE_GROUPS` in degrees 1550 and 1575
