@@ -7,7 +7,7 @@
   [33X[0;0Y[5XGAP[105X contains a library of primitive permutation groups which includes, up to
   permutation   isomorphism  (i.e.,  up  to  conjugacy  in  the  corresponding
   symmetric  group),  all  primitive  permutation  groups  of  degree  [22X< 4096[122X,
-  calculated in [RD05] and [Qui11], in particular,[133X
+  calculated in [Ron05] and [Qui11], in particular,[133X
   
   [30X    [33X[0;6Ythe  primitive  permutation  groups  up  to  degree 50,  calculated by
         C. Sims,[133X
@@ -25,12 +25,12 @@
         [EH03].[133X
   
   [30X    [33X[0;6YThe  primitive groups of affine type of degree up to [22X999[122X as calculated
-        in [RDU03].[133X
+        in [RU03].[133X
   
   [33X[0;0YNot  all groups are named, those which do have names use ATLAS notation. Not
   all names are necessarily unique![133X
   
-  [33X[0;0YThe  list  given  in  [RD05]  is believed to be complete, correcting various
+  [33X[0;0YThe  list  given  in  [Ron05] is believed to be complete, correcting various
   omissions in [DM88], [Sho92] and [The97].[133X
   
   [33X[0;0YIn  detail,  we  guarantee  the  following  properties  for this and further
@@ -199,7 +199,7 @@
   
   [33X[1;0Y[29X[2XPRIMITIVE_INDICES_MAGMA[102X [32X global variable[133X
   
-  [33X[0;0YThe system [5XMagma[105X also provides a list of primitive groups (see [RDU03]). For
+  [33X[0;0YThe  system [5XMagma[105X also provides a list of primitive groups (see [RU03]). For
   historical  reasons, its indexing up to degree 999 differs from the one used
   by  [5XGAP[105X.  The  variable  [2XPRIMITIVE_INDICES_MAGMA[102X  can be used to obtain this
   correspondence.    The    magma    index    number    of   the   [5XGAP[105X   group

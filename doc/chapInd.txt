@@ -16,7 +16,7 @@
   [2XPrimitiveGroupsIterator[102X 1.1-5 
   [2XPrimitiveIdentification[102X 1.2-1 
   [2XPrimitiveIndexIrreducibleSolvableGroup[102X 2.1-5 
-  [5XPrimGrp[105X package .-1 
+  [5XPrimGrp[105X package 0.0-1 
   [2XSimsNo[102X 1.2-2 
   
   

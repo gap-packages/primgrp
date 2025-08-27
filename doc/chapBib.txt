@@ -12,10 +12,10 @@
   [[20XQui11[120X]  [16XQuick,  M.[116X,  [17XThe  primitive  permutation groups of degree less than
   4096[117X, [18XComm. Algebra[118X, [19X39[119X, 10 (2011), 3526–3546.
   
-  [[20XRD05[120X]  [16XRoney-Dougal, C. M.[116X, [17XThe primitive permutation groups of degree less
+  [[20XRon05[120X] [16XRoney-Dougal, C. M.[116X, [17XThe primitive permutation groups of degree less
   than 2500[117X, [18XJ. Algebra[118X, [19X292[119X, 1 (2005), 154–183.
   
-  [[20XRDU03[120X]  [16XRoney-Dougal,  C.  M.  and  Unger,  W.  R.[116X,  [17XThe  affine  primitive
+  [[20XRU03[120X]   [16XRoney-Dougal,  C.  M.  and  Unger,  W.  R.[116X,  [17XThe  affine  primitive
   permutation  groups  of  degree  less  than 1000[117X, [18XJ. Symbolic Comput.[118X, [19X35[119X, 4
   (2003), 421–439.
   
