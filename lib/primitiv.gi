@@ -27,7 +27,7 @@ Unbind(PRIMGRP);
 BindGlobal("PRIMGRP", []);
 
 BindGlobal("PrimGrpLoad",function(deg)
-local s,fname,ind;
+  local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
     if deg > 4095 then
       Error("This method is not for primitive groups of degree greater than 4095!");
@@ -42,14 +42,23 @@ local s,fname,ind;
   fi;
 end);
 
+BindGlobal("PrimGrpArtifactFilename",function(deg,nr)
+  local filename;
+  if deg <= 4095 then
+    Error("This method is only for primitive groups of degree greater than 4095!");
+  fi;
+  filename:=Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
+  filename:=Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
+  return filename;
+end)
+
 BindGlobal("PRIMGrp",function(deg,nr)
   local filename,strm,r,l;
   if nr>PRIMLENGTHS[deg] then
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
   fi;
   if deg > 4095 then
-    filename := Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
-    filename := Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
+    filename:=PrimGrpArtifactFilename(deg,nr);
     if filename = fail then
       Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
     fi;
@@ -77,7 +86,11 @@ InstallGlobalFunction(NrPrimitiveGroups, function(deg)
 end);
 
 InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
-  return deg in PRIMRANGE;
+  if deg <= 4095 then
+    return true;
+  else
+    return PrimGrpArtifactFilename(deg,1) <> fail;
+  fi;
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
