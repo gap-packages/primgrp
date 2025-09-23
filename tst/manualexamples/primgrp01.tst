@@ -10,7 +10,7 @@
 #
 gap> START_TEST("primgrp01.tst");
 
-# doc/../lib/primitiv.gd:138-149
+# doc/../lib/primitiv.gd:140-151
 gap> NrPrimitiveGroups(25);
 28
 gap> PrimitiveGroup(25,19);
@@ -22,7 +22,7 @@ AGL(2, 5)
 gap> PrimitiveGroup(25,23);
 (A(5) x A(5)):2
 
-# doc/prim.xml:34-42
+# doc/prim.xml:35-43
 gap> COHORTS_PRIMITIVE_GROUPS[49];
 [ [ rec( parameter := 7, series := "Z", width := 2 ), 
       [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
@@ -31,11 +31,11 @@ gap> COHORTS_PRIMITIVE_GROUPS[49];
   [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
   [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
 
-# doc/../lib/primitiv.gd:315-318
+# doc/../lib/primitiv.gd:317-320
 gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
 2
 
-# doc/../lib/primitiv.gd:249-254
+# doc/../lib/primitiv.gd:251-256
 gap> g:=PrimitiveGroup(25,2);
 5^2:S(3)
 gap> SimsNo(g);
