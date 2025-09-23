@@ -460,9 +460,3 @@ InstallGlobalFunction(OneIrreducibleSolvableGroup, function ( arg )
 
     return false;
 end); # OneIrreducibleSolvableGroup( fun1, val1, fun2, val2, ... )
-
-#############################################################################
-##
-#E
-##
-

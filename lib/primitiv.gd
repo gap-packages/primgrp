@@ -321,8 +321,3 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##  <#/GAPDoc>
 ##
 DeclareAttribute( "PrimitiveIdentification", IsPermGroup );
-
-#############################################################################
-##
-#E
-

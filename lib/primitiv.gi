@@ -628,8 +628,3 @@ BindGlobal("PrimitiveGroupSims",
 function(d,n)
   return OnePrimitiveGroup(NrMovedPoints,d,SimsNo,n);
 end);
-
-#############################################################################
-##
-#E  primitiv.gi
-##

@@ -262,9 +262,3 @@ DeclareAttribute("MinimalBlockDimension", IsMatrixGroup);
 ##
 DeclareProperty("IsPrimitiveMatrixGroup", IsMatrixGroup);
 DeclareSynonymAttr ("IsLinearlyPrimitive", IsPrimitiveMatrixGroup);
-
-
-#############################################################################
-##
-#E
-
