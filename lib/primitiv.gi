@@ -88,8 +88,15 @@ end);
 InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
   if deg <= 4095 then
     return true;
+  elif deg <= 8191 then
+    if PrimGrpArtifactFilename(deg,1) <> fail then
+      return true;
+    else
+      Info(InfoWarning,1,"Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
+      return false;
+    fi;
   else
-    return PrimGrpArtifactFilename(deg,1) <> fail;
+    return false;
   fi;
 end);
 
