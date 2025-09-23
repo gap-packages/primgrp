@@ -1,5 +1,10 @@
 # CHANGES to the 'primgrp' GAP package
 
+## 4.0.1 (YYYY-MM-DD)
+
+  - Add `PrimitiveGroupsAvailable` to the manual (it has been around
+    for a long time but we forget to link it up there)
+
 ## 4.0.0 (2024-12-06)
 
   - Add support the primitive groups of degree 4096 to 8191; these

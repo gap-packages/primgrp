@@ -106,6 +106,7 @@ DeclareGlobalFunction( "PrimitiveGroup" );
 ##
 #F  PrimitiveGroupsAvailable(<deg>)
 ##
+##  <#GAPDoc Label="PrimitiveGroupsAvailable">
 ##  <ManSection>
 ##  <Func Name="PrimitiveGroupsAvailable" Arg='deg'/>
 ##
@@ -115,6 +116,7 @@ DeclareGlobalFunction( "PrimitiveGroup" );
 ##  available.
 ##  </Description>
 ##  </ManSection>
+##  <#/GAPDoc>
 ##
 if IsBoundGlobal("PrimitiveGroupsAvailable") then
   # redefine the dummy function from the library
