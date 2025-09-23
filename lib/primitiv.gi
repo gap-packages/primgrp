@@ -50,7 +50,7 @@ BindGlobal("PrimGrpArtifactFilename",function(deg,nr)
   filename:=Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
   filename:=Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
   return filename;
-end)
+end);
 
 BindGlobal("PRIMGrp",function(deg,nr)
   local filename,strm,r,l;
