@@ -1,9 +1,11 @@
 # CHANGES to the 'primgrp' GAP package
 
-## 4.0.1 (YYYY-MM-DD)
+## 4.0.1 (2025-09-25)
 
   - Add `PrimitiveGroupsAvailable` to the manual (it has been around
     for a long time but we forget to link it up there)
+  - Fix `PrimitiveGroupsAvailable` for degree 4096 to 8191 to return `false`
+    if the extra data set is not installed
 
 ## 4.0.0 (2024-12-06)
 
