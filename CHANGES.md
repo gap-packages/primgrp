@@ -1,6 +1,11 @@
 # CHANGES to the 'primgrp' GAP package
 
-## 4.0.1 (2025-09-25)
+## 4.0.2 (2025-12-26)
+
+  - Identical to previous release, except the manual was rebuilt to fix
+    broken links (caused by a tooling error)
+
+## 4.0.1 (2025-09-24)
 
   - Add `PrimitiveGroupsAvailable` to the manual (it has been around
     for a long time but we forget to link it up there)
