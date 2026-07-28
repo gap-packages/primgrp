@@ -1,5 +1,10 @@
 # CHANGES to the 'primgrp' GAP package
 
+## 4.0.3 (2026-07-28)
+
+  - Drop spurious dependency on GAPDoc
+  - Minor janitorial changes
+
 ## 4.0.2 (2025-12-26)
 
   - Identical to previous release, except the manual was rebuilt to fix
