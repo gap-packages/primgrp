@@ -128,7 +128,7 @@ PackageDoc := rec(
 
 Dependencies := rec(
   GAP := "4.10.0",
-  NeededOtherPackages := [["GAPDoc", "1.5"]],
+  NeededOtherPackages := [],
   SuggestedOtherPackages := [],
   ExternalConditions := []
                       
