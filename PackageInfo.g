@@ -129,7 +129,11 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := "4.10.0",
   NeededOtherPackages := [],
-  SuggestedOtherPackages := [],
+  # ArtifactManager can download and verify the primitive groups of degree
+  # 4096 to 8191, which are too large to ship; see artifacts.json.  It is only
+  # suggested: everything up to degree 4095 works without it, and data
+  # installed by hand in the traditional place is still found.
+  SuggestedOtherPackages := [ [ "ArtifactManager", ">= 0.1" ] ],
   ExternalConditions := []
                       
 ),

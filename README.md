@@ -6,9 +6,27 @@
 The PrimGrp package provides the library of primitive permutation 
 groups which includes, up to permutation isomorphism (i.e., up to
 conjugacy in the corresponding symmetric group), all primitive 
-permutation groups of degree < 8192. Groups of degree 4096 to 8191
-must be downloaded separately from <https://doi.org/10.5281/zenodo.10411366>
-and then installed by following the instructions given there.
+permutation groups of degree < 8192. Groups of degree 4096 to 8191 are about
+1 GB and are not shipped with the package; they have to be obtained
+separately, in one of two ways.
+
+If the [ArtifactManager](https://github.com/gap-packages/ArtifactManager)
+package is available, it will do it for you:
+
+```gap
+gap> LoadPackage("ArtifactManager");
+gap> FetchArtifact("primgrp", "degree4096to8191");
+```
+
+It downloads the data, checks it against a SHA256 checksum, and caches it
+outside the package directory — so the data survives reinstalling PrimGrp, and
+`RemoveArtifact("primgrp", "degree4096to8191")` reclaims the space again. The
+download is not started automatically, because 1 GB is not something a call to
+`PrimitiveGroup` should decide on your behalf.
+
+Otherwise, download the data by hand from
+<https://doi.org/10.5281/zenodo.10411366> and follow the instructions given
+there. Data installed that way is still found, and takes precedence.
 
 It has been formerly a part of the core GAP system, and has been
 converted to a separate GAP package in 2017 for the GAP 4.9 release.

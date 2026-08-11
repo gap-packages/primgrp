@@ -1,0 +1,25 @@
+{
+  "gapArtifactManifest": 1,
+  "package": "primgrp",
+  "artifacts": {
+    "degree4096to8191": {
+      "description": "Primitive groups of degree 4096 to 8191",
+      "version": "1.0",
+      "size": 1059760640,
+      "format": "tar",
+      "strip": 1,
+      "license": "CC-BY-4.0",
+      "provenance": "https://doi.org/10.5281/zenodo.10411366",
+      "download": [
+        { "url": "https://zenodo.org/api/records/10426628/files/ExtendedPrimitiveGroupsData.tar/content",
+          "sha256": "f4379176ae6c271797c2c2dda0799cbf234c1d94b6c79bd1e7fb11ddc6ca1b5c",
+          "size": 1059760640,
+          "format": "tar" },
+        { "url": "https://zenodo.org/records/10426628/files/ExtendedPrimitiveGroupsData.tar?download=1",
+          "sha256": "f4379176ae6c271797c2c2dda0799cbf234c1d94b6c79bd1e7fb11ddc6ca1b5c",
+          "size": 1059760640,
+          "format": "tar" }
+      ]
+    }
+  }
+}

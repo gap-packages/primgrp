@@ -42,13 +42,72 @@ BindGlobal("PrimGrpLoad",function(deg)
   fi;
 end);
 
+#############################################################################
+##
+##  The primitive groups of degree 4096 to 8191 are about 1 GB and are not
+##  shipped with the package.  They can be provided in two ways:
+##
+##    * unpacked by hand into data/ExtendedPrimitiveGroupsData, as before;
+##
+##    * or left to the ArtifactManager package, which downloads them on
+##      demand, checks them against a SHA256 checksum, and caches them
+##      outside the package directory.  The declaration is in artifacts.json.
+##
+##  The hand-installed copy wins, so nothing changes for anyone who has
+##  already followed the old instructions.
+##
+BindGlobal("PRIMGRP_ExtendedArtifact", "degree4096to8191");
+
+# <fetch> = false only reports what is already there; <fetch> = true is
+# allowed to download.  Returns a directory object, or fail.
+BindGlobal("PRIMGRP_ExtendedDataDirectory",function(fetch)
+  local dirs;
+
+  dirs:=DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData");
+  if not IsEmpty(dirs) then
+    return dirs[1];
+  fi;
+
+  if not IsPackageMarkedForLoading("ArtifactManager", "") then
+    return fail;
+  fi;
+  if not fetch and
+     not ValueGlobal("IsArtifactAvailable")("primgrp", PRIMGRP_ExtendedArtifact) then
+    return fail;
+  fi;
+  # Raises an error, with instructions, if it cannot provide the data.
+  return ValueGlobal("ArtifactDirectory")("primgrp", PRIMGRP_ExtendedArtifact);
+end);
+
+BindGlobal("PRIMGRP_ExtendedInstructions",function()
+  if IsPackageMarkedForLoading("ArtifactManager", "") then
+    return Concatenation(
+      "Primitive groups of degree 4096 to 8191 are not installed. Run\n",
+      "  FetchArtifact(\"primgrp\", \"", PRIMGRP_ExtendedArtifact, "\");\n",
+      "to download them (about 1 GB).");
+  fi;
+  return Concatenation(
+    "Primitive groups of degree 4096 to 8191 must be downloaded separately. ",
+    "Either load the ArtifactManager package, which can fetch and verify ",
+    "them for you, or obtain them from ",
+    "https://doi.org/10.5281/zenodo.10411366 and follow the instructions ",
+    "given there.");
+end);
+
 BindGlobal("PrimGrpArtifactFilename",function(deg,nr)
-  local filename;
+  local dir, filename;
   if deg <= 4095 then
     Error("This method is only for primitive groups of degree greater than 4095!");
   fi;
+  dir:=PRIMGRP_ExtendedDataDirectory(false);
+  if dir = fail then
+    return fail;
+  fi;
   filename:=Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
-  filename:=Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
+  filename:=Filename(dir, filename);
+  if filename = fail or not IsReadableFile(filename) then
+    return fail;
+  fi;
   return filename;
 end);
 
@@ -60,7 +119,15 @@ BindGlobal("PRIMGrp",function(deg,nr)
   if deg > 4095 then
     filename:=PrimGrpArtifactFilename(deg,nr);
     if filename = fail then
-      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
+      # Give ArtifactManager, if it is there, a chance to fetch the data.
+      # It raises its own error, naming what to do, if it cannot.
+      if PRIMGRP_ExtendedDataDirectory(true) <> fail then
+        filename:=PrimGrpArtifactFilename(deg,nr);
+      fi;
+    fi;
+    if filename = fail then
+      Error("Primitive group of degree ", deg, " with id ", nr,
+            " not found! ", PRIMGRP_ExtendedInstructions());
     fi;
     strm:=InputTextFile(filename);;
     r:=EvalString(ReadAll(strm));;
@@ -92,7 +159,7 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
     if PrimGrpArtifactFilename(deg,1) <> fail then
       return true;
     else
-      Info(InfoWarning,1,"Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
+      Info(InfoWarning,1,PRIMGRP_ExtendedInstructions());
       return false;
     fi;
   else
