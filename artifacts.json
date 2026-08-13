@@ -1,5 +1,5 @@
 {
-  "gapArtifactManifest": 1,
+  "gapArtifactManifestVersion": 1,
   "package": "primgrp",
   "artifacts": {
     "degree4096to8191": {
@@ -10,6 +10,7 @@
       "strip": 1,
       "license": "CC-BY-4.0",
       "provenance": "https://doi.org/10.5281/zenodo.10411366",
+      "tree_sha256": "d90e2a159560941163f1fa95cce89c81a512e39c36a8325f72d36bbdd2f1d2a8",
       "download": [
         { "url": "https://zenodo.org/api/records/10426628/files/ExtendedPrimitiveGroupsData.tar/content",
           "sha256": "f4379176ae6c271797c2c2dda0799cbf234c1d94b6c79bd1e7fb11ddc6ca1b5c",

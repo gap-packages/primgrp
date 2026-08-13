@@ -22,3 +22,6 @@ doc/_*.xml
 
 /gh-pages/
 /tmp/
+
+# local copy of the published artifact, see .artifact-cache/README.md
+/.artifact-cache/
