@@ -4,13 +4,9 @@
   "artifacts": {
     "degree4096to8191": {
       "description": "Primitive groups of degree 4096 to 8191",
-      "version": "1.0",
-      "size": 1059760640,
-      "format": "tar",
-      "strip": 1,
       "license": "CC-BY-4.0",
       "provenance": "https://doi.org/10.5281/zenodo.10411366",
-      "tree_sha256": "d90e2a159560941163f1fa95cce89c81a512e39c36a8325f72d36bbdd2f1d2a8",
+      "tree_sha256": "0bf9c22d213300ae5f04f3f9c638c4ce0dd9ab2f0e382127d4143abdf3a0d3a0",
       "download": [
         { "url": "https://zenodo.org/api/records/10426628/files/ExtendedPrimitiveGroupsData.tar/content",
           "sha256": "f4379176ae6c271797c2c2dda0799cbf234c1d94b6c79bd1e7fb11ddc6ca1b5c",

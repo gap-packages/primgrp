@@ -75,8 +75,12 @@ BindGlobal("PRIMGRP_ExtendedDataDirectory",function(fetch)
      not ValueGlobal("IsArtifactAvailable")("primgrp", PRIMGRP_ExtendedArtifact) then
     return fail;
   fi;
-  # Raises an error, with instructions, if it cannot provide the data.
-  return ValueGlobal("ArtifactDirectory")("primgrp", PRIMGRP_ExtendedArtifact);
+  # Raises an error, with instructions, if it cannot provide the data.  The
+  # artifact is the tarball's own tree, so the data is one level down.
+  return Directory(Concatenation(
+      Filename(ValueGlobal("ArtifactDirectory")("primgrp",
+                                                PRIMGRP_ExtendedArtifact), ""),
+      "ExtendedPrimitiveGroupsData"));
 end);
 
 BindGlobal("PRIMGRP_ExtendedInstructions",function()
