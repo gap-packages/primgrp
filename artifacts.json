@@ -5,7 +5,6 @@
     "degree4096to8191": {
       "description": "Primitive groups of degree 4096 to 8191",
       "license": "CC-BY-4.0",
-      "provenance": "https://doi.org/10.5281/zenodo.10411366",
       "tree_sha256": "0bf9c22d213300ae5f04f3f9c638c4ce0dd9ab2f0e382127d4143abdf3a0d3a0",
       "download": [
         { "url": "https://zenodo.org/api/records/10426628/files/ExtendedPrimitiveGroupsData.tar/content",
