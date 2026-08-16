@@ -26,6 +26,43 @@ Unbind(PRIMGRP);
 ##  9: generators
 BindGlobal("PRIMGRP", []);
 
+#############################################################################
+##
+#F  PRIMGRP_AffineVectors( <p>, <d>, <enum> )
+##
+##  The point set of an affine primitive group of degree p^d, identified with
+##  F_p^d.  Two enumerations are in use and they are not the same one:
+##
+##    "ffe" -- Elements(GF(p)^d), sorted by GAP's order on field elements,
+##             which for a prime field runs 0, Z(p)^0, Z(p)^1, ..., that is,
+##             by discrete logarithm.  Degrees up to 4095 use this.
+##
+##    "int" -- by the integer the base-p digits spell out.  Degrees 4096 to
+##             8191 use this, since that is how they were imported.
+##
+##  They agree for p = 2 and p = 3 and differ from p = 5 on, where picking the
+##  wrong one silently yields a conjugate of the intended group.  Entries of
+##  the second kind therefore store [ "int", <mats> ] rather than bare <mats>.
+##
+BindGlobal("PRIMGRP_AffineVectors",function(p,d,enum)
+  local out,i,x,w,j;
+  if enum = "ffe" then
+    return Elements(GF(p)^d);
+  elif enum <> "int" then
+    Error("unknown affine point enumeration \"",enum,"\"");
+  fi;
+  out:=[];
+  for i in [0..p^d-1] do
+    x:=i; w:=[];
+    for j in [1..d] do
+      Add(w,x mod p);
+      x:=QuoInt(x,p);
+    od;
+    Add(out,Z(p)^0*Reversed(w));
+  od;
+  return out;
+end);
+
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
@@ -101,7 +138,7 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t,filename,strm,r;
+local l,g,gens,enum,fac,mats,perms,v,t;
 
   l:=PRIMGrp(deg,num);
 
@@ -118,11 +155,17 @@ local l,g,fac,mats,perms,v,t,filename,strm,r;
   elif l[9] = "pgl" then
     g:= PGL(2, deg-1);
     SetName(g, Concatenation("PGL(2,", String(deg-1), ")"));
-  elif l[4] = "1" and deg <= 4095 then
-    if Length(l[9]) > 0 then
+  elif l[4] = "1" then
+    gens:=l[9];
+    enum:="ffe";
+    if Length(gens) = 2 and IsString(gens[1]) then
+      enum:=gens[1];             # see PRIMGRP_AffineVectors below
+      gens:=gens[2];
+    fi;
+    if Length(gens) > 0 then
       fac:= Factors(deg);
-      mats:=List(l[9],i->ImmutableMatrix(GF(fac[1]),i));
-      v:=Elements(GF(fac[1])^Length(fac));
+      mats:=List(gens,i->ImmutableMatrix(GF(fac[1]),i));
+      v:=PRIMGRP_AffineVectors(fac[1],Length(fac),enum);
       perms:=List(mats,i->Permutation(i,v,OnRight));
       t:=First(v,i->not IsZero(i)); # one nonzero translation
                                     #suffices as matrix
