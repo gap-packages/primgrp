@@ -70,6 +70,18 @@ gap> G := PrimitiveGroup(121,38);
 gap> G := PrimitiveGroup(289,35);
 17^2:SL(2,3)
 
+# The name of this group was written "... 4 \circ 2^(1+4) ..." in gps4.g, and
+# GAP reads \c as character 3, so the name came out as "4 <chr 3>irc". The
+# subgroup really is the central product of C4 with the extraspecial group
+# 2^(1+4), for which ATLAS notation is the circle.
+gap> Name(PrimitiveGroup(625,657));
+"5^4:(4 \\circ 2^(1+4)).Sp(4, 2)"
+gap> ForAny([2..4095], function(d)
+>      PrimGrpLoad(d);
+>      return ForAny(PRIMGRP[d], e -> ForAny(e[7], c -> INT_CHAR(c) < 32));
+>    end);
+false
+
 # The socle series for unitary groups is "2A"; 51 entries in degrees >= 2500
 # spelled it "^2A", which GAP never produces.
 gap> SocleTypePrimitiveGroup(PrimitiveGroup(2752,1));
