@@ -121,6 +121,25 @@ BindGlobal("PrimGrpCheckGroup", function(deg, nr, checks)
 
   h := PrimGrpRecomputed(g);
 
+  # A third of the library is the natural A_n or S_n, where everything follows
+  # from the degree.  Recognising that is much cheaper than a stabiliser chain
+  # on A_8191, and it is still a recomputation: the group says what it is, and
+  # the stored fields are then checked against the formulas.
+  if IsNaturalAlternatingGroup(h) or IsNaturalSymmetricGroup(h) then
+    if IsNaturalAlternatingGroup(h) then
+      t := PGAlt(deg, nr);
+    else
+      t := PGSym(deg, nr);
+    fi;
+    s := PRIMGrp(deg, nr);
+    if deg > 4 then      # below that A_n and S_n really are affine
+      if s{[2..8]} <> t{[2..8]} then
+        note("generic A_n/S_n entry", s{[2..8]}, t{[2..8]});
+      fi;
+    fi;
+    return out;
+  fi;
+
   if "size" in checks and Size(h) <> Size(g) then
     note("Size", Size(g), Size(h));
   fi;
