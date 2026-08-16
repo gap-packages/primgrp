@@ -35,7 +35,7 @@ BindGlobal("PRIMGRP_AffineContextCache", rec());
 # uses that one rather than a copy.
 
 BindGlobal("PRIMGRP_AffineContext", function(deg, enum)
-  local key, fac, p, d, vecs, pos, i;
+  local key, fac, p, d, vecs, pos, i, j, idx;
   key := Concatenation(String(deg), enum);
   if IsBound(PRIMGRP_AffineContextCache.(key)) then
     return PRIMGRP_AffineContextCache.(key);
@@ -47,69 +47,66 @@ BindGlobal("PRIMGRP_AffineContext", function(deg, enum)
     return fail;   # not a prime power, so not affine
   fi;
   vecs := PRIMGRP_AffineVectors(p, d, enum);
-  pos := NewDictionary(vecs[1], true, vecs);
+  # Position lookup by array, not by NewDictionary.  For a large prime field
+  # the dictionary degrades to a linear scan, which turns the O(deg) labelling
+  # check into O(deg^2): degree 7211 cost 386 s, degree 6561 cost 1 s.  Every
+  # vector has a base-p index, so the position is just an array entry.
+  pos := ListWithIdenticalEntries(deg, 0);
   for i in [1..deg] do
-    AddDictionary(pos, vecs[i], i);
+    idx := 0;
+    for j in [1..d] do
+      idx := idx * p + IntFFE(vecs[i][j]);
+    od;
+    pos[idx+1] := i;
   od;
   PRIMGRP_AffineContextCache.(key) := rec(p := p, d := d, enum := enum,
                                           vecs := vecs, pos := pos);
   return PRIMGRP_AffineContextCache.(key);
 end);
 
-# Does the socle act as translation by v[i] under this enumeration?  This is
-# what makes the conversion lossless rather than merely correct up to conjugacy.
-BindGlobal("PRIMGRP_HasLabelling", function(G, deg, enum)
-  local c, T, t, shift, i;
-  c := PRIMGRP_AffineContext(deg, enum);
-  if c = fail then return false; fi;
-  T := PCore(G, c.p);
-  if Size(T) <> deg then return false; fi;
-  if not IsZero(c.vecs[1]) then return false; fi;
-  for t in GeneratorsOfGroup(T) do
-    shift := c.vecs[1^t];
-    for i in [1..deg] do
-      if i^t <> LookupDictionary(c.pos, c.vecs[i] + shift) then
-        return false;
-      fi;
-    od;
+# Which point is the vector <v>?
+BindGlobal("PRIMGRP_VecPos", function(c, v)
+  local idx, j;
+  idx := 0;
+  for j in [1..c.d] do
+    idx := idx * c.p + IntFFE(v[j]);
   od;
-  return true;
+  return c.pos[idx+1];
 end);
 
-# Which enumeration does <G> use, if either?
-BindGlobal("PRIMGRP_AffineEnumeration", function(G, deg)
-  local enum;
-  for enum in [ "ffe", "int" ] do
-    if PRIMGRP_HasLabelling(G, deg, enum) then
-      return enum;
-    fi;
-  od;
-  return fail;
-end);
-
-# The matrices of a small generating set of the point stabiliser, as integer
-# matrices (the reader scales them by Z(p)^0).  Returns fail if <G> is not
-# affine with this labelling.
+# Reading off the affine structure.
 #
-# Returns the generating set alongside the matrices.  SmallGeneratingSet is
-# randomised, so a second call gives a different set and the matrices would no
-# longer correspond to it -- the two have to travel together.
+# G is affine primitive of degree p^d, so under the right identification of
+# the points with F_p^d every g in G is x -> x*A_g + w_g.  Both parts are
+# computable straight from g: w_g is the image of zero, and A_g is read off
+# from the images of the standard basis vectors.  Verifying that the formula
+# holds at every point then proves G <= AGL(d,p) for this labelling.
+#
+# Nothing here needs a stabiliser chain of G, and that is the point: G has
+# degree up to 8191 and order in the millions, and deterministic Schreier-Sims
+# on it costs 44 s per group -- PCore, `t in G' and Stabilizer(G,1) each paid
+# that toll, and between them they were the entire runtime of the conversion.
+# The matrix group is d-dimensional and its order is immediate.
+#
+# Returns fail if <G> is not affine with this labelling.
 BindGlobal("PRIMGRP_AffineMatrices", function(G, deg, enum)
-  local c, S, basis, mats, s, m, j;
+  local c, basis, mats, g, w, m, ffm, i, j;
   c := PRIMGRP_AffineContext(deg, enum);
   if c = fail then return fail; fi;
-  if not PRIMGRP_HasLabelling(G, deg, enum) then return fail; fi;
-  # The stabiliser can be trivial (G is then the regular group C_p), so keep
-  # the generating list rather than building a group from it.
-  S := SmallGeneratingSet(Stabilizer(G, 1));
-  # point number of the j-th standard basis vector
-  basis := List(IdentityMat(c.d, GF(c.p)), v -> LookupDictionary(c.pos, v));
+  if not IsZero(c.vecs[1]) then return fail; fi;
+  basis := List(IdentityMat(c.d, GF(c.p)), v -> PRIMGRP_VecPos(c, v));
   mats := [];
-  for s in S do
-    m := List([1..c.d], j -> List(c.vecs[basis[j]^s], IntFFE));
-    Add(mats, m);
+  for g in GeneratorsOfGroup(G) do
+    w := c.vecs[1^g];                                  # image of zero
+    ffm := List([1..c.d], j -> c.vecs[basis[j]^g] - w);
+    for i in [1..deg] do
+      if c.vecs[i^g] - w <> c.vecs[i] * ffm then
+        return fail;                                   # not linear: wrong labelling
+      fi;
+    od;
+    Add(mats, List(ffm, r -> List(r, IntFFE)));
   od;
-  return rec(gens := S, mats := mats);
+  return rec(mats := mats);
 end);
 
 # Rebuild exactly as lib/primitiv.gi does, and insist on equality.
@@ -126,44 +123,46 @@ BindGlobal("PRIMGRP_AffineGroupFromMatrices", function(mats, deg, enum)
   return Group(perms);
 end);
 
+# Which enumeration does <G> use, if either?  Whichever is returned has had
+# every generator checked at every point.
+BindGlobal("PRIMGRP_AffineEnumeration", function(G, deg)
+  local order, enum;
+  if deg > 4095 then
+    order := [ "int", "ffe" ];
+  else
+    order := [ "ffe", "int" ];
+  fi;
+  for enum in order do
+    if PRIMGRP_AffineMatrices(G, deg, enum) <> fail then
+      return enum;
+    fi;
+  od;
+  return fail;
+end);
+
 ##  Verifying the conversion.
 ##
-##  Rebuilding the degree 8191 permutation group and testing `= G' needs two
-##  stabiliser chains and costs seconds per group; over 19571 groups that is
-##  days.  The same statement can be settled in the d-dimensional matrix group,
-##  which is tiny.  If
+##  PRIMGRP_AffineMatrices has already checked, at every point, that each
+##  generator of G is x -> x*A + w.  So G sits inside T : L, where T is the
+##  full translation group and L = <A_g> is the image of G in GL(d,p), and
+##  that is precisely the group the reader builds.  Two things remain:
 ##
-##    (a) the socle acts as translation by v[i]        [PRIMGRP_HasLabelling]
-##    (b) each stabiliser generator s satisfies v[i^s] = v[i]*M_s for every i
-##    (c) <M_s> acts irreducibly on F_p^d
-##    (d) |<M_s>| * deg = |G|
+##    (a) L acts irreducibly, so the reader's single stored translation
+##        regenerates all of T;
+##    (b) |L| * deg = |G|, which forces G to contain T and hence to be all of
+##        T : L rather than a proper subgroup.
 ##
-##  then G = T : G_1 = <translations, matrices> is exactly what the reader
-##  builds: (b) says the matrices are the linear action, (c) says the single
-##  stored translation generates all of T under it, and (a) and (d) say nothing
-##  is missing.  <storedSize> is the size from the data, not a recomputation.
+##  <storedSize> is the order from the data, not a recomputation -- a wrong
+##  one makes the check fail and the entry keeps its permutations.
 BindGlobal("PRIMGRP_CheckAffineRoundTrip", function(rec_, deg, enum, storedSize)
-  local c, S, mats, ffmats, i, j, s, m;
+  local c, ffmats;
   c := PRIMGRP_AffineContext(deg, enum);
-  if c = fail then return false; fi;
-  S := rec_.gens;
-  mats := rec_.mats;
-  ffmats := List(mats, m -> ImmutableMatrix(GF(c.p), Z(c.p)^0 * m));
-  for j in [1..Length(S)] do                                   # (b)
-    s := S[j]; m := ffmats[j];
-    for i in [1..deg] do
-      if i^s <> LookupDictionary(c.pos, c.vecs[i] * m) then
-        return false;
-      fi;
-    od;
-  od;
-  if Length(mats) = 0 then                                     # G is C_p
-    return storedSize = deg;
-  fi;
-  if not MTX.IsIrreducible(GModuleByMats(ffmats, GF(c.p))) then # (c)
+  if c = fail or Length(rec_.mats) = 0 then return false; fi;
+  ffmats := List(rec_.mats, m -> ImmutableMatrix(GF(c.p), Z(c.p)^0 * m));
+  if c.d > 1 and not MTX.IsIrreducible(GModuleByMats(ffmats, GF(c.p))) then
     return false;
   fi;
-  return Size(Group(ffmats)) * deg = storedSize;               # (d)
+  return Size(Group(ffmats)) * deg = storedSize;
 end);
 
 # The expensive version, for spot-checking that the cheap one is honest.

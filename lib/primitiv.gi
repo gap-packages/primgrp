@@ -28,6 +28,51 @@ BindGlobal("PRIMGRP", []);
 
 #############################################################################
 ##
+#F  PGAlt( <deg>, <nr> ) . . . . . . . . . . entries we know from the degree
+#F  PGSym( <deg>, <nr> )
+#F  PGPsl( <deg>, <nr> )
+#F  PGPgl( <deg>, <nr> )
+##
+##  A_n and S_n in their natural action, and PSL(2,q) and PGL(2,q) on the
+##  projective line, are determined by the degree, so the data files name them
+##  instead of repeating size, suborbits, transitivity, name and socle type
+##  for each.  That is ~9300 of the 24558 entries; it also makes it impossible
+##  for those fields to drift apart, which is how the socle types of the
+##  natural A_n and S_n came to be wrong in degrees >= 2500.
+##
+##  These build the whole entry, not just the group: PrimitiveGroupsIterator
+##  and PrimitiveIdentification read fields 2, 4, 5, 6 and 8 straight out of
+##  PRIMGRP without constructing anything.
+##
+##  Degrees 2, 3 and 4 are excluded -- there A_n and S_n are affine, with an
+##  elementary abelian socle -- and their entries are written out in full.
+##
+BindGlobal("PGAlt",function(deg,nr)
+  return [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
+           Concatenation("Alt(",String(deg),")"), ["A",deg,1], "Alt" ];
+end);
+
+BindGlobal("PGSym",function(deg,nr)
+  return [ nr, Factorial(deg), 0, "2", [[deg-1,1]], deg,
+           Concatenation("Sym(",String(deg),")"), ["A",deg,1], "Sym" ];
+end);
+
+BindGlobal("PGPsl",function(deg,nr)
+  local q;
+  q:=deg-1;
+  return [ nr, q*(q^2-1)/Gcd(2,q-1), 1, "2", [[q,1]], 2,
+           Concatenation("PSL(2, ",String(q),")"), ["L",[2,q],1], "psl" ];
+end);
+
+BindGlobal("PGPgl",function(deg,nr)
+  local q;
+  q:=deg-1;
+  return [ nr, q*(q^2-1), 0, "2", [[q,1]], 3,
+           Concatenation("PGL(2, ",String(q),")"), ["L",[2,q],1], "pgl" ];
+end);
+
+#############################################################################
+##
 #F  PRIMGRP_AffineVectors( <p>, <d>, <enum> )
 ##
 ##  The point set of an affine primitive group of degree p^d, identified with

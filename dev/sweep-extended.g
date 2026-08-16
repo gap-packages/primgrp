@@ -16,14 +16,17 @@
 Read("dev/convert-extended.g");
 
 BindGlobal("PRIMGRP_Sweep", function(degrees, stageDir, logFile)
-  local deg, t, res, s, name, total, tally, line;
+  local deg, t, res, s, name, total, tally, line, out;
   total := rec(groups := 0, affine := 0, generic := 0, renamed := 0, perms := 0,
                ffe := 0, int := 0, failed := 0, bytes := 0);
   for deg in degrees do
+    name := Concatenation(stageDir, "/deg", String(deg), ".g");
+    if IsReadableFile(name) then
+      continue;                 # already converted; makes a restart cheap
+    fi;
     t := Runtime();
     res := PRIMGRP_ConvertDegree(deg);
     s := PRIMGRP_CompactDegree(res.entries, deg);
-    name := Concatenation(stageDir, "/deg", String(deg), ".g");
     FileString(name, s);
     tally := res.stats;
     total.groups  := total.groups  + Length(res.entries);
@@ -45,9 +48,15 @@ BindGlobal("PRIMGRP_Sweep", function(degrees, stageDir, logFile)
       " failed=", String(Length(tally.failed)),
       " bytes=", String(Length(s)),
       " ms=", String(Runtime()-t), "\n");
-    AppendTo(logFile, line);
+    out := OutputTextFile(logFile, true);
+    SetPrintFormattingStatus(out, false);
+    WriteAll(out, line);
+    CloseStream(out);
     if Length(tally.failed) > 0 then
-      AppendTo(logFile, "  FAILED ", String(tally.failed), "\n");
+      out := OutputTextFile(logFile, true);
+      SetPrintFormattingStatus(out, false);
+      WriteAll(out, Concatenation("  FAILED ", String(tally.failed), "\n"));
+      CloseStream(out);
     fi;
   od;
   AppendTo(logFile, "TOTAL ", total, "\n");
