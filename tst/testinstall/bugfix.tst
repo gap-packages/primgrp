@@ -101,5 +101,15 @@ gap> List([[3159,3],[3640,2],[3640,4]],
 >         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])).parameter);
 [ [ 3, 3 ], [ 3, 3 ], [ 3, 3 ] ]
 
+# Sixteen more socle types with the rank one too high: C(3,9) where the socle
+# has order 1721606400 = |O(5,9)| = |B(2,9)|, and B(5,3) where it has order
+# 65784756654489600 = |O(9,3)| = |B(4,3)|.
+gap> Set([[3240,9],[3240,13],[3321,9],[3321,13]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
+[ rec( parameter := [ 2, 9 ], series := "B", width := 1 ) ]
+gap> Set([[3240,14],[3240,15],[3280,2],[3280,4],[3321,14],[3321,15]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
+[ rec( parameter := [ 4, 3 ], series := "B", width := 1 ) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
