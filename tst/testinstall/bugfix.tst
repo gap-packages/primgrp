@@ -118,5 +118,14 @@ gap> List([[3280,1],[3280,2]],
 [ rec( parameter := [ 4, 3 ], series := "C", width := 1 ), 
   rec( parameter := [ 4, 3 ], series := "B", width := 1 ) ]
 
+# Degree 3640 carries both series at rank 3, of equal order 4585351680, and
+# both were stored one rank too high.
+gap> List([[3640,1],[3640,2],[3640,3],[3640,4]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
+[ rec( parameter := [ 3, 3 ], series := "C", width := 1 ), 
+  rec( parameter := [ 3, 3 ], series := "B", width := 1 ), 
+  rec( parameter := [ 3, 3 ], series := "C", width := 1 ), 
+  rec( parameter := [ 3, 3 ], series := "B", width := 1 ) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
