@@ -111,5 +111,12 @@ gap> Set([[3240,14],[3240,15],[3280,2],[3280,4],[3321,14],[3321,15]],
 >         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
 [ rec( parameter := [ 4, 3 ], series := "B", width := 1 ) ]
 
+# B(4,3) and C(4,3) have the same order, 65784756654489600, but are not
+# isomorphic, so these two had to be told apart by series and not by order.
+gap> List([[3280,1],[3280,2]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
+[ rec( parameter := [ 4, 3 ], series := "C", width := 1 ), 
+  rec( parameter := [ 4, 3 ], series := "B", width := 1 ) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
