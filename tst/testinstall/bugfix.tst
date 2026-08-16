@@ -94,5 +94,12 @@ gap> ForAny([2..4095], function(d)
 >    end);
 false
 
+# Three entries claimed the socle was B(4,3) = O(9,3), of order
+# 65784756654489600, when the group itself has order 4585351680 = |O(7,3)|.
+# Found by the consistency check in tst/testutils.g.
+gap> List([[3159,3],[3640,2],[3640,4]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])).parameter);
+[ [ 3, 3 ], [ 3, 3 ], [ 3, 3 ] ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
