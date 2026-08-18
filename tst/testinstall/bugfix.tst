@@ -70,5 +70,17 @@ gap> G := PrimitiveGroup(121,38);
 gap> G := PrimitiveGroup(289,35);
 17^2:SL(2,3)
 
+# The socle series for unitary groups is "2A"; 51 entries in degrees >= 2500
+# spelled it "^2A", which GAP never produces.
+gap> SocleTypePrimitiveGroup(PrimitiveGroup(2752,1));
+rec( parameter := [ 3, 7 ], series := "2A", width := 1 )
+gap> SocleTypePrimitiveGroup(PrimitiveGroup(2500,18));
+rec( parameter := [ 2, 5 ], series := "2A", width := 2 )
+gap> ForAny([2..4095], function(d)
+>      PrimGrpLoad(d);
+>      return ForAny(PRIMGRP[d], e -> e[8][1][1] = '^');
+>    end);
+false
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
