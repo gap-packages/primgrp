@@ -99,24 +99,17 @@ BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
   local parts, generic;
   if IsBound(PRIMGRP_GenericFields) then
     generic := PRIMGRP_GenericFields(entry, deg, entry[1]);
-    # Fields 1..8 must agree exactly.  Field 9 need not: for PSL and PGL it
-    # changes from the bare marker "psl" to ["psl",dim,q], which names the
-    # same group -- the dimension was previously implicit in the degree.
-    if generic <> fail and generic = entry{[1..8]} then
-      # Bare, not a call: PRIMGrp applies it to (deg,nr) when the entry is
-      # first asked for, so nothing is computed at read time -- which for a
-      # symmetric group of degree 8191 means not computing Factorial(8191).
-      if entry[9] = "Alt" or entry[9] = "Sym" then
-        # degree alone determines these, so the bare function suffices
-        return rec(Alt := "PGAlt", Sym := "PGSym").(entry[9]);
-      fi;
-      # PSL and PGL need the dimension, which the degree does not give
-      if IsString(entry[9]) then
-        return Concatenation(rec(psl := "PGPsl", pgl := "PGPgl").(entry[9]),
-                             "(2,", String(deg-1), ")");
-      fi;
-      return Concatenation(rec(psl := "PGPsl", pgl := "PGPgl").(entry[9][1]),
-                           "(", String(entry[9][2]), ",", String(entry[9][3]), ")");
+    # Fields 1..8 must agree exactly.  Field 9 need not: it is what the
+    # constructor replaces, whether that was the marker "psl" or a list of
+    # permutations spelling out PSL(d,q) the long way.
+    # Fields 1..6 and 8 must agree exactly.  Field 7, the name, may be filled
+    # in where the entry has none -- 497 of these groups are unnamed, and a
+    # correct name is better than no name -- but never overwritten.
+    if generic <> fail
+       and generic.fields{[1..6]} = entry{[1..6]}
+       and generic.fields[8] = entry[8]
+       and (generic.fields[7] = entry[7] or entry[7] = "") then
+      return generic.text;
     fi;
   fi;
   parts := [ String(entry[1]),
