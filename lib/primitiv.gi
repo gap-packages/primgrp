@@ -122,11 +122,20 @@ BindGlobal("PrimGrpLoad",function(deg)
 end);
 
 BindGlobal("PRIMGrp",function(deg,nr)
+  local r;
   if nr>PRIMLENGTHS[deg] then
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
   fi;
   PrimGrpLoad(deg);
-  return PRIMGRP[deg][nr];
+  # An entry may be a function rather than a list, for the groups the degree
+  # alone determines: the data file says PGSym, not a spelled-out entry whose
+  # size field is Factorial(8191).  Evaluate on demand, and keep the result.
+  r:=PRIMGRP[deg][nr];
+  if IsFunction(r) then
+    r:=r(deg,nr);
+    PRIMGRP[deg][nr]:=r;
+  fi;
+  return r;
 end);
 
 InstallGlobalFunction(NrPrimitiveGroups, function(deg)
@@ -232,8 +241,8 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
     Error("Group must operate primitively");
   fi;
   deg:=Length(dom);
-  PrimGrpLoad(deg);
-  PD:=PRIMGRP[deg];
+  # via PRIMGrp, not PRIMGRP directly: entries may still be unevaluated
+  PD:=List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
 
   if IsNaturalAlternatingGroup(grp) then
     SetSize(grp, Factorial(deg)/2);

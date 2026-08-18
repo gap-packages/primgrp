@@ -18,7 +18,7 @@ BindGlobal("PRIMGRP_ClassicalEntries", function(degrees)
   for deg in degrees do
     PrimGrpLoad(deg);
     for nr in [1..NrPrimitiveGroups(deg)] do
-      st := PRIMGRP[deg][nr][8];
+      st := PRIMGrp(deg, nr)[8];
       if IsList(st[2]) and not st[1] in ["A", "Z"] then
         Add(out, [deg, nr]);
       fi;

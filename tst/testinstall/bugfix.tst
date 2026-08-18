@@ -76,10 +76,8 @@ gap> G := PrimitiveGroup(289,35);
 # 2^(1+4), for which ATLAS notation is the circle.
 gap> Name(PrimitiveGroup(625,657));
 "5^4:(4 \\circ 2^(1+4)).Sp(4, 2)"
-gap> ForAny([2..4095], function(d)
->      PrimGrpLoad(d);
->      return ForAny(PRIMGRP[d], e -> ForAny(e[7], c -> INT_CHAR(c) < 32));
->    end);
+gap> ForAny([2..4095], d -> ForAny([1..NrPrimitiveGroups(d)],
+>            i -> ForAny(PRIMGrp(d,i)[7], c -> INT_CHAR(c) < 32)));
 false
 
 # The socle series for unitary groups is "2A"; 51 entries in degrees >= 2500
@@ -88,10 +86,8 @@ gap> SocleTypePrimitiveGroup(PrimitiveGroup(2752,1));
 rec( parameter := [ 3, 7 ], series := "2A", width := 1 )
 gap> SocleTypePrimitiveGroup(PrimitiveGroup(2500,18));
 rec( parameter := [ 2, 5 ], series := "2A", width := 2 )
-gap> ForAny([2..4095], function(d)
->      PrimGrpLoad(d);
->      return ForAny(PRIMGRP[d], e -> e[8][1][1] = '^');
->    end);
+gap> ForAny([2..4095], d -> ForAny([1..NrPrimitiveGroups(d)],
+>            i -> PRIMGrp(d,i)[8][1][1] = '^'));
 false
 
 # Three entries claimed the socle was B(4,3) = O(9,3), of order

@@ -93,15 +93,17 @@ end);
 # really is elementary abelian) and they are written out in full.  Silently
 # generalising over a disagreement is how wrong data gets baked in.
 BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
-  local parts, generic, tag;
+  local parts, generic;
   if IsBound(PRIMGRP_GenericEntry) then
     generic := PRIMGRP_GenericEntry(entry, deg, entry[1]);
     # entry{[1..9]}: below degree 50 the source entries still carry Sims'
     # number as a tenth field, which has moved to PRIMGRP_SIMSNO.
     if generic <> fail and generic = entry{[1..9]} then
-      tag := rec(Alt := "PGAlt", Sym := "PGSym",
+      # Bare, not a call: PRIMGrp applies it to (deg,nr) when the entry is
+      # first asked for, so nothing is computed at read time -- which for a
+      # symmetric group of degree 8191 means not computing Factorial(8191).
+      return rec(Alt := "PGAlt", Sym := "PGSym",
                  psl := "PGPsl", pgl := "PGPgl").(entry[9]);
-      return Concatenation(tag, "(", String(deg), ",", String(entry[1]), ")");
     fi;
   fi;
   parts := [ String(entry[1]),

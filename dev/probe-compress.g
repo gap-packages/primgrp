@@ -24,7 +24,7 @@ BindGlobal("PRIMGRP_PermStoredGroups", function(degrees)
   for deg in degrees do
     PrimGrpLoad(deg);
     for nr in [1..NrPrimitiveGroups(deg)] do
-      l := PRIMGRP[deg][nr];
+      l := PRIMGrp(deg, nr);
       if not IsString(l[9]) and Length(l[9]) > 0 and IsPerm(l[9][1]) then
         Add(out, [Length(String(l[9])), deg, nr]);
       fi;
