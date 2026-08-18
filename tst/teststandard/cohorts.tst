@@ -11,7 +11,7 @@ gap> SetInfoLevel(InfoWarning,0);
 #
 gap> ReadPackage("primgrp", "tst/testutils.g");
 true
-gap> Perform([2..Length(COHORTS_PRIMITIVE_GROUPS)], n -> CheckCohortConsistency);
+gap> Perform([2..Length(COHORTS_PRIMITIVE_GROUPS)], CheckCohortConsistency);
 
 #
 gap> SetInfoLevel(InfoWarning,iW);
