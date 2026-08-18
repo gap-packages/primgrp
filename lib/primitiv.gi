@@ -148,6 +148,60 @@ BindGlobal("PRIMGRP_AffineVectors",function(p,d,enum)
   return out;
 end);
 
+#############################################################################
+##
+#F  PGPsigmaL( <dim>, <q> ) . . . PSigmaL and PGammaL on projective points
+#F  PGPgammaL( <dim>, <q> )
+##
+##  The extensions of PSL(dim,q) by field automorphisms, and by field and
+##  diagonal automorphisms, on the same (q^dim-1)/(q-1) points.  For q = p^e,
+##
+##      |PSigmaL(dim,q)| = |PSL(dim,q)| * e
+##      |PGammaL(dim,q)| = |PGL(dim,q)| * e
+##
+##  and both are 2-transitive on the points, PGammaL 3-transitive when dim is
+##  2 because it then contains the sharply 3-transitive PGL(2,q).  Read off
+##  the 25 PSigmaL and 43 PGammaL entries the library already names, which the
+##  formulas reproduce exactly.
+##
+##  These apply only when the degree really is (q^dim-1)/(q-1).  A name is not
+##  enough to go on: PrimitiveGroup(496,7) is called "PGammaL(2, 32)" and acts
+##  on 496 points, not on the 33 of the projective line, and is not even
+##  2-transitive there.
+##
+BindGlobal("PGPsigmaL",function(dim,q)
+  local n,e;
+  n:=(q^dim-1)/(q-1);
+  e:=Length(Factors(q));
+  return function(deg,nr)
+    if deg <> n then
+      Error("PGPsigmaL(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    return [ nr, PGPslOrder(dim,q)*e, 0, "2", [[deg-1,1]], 2,
+             Concatenation("PSigmaL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], ["psigmal",dim,q] ];
+  end;
+end);
+
+BindGlobal("PGPgammaL",function(dim,q)
+  local n,e;
+  n:=(q^dim-1)/(q-1);
+  e:=Length(Factors(q));
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPgammaL(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 then
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1)*e, 0, "2", [[deg-1,1]], t,
+             Concatenation("PGammaL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], ["pgammal",dim,q] ];
+  end;
+end);
+
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
@@ -216,6 +270,12 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "pgl" then
     g:= PGL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PGL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
+    g:= PSigmaL(l[9][2], l[9][3]);
+    SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "pgammal" then
+    g:= PGammaL(l[9][2], l[9][3]);
+    SetName(g, Concatenation("PGammaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
   elif l[4] = "1" then
     gens:=l[9];
     enum:="ffe";

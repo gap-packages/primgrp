@@ -108,7 +108,9 @@ BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
     if generic <> fail
        and generic.fields{[1..6]} = entry{[1..6]}
        and generic.fields[8] = entry[8]
-       and (generic.fields[7] = entry[7] or entry[7] = "") then
+       and (generic.fields[7] = entry[7] or entry[7] = ""
+            or (IsBound(PRIMGRP_PglIdentified)
+                and [deg,entry[1]] in PRIMGRP_PglIdentified)) then
       return generic.text;
     fi;
   fi;

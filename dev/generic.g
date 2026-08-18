@@ -17,7 +17,7 @@ end;
 
 ##  Fields 1..8 of the entry the generic form would produce, or fail.
 PRIMGRP_GenericFields := function(entry, deg, nr)
-  local q, t, d;
+  local q, t, d, e;
   if entry[9] = "Alt" then
     return rec(text := "PGAlt", fields :=
            [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
@@ -48,12 +48,38 @@ PRIMGRP_GenericFields := function(entry, deg, nr)
                fields := [ nr, PRIMGRP_PslOrder(d,q)*Gcd(d,q-1), 0, "2", [[deg-1,1]], 3,
              Concatenation("PGL(", String(d), ", ", String(q), ")"), ["L",[d,q],1] ]);
   fi;
+  # PSigmaL and PGammaL, likewise only on an explicit list: their orders are
+  # |PSL|*e and |PGL|*e for q = p^e, and at many degrees a sibling extension
+  # has the same order.
+  if IsBound(PRIMGRP_SigmaGamma) and IsBound(PRIMGRP_SigmaGamma.(String(deg)))
+     and IsBound(PRIMGRP_SigmaGamma.(String(deg)).(String(nr)))
+     and IsList(entry[8]) and entry[8][1] = "L" and IsList(entry[8][2])
+     and entry[8][3] = 1 and not IsString(entry[9]) then
+    d := entry[8][2][1]; q := entry[8][2][2];
+    e := Length(Factors(q));
+    if PRIMGRP_SigmaGamma.(String(deg)).(String(nr)) = "sigma" then
+      return rec(text := Concatenation("PGPsigmaL(", String(d), ",", String(q), ")"),
+                 fields := [ nr, PRIMGRP_PslOrder(d,q)*e, 0, "2", [[deg-1,1]], 2,
+                             Concatenation("PSigmaL(", String(d), ", ", String(q), ")"),
+                             ["L",[d,q],1] ]);
+    else
+      t := 2;
+      if d = 2 then t := 3; fi;
+      return rec(text := Concatenation("PGPgammaL(", String(d), ",", String(q), ")"),
+                 fields := [ nr, PRIMGRP_PslOrder(d,q)*Gcd(d,q-1)*e, 0, "2",
+                             [[deg-1,1]], t,
+                             Concatenation("PGammaL(", String(d), ", ", String(q), ")"),
+                             ["L",[d,q],1] ]);
+    fi;
+  fi;
+
   # A permutation-stored group whose socle is L(d,q), on the (q^d-1)/(q-1)
   # points of PG(d-1,q), and whose order is |PGL(d,q)|, is PGL(d,q) -- but
   # only where no other entry of that degree has the same socle and order.
   # At degree 170, PGL(2,169), PSigmaL(2,169) and PSL(2,169).2_3 all do, and
   # they are different groups; PRIMGRP_PglUnambiguous lists the safe ones.
-  if IsBound(PRIMGRP_PglUnambiguous) and [deg,nr] in PRIMGRP_PglUnambiguous
+  if ((IsBound(PRIMGRP_PglUnambiguous) and [deg,nr] in PRIMGRP_PglUnambiguous)
+      or (IsBound(PRIMGRP_PglIdentified) and [deg,nr] in PRIMGRP_PglIdentified))
      and IsList(entry[8]) and entry[8][1] = "L" and IsList(entry[8][2])
      and entry[8][3] = 1 and not IsString(entry[9]) then
     d := entry[8][2][1]; q := entry[8][2][2];

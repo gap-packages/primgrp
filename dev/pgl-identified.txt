@@ -1,0 +1,33 @@
+# PGL(dim,q) entries identified by PrimitiveIdentification, for the cases
+# where degree, socle, order and suborbits do not distinguish the group
+# from its PSigmaL and PSL.2_3 siblings.
+# degree nr dim q
+26 2 2 25
+50 4 2 49
+82 3 2 81
+122 2 2 121
+170 2 2 169
+290 2 2 289
+362 2 2 361
+530 2 2 529
+626 3 2 625
+730 5 2 729
+820 17 4 9
+842 2 2 841
+962 2 2 961
+1370 2 2 1369
+1682 2 2 1681
+1850 2 2 1849
+2210 2 2 2209
+2402 3 2 2401
+2810 2 2 2809
+3482 2 2 3481
+3722 2 2 3721
+4161 3 3 64
+4490 2 2 4489
+5042 2 2 5041
+5330 2 2 5329
+6242 2 2 6241
+6562 3 2 6561
+6890 2 2 6889
+7922 2 2 7921
