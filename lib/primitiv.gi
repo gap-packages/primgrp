@@ -71,16 +71,6 @@ end);
 ##  Both are 2-transitive on the points; PSL(2,q) is 3-transitive when q is
 ##  even, where it coincides with PGL(2,q).
 ##
-##  A field size as the data files write it: 169 -> "13^2", 7 -> "7".
-BindGlobal("PRIMGRP_FieldString",function(q)
-  local f;
-  f:=Factors(q);
-  if Length(f) = 1 then
-    return String(q);
-  fi;
-  return Concatenation(String(f[1]),"^",String(Length(f)));
-end);
-
 BindGlobal("PGPslOrder",function(dim,q)
   local o,i;
   o:=q^(dim*(dim-1)/2);
@@ -103,7 +93,7 @@ BindGlobal("PGPsl",function(dim,q)
       t:=3;
     fi;
     return [ nr, PGPslOrder(dim,q), 1, "2", [[deg-1,1]], t,
-             Concatenation("PSL(",String(dim),", ",PRIMGRP_FieldString(q),")"),
+             Concatenation("PSL(",String(dim),", ",String(q),")"),
              ["L",[dim,q],1], ["psl",dim,q] ];
   end;
 end);
@@ -116,7 +106,7 @@ BindGlobal("PGPgl",function(dim,q)
       Error("PGPgl(",dim,",",q,") describes degree ",n,", not ",deg);
     fi;
     return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1), 0, "2", [[deg-1,1]], 3,
-             Concatenation("PGL(",String(dim),", ",PRIMGRP_FieldString(q),")"),
+             Concatenation("PGL(",String(dim),", ",String(q),")"),
              ["L",[dim,q],1], ["pgl",dim,q] ];
   end;
 end);
