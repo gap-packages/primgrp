@@ -1,0 +1,250 @@
+6561 9086 before=937752 after=132715 raw=148310 smalldeg=36 ms=58007
+6724 70 before=561843 after=3174 raw=5662 smalldeg=164 ms=29533
+6724 52 before=529712 after=2896 raw=4499 smalldeg=164 ms=15535
+4096 1460 before=458877 after=7334 raw=22254 smalldeg=120 ms=7940
+4096 1415 before=305214 after=1049 raw=1772 smalldeg=56 ms=1993
+7800 16 before=114656 after=602 raw=896 smalldeg=52 ms=5575
+7462 24 before=109645 after=22027 raw=23365 smalldeg=1640 ms=66401
+7462 27 before=109462 after=22168 raw=23776 smalldeg=1640 ms=50669
+7462 21 before=109362 NOGAIN ms=82858
+6724 66 before=99652 after=2101 raw=3018 smalldeg=164 ms=10637
+6724 59 before=99244 after=2031 raw=2868 smalldeg=164 ms=17596
+6724 50 before=99141 after=2036 raw=2746 smalldeg=164 ms=3030
+6724 26 before=98957 after=2037 raw=2840 smalldeg=164 ms=13571
+6724 57 before=98929 after=1980 raw=2669 smalldeg=164 ms=11059
+6724 54 before=98924 after=2063 raw=2848 smalldeg=164 ms=9245
+6724 74 before=98908 after=3999 raw=4374 smalldeg=328 ms=41945
+6724 71 before=98866 after=2415 raw=4194 smalldeg=164 ms=6720
+6724 43 before=98780 after=2135 raw=3266 smalldeg=164 ms=5879
+6724 36 before=98745 after=8182 raw=9323 smalldeg=656 ms=52817
+6724 37 before=98671 after=2134 raw=3149 smalldeg=164 ms=5974
+6724 56 before=98643 after=2013 raw=2906 smalldeg=164 ms=5486
+6724 55 before=98515 after=2076 raw=2782 smalldeg=164 ms=27140
+6724 32 before=98483 after=1916 raw=2477 smalldeg=164 ms=4943
+6724 58 before=98482 after=1980 raw=2677 smalldeg=164 ms=19287
+6724 51 before=98405 after=1987 raw=2757 smalldeg=164 ms=5809
+6724 76 before=98382 after=4156 raw=5390 smalldeg=328 ms=40851
+6724 53 before=98373 after=2053 raw=2829 smalldeg=164 ms=5874
+6724 27 before=98300 after=2230 raw=3587 smalldeg=164 ms=4218
+6724 65 before=98100 after=2138 raw=3327 smalldeg=164 ms=17376
+6724 42 before=98082 after=2081 raw=3060 smalldeg=164 ms=5735
+6724 73 before=98068 after=1943 raw=2559 smalldeg=164 ms=10542
+6724 38 before=98028 after=2067 raw=2996 smalldeg=164 ms=22044
+6724 67 before=97864 after=1995 raw=2776 smalldeg=164 ms=3170
+6724 11 before=97805 after=1972 raw=2710 smalldeg=164 ms=1363
+6724 64 before=97744 after=1987 raw=2576 smalldeg=164 ms=9869
+6561 9096 before=96322 after=19064 raw=45365 smalldeg=36 ms=48479
+6561 9079 before=96299 after=11017 raw=27742 smalldeg=36 ms=12196
+6561 9102 before=96231 after=21599 raw=55162 smalldeg=36 ms=19922
+6561 9103 before=95908 after=15203 raw=48557 smalldeg=36 ms=46106
+6561 9099 before=95834 after=20412 raw=59906 smalldeg=36 ms=13213
+6561 9077 before=95832 after=12420 raw=25648 smalldeg=36 ms=7520
+6561 9075 before=95679 after=18845 raw=60822 smalldeg=36 ms=15042
+6561 9097 before=95559 after=14871 raw=46075 smalldeg=36 ms=11233
+6561 9092 before=95555 after=38679 raw=113152 smalldeg=36 ms=23552
+8180 1 before=82300 NOGAIN ms=31719
+8172 1 before=82228 NOGAIN ms=125530
+8168 1 before=82176 NOGAIN ms=125734
+8162 1 before=82114 NOGAIN ms=31584
+8148 1 before=81980 NOGAIN ms=128071
+8124 1 before=81732 NOGAIN ms=122741
+8118 1 before=81670 NOGAIN ms=451537
+8102 1 before=81494 NOGAIN ms=30446
+8094 1 before=81422 NOGAIN ms=31730
+8128 1 before=81385 NOGAIN ms=1694
+8090 1 before=81370 NOGAIN ms=54744
+8088 1 before=81360 NOGAIN ms=122576
+8082 1 before=81298 NOGAIN ms=121212
+8070 1 before=81174 NOGAIN ms=31526
+8060 1 before=81060 NOGAIN ms=31191
+8054 1 before=81000 NOGAIN ms=28676
+8040 1 before=80864 NOGAIN ms=122628
+8018 1 before=80626 NOGAIN ms=31051
+8012 1 before=80564 NOGAIN ms=119641
+8010 1 before=80554 NOGAIN ms=116495
+7994 1 before=80378 NOGAIN ms=119510
+8128 4 before=80232 after=897 raw=1003 smalldeg=129 ms=11038
+7964 1 before=80068 NOGAIN ms=118408
+8127 1 before=79934 NOGAIN ms=42180
+7950 1 before=79934 NOGAIN ms=115823
+7938 1 before=79810 NOGAIN ms=28720
+7934 1 before=79758 NOGAIN ms=30373
+8128 7 before=79706 NOGAIN ms=79779
+7928 1 before=79696 NOGAIN ms=117951
+8191 49 before=79692 NOGAIN ms=168842
+8128 6 before=79666 NOGAIN ms=22199
+7920 3 before=79624 NOGAIN ms=116448
+8128 5 before=79592 after=2761 raw=4196 smalldeg=254 ms=9462
+7908 1 before=79500 NOGAIN ms=114936
+7902 1 before=79438 NOGAIN ms=31227
+8128 3 before=79320 NOGAIN ms=418
+8127 2 before=79310 NOGAIN ms=63640
+8103 1 before=79268 NOGAIN ms=813
+8128 2 before=79260 after=863 raw=920 smalldeg=128 ms=9624
+7884 1 before=79254 NOGAIN ms=112439
+7880 1 before=79200 NOGAIN ms=111416
+7874 1 before=79138 NOGAIN ms=50284
+7868 1 before=79077 NOGAIN ms=110463
+8100 3 before=78966 after=1634 raw=2267 smalldeg=180 ms=9934
+8100 2 before=78964 after=1586 raw=2245 smalldeg=180 ms=4947
+8000 4 before=78950 after=769 raw=1571 smalldeg=60 ms=3961
+8100 4 before=78949 after=1591 raw=2175 smalldeg=180 ms=5309
+7854 1 before=78942 NOGAIN ms=554847
+8100 1 before=78903 after=1516 raw=2017 smalldeg=180 ms=10463
+7842 1 before=78820 NOGAIN ms=29476
+8008 2 before=78769 after=761 raw=1243 smalldeg=16 ms=3235
+8001 3 before=78695 after=2639 raw=3644 smalldeg=254 ms=6643
+7830 1 before=78694 NOGAIN ms=110896
+7824 1 before=78632 NOGAIN ms=112760
+8000 2 before=78622 after=610 raw=888 smalldeg=60 ms=1656
+7818 1 before=78570 NOGAIN ms=28074
+8000 7 before=78520 after=658 raw=974 smalldeg=60 ms=2834
+8000 5 before=78408 after=1081 raw=1604 smalldeg=120 ms=3442
+7875 3 before=78380 after=896 raw=1057 smalldeg=126 ms=16918
+8000 1 before=78349 after=988 raw=2084 smalldeg=60 ms=2181
+8000 10 before=78333 after=762 raw=1377 smalldeg=60 ms=8050
+8001 1 before=78304 NOGAIN ms=599
+7790 1 before=78270 NOGAIN ms=28352
+7920 2 before=78153 after=235 raw=416 smalldeg=22 ms=985
+7875 4 before=78104 after=913 raw=1059 smalldeg=126 ms=7449
+8000 9 before=78072 after=3096 raw=4055 smalldeg=342 ms=5002
+8001 2 before=78058 after=853 raw=919 smalldeg=128 ms=20877
+7800 9 before=78048 after=497 raw=858 smalldeg=52 ms=3066
+7920 1 before=78037 after=242 raw=477 smalldeg=23 ms=2673
+8000 6 before=78016 after=838 raw=1720 smalldeg=60 ms=3075
+8000 8 before=78008 after=875 raw=1832 smalldeg=60 ms=3913
+7760 1 before=77960 NOGAIN ms=109034
+7758 1 before=77950 NOGAIN ms=29359
+8000 3 before=77912 after=880 raw=1981 smalldeg=60 ms=1190
+8011 25 before=77904 NOGAIN ms=324
+7754 1 before=77898 NOGAIN ms=28063
+7875 1 before=77792 NOGAIN ms=558
+7742 1 before=77775 NOGAIN ms=28256
+7800 13 before=77740 after=573 raw=1059 smalldeg=52 ms=2491
+7750 3 before=77699 after=916 raw=1066 smalldeg=126 ms=9080
+7728 1 before=77640 NOGAIN ms=109350
+7724 1 before=77588 NOGAIN ms=28557
+7718 1 before=77526 NOGAIN ms=30657
+7776 1 before=77416 after=325 raw=728 smalldeg=25 ms=2109
+7704 1 before=77392 NOGAIN ms=109414
+7825 3 before=77345 NOGAIN ms=20452
+7800 7 before=77340 after=472 raw=782 smalldeg=52 ms=934
+7700 1 before=77340 NOGAIN ms=108834
+7800 2 before=77290 after=460 raw=742 smalldeg=52 ms=2214
+7692 1 before=77268 NOGAIN ms=425650
+7776 11 before=77254 after=773 raw=1745 smalldeg=50 ms=3210
+7875 5 before=77250 NOGAIN ms=166
+7688 1 before=77216 NOGAIN ms=108232
+7682 1 before=77154 NOGAIN ms=377373
+7674 1 before=77082 NOGAIN ms=106472
+7670 1 before=77032 NOGAIN ms=27213
+7922 1 before=77008 NOGAIN ms=31092
+7875 6 before=76976 NOGAIN ms=186
+7800 15 before=76903 after=415 raw=597 smalldeg=52 ms=1781
+7776 8 before=76900 after=615 raw=1532 smalldeg=25 ms=4431
+7800 12 before=76867 after=517 raw=942 smalldeg=52 ms=1706
+7875 7 before=76862 NOGAIN ms=26525
+7875 2 before=76850 after=906 raw=1119 smalldeg=126 ms=20545
+7650 1 before=76834 NOGAIN ms=108190
+7776 24 before=76830 after=826 raw=1960 smalldeg=30 ms=3504
+7800 8 before=76782 after=469 raw=815 smalldeg=52 ms=10232
+7644 1 before=76772 NOGAIN ms=107609
+7750 4 before=76768 after=958 raw=1190 smalldeg=126 ms=22329
+7776 30 before=76722 after=1325 raw=3045 smalldeg=30 ms=3786
+7640 1 before=76720 NOGAIN ms=108123
+7776 48 before=76717 after=2849 raw=6544 smalldeg=30 ms=4539
+7776 7 before=76708 after=1011 raw=2829 smalldeg=25 ms=1441
+7800 4 before=76697 after=528 raw=799 smalldeg=52 ms=1752
+7776 23 before=76696 after=921 raw=1915 smalldeg=30 ms=1537
+7825 2 before=76676 after=4897 raw=4963 smalldeg=626 ms=11462
+7800 6 before=76653 after=451 raw=747 smalldeg=52 ms=7268
+7776 36 before=76631 after=2317 raw=5028 smalldeg=50 ms=4098
+7776 22 before=76592 after=1230 raw=2917 smalldeg=50 ms=2732
+7776 41 before=76584 after=2036 raw=4438 smalldeg=50 ms=9893
+7776 33 before=76536 after=1096 raw=2108 smalldeg=30 ms=5191
+7622 1 before=76535 NOGAIN ms=106846
+7776 13 before=76514 after=520 raw=1146 smalldeg=25 ms=3582
+7776 12 before=76490 after=709 raw=1381 smalldeg=30 ms=1635
+7776 35 before=76486 after=1459 raw=2952 smalldeg=30 ms=3167
+7776 2 before=76484 after=549 raw=1035 smalldeg=25 ms=3006
+7776 5 before=76468 after=567 raw=1210 smalldeg=25 ms=2828
+7776 19 before=76460 after=1386 raw=3779 smalldeg=30 ms=3145
+7776 9 before=76436 after=711 raw=1448 smalldeg=30 ms=3069
+7776 32 before=76436 after=1887 raw=4781 smalldeg=30 ms=5706
+7800 11 before=76434 after=512 raw=909 smalldeg=52 ms=3811
+7776 15 before=76432 after=883 raw=1814 smalldeg=25 ms=3194
+7776 17 before=76425 after=555 raw=1076 smalldeg=25 ms=3029
+7800 10 before=76422 after=470 raw=746 smalldeg=52 ms=2943
+7800 14 before=76417 after=497 raw=892 smalldeg=52 ms=3440
+7776 42 before=76404 after=3159 raw=6733 smalldeg=30 ms=4311
+7608 1 before=76400 NOGAIN ms=108048
+7776 27 before=76394 after=1826 raw=4461 smalldeg=30 ms=4035
+7776 34 before=76382 after=1197 raw=1661 smalldeg=30 ms=4054
+7776 51 before=76382 after=2207 raw=5098 smalldeg=30 ms=8298
+7776 10 before=76378 after=975 raw=2582 smalldeg=25 ms=4496
+7800 1 before=76377 after=508 raw=859 smalldeg=52 ms=3111
+7604 1 before=76348 NOGAIN ms=106415
+7776 16 before=76290 after=917 raw=1967 smalldeg=50 ms=3680
+7776 38 before=76289 after=1090 raw=2123 smalldeg=30 ms=3116
+7776 21 before=76268 after=709 raw=1436 smalldeg=25 ms=3158
+7776 3 before=76268 after=532 raw=1150 smalldeg=25 ms=1449
+7776 49 before=76265 after=3125 raw=8776 smalldeg=30 ms=8352
+7776 44 before=76264 after=1254 raw=2684 smalldeg=30 ms=5021
+7776 14 before=76244 after=869 raw=2126 smalldeg=30 ms=2890
+7776 4 before=76243 after=840 raw=2245 smalldeg=25 ms=5842
+7592 1 before=76224 NOGAIN ms=104730
+7776 31 before=76218 after=1122 raw=2195 smalldeg=30 ms=8259
+7776 37 before=76218 after=1765 raw=4032 smalldeg=30 ms=6202
+7590 1 before=76214 NOGAIN ms=29509
+7776 47 before=76208 after=3876 raw=11287 smalldeg=30 ms=4733
+7776 50 before=76200 after=1495 raw=3162 smalldeg=30 ms=6425
+7776 40 before=76184 after=2190 raw=4583 smalldeg=30 ms=16461
+7776 43 before=76177 after=1770 raw=3182 smalldeg=30 ms=5174
+7800 5 before=76155 after=1023 raw=1331 smalldeg=130 ms=2508
+7584 1 before=76152 NOGAIN ms=106576
+7776 45 before=76132 after=2870 raw=6582 smalldeg=30 ms=6693
+7776 52 before=76125 after=3332 raw=6492 smalldeg=30 ms=9281
+7776 18 before=76120 after=869 raw=2031 smalldeg=30 ms=2449
+7776 29 before=76108 after=1771 raw=2229 smalldeg=30 ms=4547
+7825 1 before=76092 NOGAIN ms=156
+7578 1 before=76090 NOGAIN ms=28633
+7776 6 before=76048 after=494 raw=1038 smalldeg=25 ms=2229
+7574 1 before=76038 NOGAIN ms=102198
+7776 26 before=76012 after=1186 raw=2643 smalldeg=50 ms=4954
+7776 39 before=75990 after=1043 raw=1708 smalldeg=30 ms=5344
+7776 46 before=75960 after=2477 raw=5712 smalldeg=30 ms=4426
+7562 1 before=75914 NOGAIN ms=28265
+7776 25 before=75912 after=1182 raw=2590 smalldeg=25 ms=6114
+7560 6 before=75904 NOGAIN ms=104134
+7776 28 before=75892 after=2878 raw=4892 smalldeg=30 ms=4204
+7750 5 before=75892 NOGAIN ms=95
+7800 3 before=75867 after=434 raw=712 smalldeg=52 ms=8545
+7750 7 before=75806 NOGAIN ms=27018
+7776 20 before=75794 after=777 raw=2037 smalldeg=30 ms=3099
+7750 6 before=75792 NOGAIN ms=175
+7550 1 before=75790 NOGAIN ms=102135
+7542 1 before=75718 NOGAIN ms=27470
+7538 1 before=75666 NOGAIN ms=26680
+7750 2 before=75600 after=857 raw=955 smalldeg=126 ms=6671
+7530 1 before=75594 NOGAIN ms=28663
+7750 1 before=75536 NOGAIN ms=391
+7524 1 before=75532 NOGAIN ms=103233
+7518 1 before=75470 NOGAIN ms=28754
+7560 2 before=75462 after=1398 raw=1612 smalldeg=182 ms=8381
+7508 1 before=75356 NOGAIN ms=97674
+7371 1 before=75262 NOGAIN ms=336
+7490 1 before=75170 NOGAIN ms=26904
+7482 1 before=75098 NOGAIN ms=312397
+7478 1 before=75046 NOGAIN ms=96264
+7620 2 before=74976 NOGAIN ms=40457
+7560 1 before=74900 NOGAIN ms=211
+7460 1 before=74860 NOGAIN ms=27759
+7458 1 before=74850 NOGAIN ms=95799
+7452 1 before=74788 NOGAIN ms=27849
+7560 3 before=74731 after=1372 raw=1523 smalldeg=182 ms=941
+7560 5 before=74634 after=1431 raw=1745 smalldeg=182 ms=12246
+7434 1 before=74602 NOGAIN ms=27740
+7371 3 before=74590 after=1475 raw=1779 smalldeg=182 ms=1543
+7418 1 before=74426 NOGAIN ms=25776
+7412 1 before=74364 NOGAIN ms=96474
+7620 1 before=74264 after=6112 raw=6462 smalldeg=762 ms=40542
