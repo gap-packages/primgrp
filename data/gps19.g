@@ -61,8 +61,8 @@ PRIMGRP[2027]:=[
 PGAlt,
 PGSym];
 PRIMGRP[2028]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,2027),
+PGPgl(2,2027),
 PGAlt,
 PGSym];
 PRIMGRP[2029]:=[
@@ -87,8 +87,8 @@ PRIMGRP[2029]:=[
 PGAlt,
 PGSym];
 PRIMGRP[2030]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,2029),
+PGPgl(2,2029),
 PGAlt,
 PGSym];
 PRIMGRP[2031]:=[
@@ -123,8 +123,8 @@ PRIMGRP[2039]:=[
 PGAlt,
 PGSym];
 PRIMGRP[2040]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,2039),
+PGPgl(2,2039),
 PGAlt,
 PGSym];
 PRIMGRP[2041]:=[

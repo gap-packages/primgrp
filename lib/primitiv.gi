@@ -57,18 +57,58 @@ BindGlobal("PGSym",function(deg,nr)
            Concatenation("Sym(",String(deg),")"), ["A",deg,1], "Sym" ];
 end);
 
-BindGlobal("PGPsl",function(deg,nr)
-  local q;
-  q:=deg-1;
-  return [ nr, q*(q^2-1)/Gcd(2,q-1), 1, "2", [[q,1]], 2,
-           Concatenation("PSL(2, ",String(q),")"), ["L",[2,q],1], "psl" ];
+#############################################################################
+##
+#F  PGPsl( <dim>, <q> ) . . . . . . . . PSL and PGL on projective points
+#F  PGPgl( <dim>, <q> )
+##
+##  PSL(dim,q) and PGL(dim,q) acting on the points of PG(dim-1,q), of which
+##  there are (q^dim-1)/(q-1).  Unlike PGAlt and PGSym these take arguments,
+##  because the degree does not determine the dimension: 31 points is both the
+##  projective line over GF(31)... and PG(4,2).  So the data file says
+##  PGPsl(2,13), which yields the function PRIMGrp then applies to (deg,nr).
+##
+##  Both are 2-transitive on the points; PSL(2,q) is 3-transitive when q is
+##  even, where it coincides with PGL(2,q).
+##
+BindGlobal("PGPslOrder",function(dim,q)
+  local o,i;
+  o:=q^(dim*(dim-1)/2);
+  for i in [2..dim] do
+    o:=o*(q^i-1);
+  od;
+  return o/Gcd(dim,q-1);
 end);
 
-BindGlobal("PGPgl",function(deg,nr)
-  local q;
-  q:=deg-1;
-  return [ nr, q*(q^2-1), 0, "2", [[q,1]], 3,
-           Concatenation("PGL(2, ",String(q),")"), ["L",[2,q],1], "pgl" ];
+BindGlobal("PGPsl",function(dim,q)
+  local n;
+  n:=(q^dim-1)/(q-1);
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPsl(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 and q mod 2 = 0 then
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q), 1, "2", [[deg-1,1]], t,
+             Concatenation("PSL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], ["psl",dim,q] ];
+  end;
+end);
+
+BindGlobal("PGPgl",function(dim,q)
+  local n;
+  n:=(q^dim-1)/(q-1);
+  return function(deg,nr)
+    if deg <> n then
+      Error("PGPgl(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1), 0, "2", [[deg-1,1]], 3,
+             Concatenation("PGL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], ["pgl",dim,q] ];
+  end;
 end);
 
 #############################################################################
@@ -170,6 +210,12 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif l[9] = "pgl" then
     g:= PGL(2, deg-1);
     SetName(g, Concatenation("PGL(2,", String(deg-1), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psl" then
+    g:= PSL(l[9][2], l[9][3]);
+    SetName(g, Concatenation("PSL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "pgl" then
+    g:= PGL(l[9][2], l[9][3]);
+    SetName(g, Concatenation("PGL(", String(l[9][2]), ",", String(l[9][3]), ")"));
   elif l[4] = "1" then
     gens:=l[9];
     enum:="ffe";

@@ -74,6 +74,9 @@ BindGlobal("PRIMGRP_CompactGenerators", function(gens, deg, onanscott)
     return PRIMGRP_QuoteString(gens);
   elif Length(gens) = 0 then
     return "[]";
+  elif IsList(gens) and Length(gens) = 3 and IsString(gens[1])
+       and (gens[1] = "psl" or gens[1] = "pgl") then
+    return PRIMGRP_Compact(gens);          # ["psl",dim,q], written as data
   elif IsString(gens[1]) then
     # ["int", mats]: affine, but enumerating F_p^d by base-p digit value rather
     # than by GAP's order on field elements.  See dev/affine.g.
@@ -94,16 +97,26 @@ end);
 # generalising over a disagreement is how wrong data gets baked in.
 BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
   local parts, generic;
-  if IsBound(PRIMGRP_GenericEntry) then
-    generic := PRIMGRP_GenericEntry(entry, deg, entry[1]);
-    # entry{[1..9]}: below degree 50 the source entries still carry Sims'
-    # number as a tenth field, which has moved to PRIMGRP_SIMSNO.
-    if generic <> fail and generic = entry{[1..9]} then
+  if IsBound(PRIMGRP_GenericFields) then
+    generic := PRIMGRP_GenericFields(entry, deg, entry[1]);
+    # Fields 1..8 must agree exactly.  Field 9 need not: for PSL and PGL it
+    # changes from the bare marker "psl" to ["psl",dim,q], which names the
+    # same group -- the dimension was previously implicit in the degree.
+    if generic <> fail and generic = entry{[1..8]} then
       # Bare, not a call: PRIMGrp applies it to (deg,nr) when the entry is
       # first asked for, so nothing is computed at read time -- which for a
       # symmetric group of degree 8191 means not computing Factorial(8191).
-      return rec(Alt := "PGAlt", Sym := "PGSym",
-                 psl := "PGPsl", pgl := "PGPgl").(entry[9]);
+      if entry[9] = "Alt" or entry[9] = "Sym" then
+        # degree alone determines these, so the bare function suffices
+        return rec(Alt := "PGAlt", Sym := "PGSym").(entry[9]);
+      fi;
+      # PSL and PGL need the dimension, which the degree does not give
+      if IsString(entry[9]) then
+        return Concatenation(rec(psl := "PGPsl", pgl := "PGPgl").(entry[9]),
+                             "(2,", String(deg-1), ")");
+      fi;
+      return Concatenation(rec(psl := "PGPsl", pgl := "PGPgl").(entry[9][1]),
+                           "(", String(entry[9][2]), ",", String(entry[9][3]), ")");
     fi;
   fi;
   parts := [ String(entry[1]),

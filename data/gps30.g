@@ -1,6 +1,6 @@
 PRIMGRP[3050]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3049),
+PGPgl(2,3049),
 PGAlt,
 PGSym];
 PRIMGRP[3051]:=[
@@ -75,8 +75,8 @@ PRIMGRP[3061]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3062]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3061),
+PGPgl(2,3061),
 PGAlt,
 PGSym];
 PRIMGRP[3063]:=[
@@ -111,8 +111,8 @@ PRIMGRP[3067]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3068]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3067),
+PGPgl(2,3067),
 PGAlt,
 PGSym];
 PRIMGRP[3069]:=[
@@ -169,8 +169,8 @@ PRIMGRP[3079]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3080]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3079),
+PGPgl(2,3079),
 PGAlt,
 PGSym];
 PRIMGRP[3081]:=[
@@ -195,8 +195,8 @@ PRIMGRP[3083]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3084]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3083),
+PGPgl(2,3083),
 PGAlt,
 PGSym];
 PRIMGRP[3085]:=[
@@ -225,8 +225,8 @@ PRIMGRP[3089]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3090]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3089),
+PGPgl(2,3089),
 PGAlt,
 PGSym];
 PRIMGRP[3091]:=[
@@ -313,8 +313,8 @@ PRIMGRP[3109]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3110]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3109),
+PGPgl(2,3109),
 PGAlt,
 PGSym];
 PRIMGRP[3111]:=[
@@ -349,8 +349,8 @@ PRIMGRP[3119]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3120]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3119),
+PGPgl(2,3119),
 PGAlt,
 PGSym];
 PRIMGRP[3121]:=[
@@ -397,8 +397,8 @@ PRIMGRP[3121]:=[
 PGAlt,
 PGSym];
 PRIMGRP[3122]:=[
-PGPsl,
-PGPgl,
+PGPsl(2,3121),
+PGPgl(2,3121),
 PGAlt,
 PGSym];
 PRIMGRP[3123]:=[
