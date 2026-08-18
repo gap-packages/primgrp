@@ -127,5 +127,14 @@ gap> List([[3640,1],[3640,2],[3640,3],[3640,4]],
   rec( parameter := [ 3, 3 ], series := "C", width := 1 ), 
   rec( parameter := [ 3, 3 ], series := "B", width := 1 ) ]
 
+# The last six, including PrimitiveGroup(4095,1), which is the example that
+# prompted issue #40: the socle was recorded as C(7,2) rather than B(6,2).
+gap> List([[3906,3],[3906,4],[3969,9],[4095,1]],
+>         p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2])));
+[ rec( parameter := [ 3, 5 ], series := "C", width := 1 ), 
+  rec( parameter := [ 3, 5 ], series := "B", width := 1 ), 
+  rec( parameter := [ 3, 2 ], series := "B", width := 2 ), 
+  rec( parameter := [ 6, 2 ], series := "B", width := 1 ) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
