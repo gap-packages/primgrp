@@ -25,18 +25,18 @@ if not IsBoundGlobal("L") then
   BindGlobal("L", {d,q} -> SimpleGroup("L", d, q));
 fi;
 if not IsBoundGlobal("ASigmaL") then
-  BindGlobal("ASigmaL", function(d, q)
+  ASigmaL := function(d, q)
     local G;
     G := SigmaL(d, q);
     return SemidirectProduct(G, FieldOfMatrixGroup(G)^DimensionOfMatrixGroup(G));
-  end);
+  end;
 fi;
 if not IsBoundGlobal("AGammaL") then
-  BindGlobal("AGammaL", function(d, q)
+  AGammaL := function(d, q)
     local G;
     G := GammaL(d, q);
     return SemidirectProduct(G, FieldOfMatrixGroup(G)^DimensionOfMatrixGroup(G));
-  end);
+  end;
 fi;
 
 ######################################################################
@@ -44,7 +44,7 @@ fi;
 ##  Evaluate a name and compare the result with <desc>.  Returns fail if the
 ##  name does not evaluate to a group.
 ##
-BindGlobal("ComparePrimGrpByStructure", function(name, desc)
+ComparePrimGrpByStructure := function(name, desc)
   local n, g, r, brk, depth, c, i;
   n := ReplacedString( name, "A(",   "AlternatingGroup(" );
   n := ReplacedString( n,    "Alt(", "AlternatingGroup(" );
@@ -106,10 +106,10 @@ BindGlobal("ComparePrimGrpByStructure", function(name, desc)
   # same group of order 1440 and describe differently.  Only a failed
   # isomorphism test makes it a real disagreement.
   return rec(differs := true, evaluated := g);
-end);
+end;
 
 ##  "7:3" against "C7 : C3": drop the C from cyclic factors.
-BindGlobal("DropCfromCyclicGroups", function(str)
+DropCfromCyclicGroups := function(str)
   local pos;
   str := ShallowCopy(str);
   repeat
@@ -121,9 +121,9 @@ BindGlobal("DropCfromCyclicGroups", function(str)
     fi;
   until pos = fail;
   return str;
-end);
+end;
 
-BindGlobal("ComparePrimGrpByNames", function(name, desc)
+ComparePrimGrpByNames := function(name, desc)
   local n, d;
   n := ReplacedString(name, " ", "");
   n := ReplacedString(n, "Alt", "A");
@@ -141,10 +141,10 @@ BindGlobal("ComparePrimGrpByNames", function(name, desc)
     n := Concatenation("D", String(EvalString(n{[3..Length(n)-1]})));
   fi;
   return n = d or n = DropCfromCyclicGroups(d);
-end);
+end;
 
 ##  Complaints about the names of one degree, as strings.
-BindGlobal("PrimGrpNameCheckDegree", function(deg)
+PrimGrpNameCheckDegree := function(deg)
   local out, i, g, desc, names, name, r;
   out := [];
   for i in [1..NrPrimitiveGroups(deg)] do
@@ -175,4 +175,4 @@ BindGlobal("PrimGrpNameCheckDegree", function(deg)
     od;
   od;
   return out;
-end);
+end;

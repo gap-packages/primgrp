@@ -94,9 +94,11 @@ end);
 # generalising over a disagreement is how wrong data gets baked in.
 BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
   local parts, generic, tag;
-  if IsBound(PRIMGRP_GenericEntry) and not IsBound(entry[10]) then
+  if IsBound(PRIMGRP_GenericEntry) then
     generic := PRIMGRP_GenericEntry(entry, deg, entry[1]);
-    if generic <> fail and generic = entry then
+    # entry{[1..9]}: below degree 50 the source entries still carry Sims'
+    # number as a tenth field, which has moved to PRIMGRP_SIMSNO.
+    if generic <> fail and generic = entry{[1..9]} then
       tag := rec(Alt := "PGAlt", Sym := "PGSym",
                  psl := "PGPsl", pgl := "PGPgl").(entry[9]);
       return Concatenation(tag, "(", String(deg), ",", String(entry[1]), ")");
@@ -111,9 +113,7 @@ BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
              PRIMGRP_QuoteString(entry[7]),
              PRIMGRP_Compact(entry[8]),
              PRIMGRP_CompactGenerators(entry[9], deg, entry[4]) ];
-  if IsBound(entry[10]) then
-    Add(parts, String(entry[10]));
-  fi;
+  # Field 10, Sims' number, has moved to PRIMGRP_SIMSNO in lib/primitiv.grp.
   return Concatenation("[", JoinStringsWithSeparator(parts, ","), "]");
 end);
 

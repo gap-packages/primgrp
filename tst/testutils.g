@@ -50,23 +50,23 @@ end;
 ##  attributes back.
 ##
 
-BindGlobal("PrimGrpRecomputed", function(g)
+PrimGrpRecomputed := function(g)
   local h;
   h := Group(GeneratorsOfGroup(g));
   SetNrMovedPoints(h, NrMovedPoints(g));
   return h;
-end);
+end;
 
 # Collected suborbit lengths, as the data files store them.  Order varies --
 # 4114 of the 24558 stored entries are not sorted -- so compare as sets, which
 # is also what PrimitiveIdentification does.
-BindGlobal("PrimGrpSuborbits", function(g, deg)
+PrimGrpSuborbits := function(g, deg)
   return Set(Collected(List(Orbits(Stabilizer(g, 1), [2..deg]), Length)));
-end);
+end;
 
 ##  A socle type as it appears in the alias list of
 ##  IsomorphismTypeInfoFiniteSimpleGroup: "L", [2,5] -> "L(2,5)".
-BindGlobal("PrimGrpSocleToken", function(st)
+PrimGrpSocleToken := function(st)
   local par;
   if IsList(st.parameter) then
     par := JoinStringsWithSeparator(List(st.parameter, String), ",");
@@ -74,7 +74,7 @@ BindGlobal("PrimGrpSocleToken", function(st)
     par := String(st.parameter);
   fi;
   return Concatenation(st.series, "(", par, ")");
-end);
+end;
 
 ##  Do two socle types describe the same group?
 ##
@@ -84,7 +84,7 @@ end);
 ##  one.  The `name' field of the computed type lists every alias --
 ##  "A(5) ~ A(1,4) = L(2,4) ~ ... ~ A(1,5) = L(2,5) ~ ..." -- so a stored type
 ##  agrees if its token appears there.
-BindGlobal("PrimGrpSameSocleType", function(stored, computed)
+PrimGrpSameSocleType := function(stored, computed)
   if stored.width <> computed.width then
     return false;
   fi;
@@ -93,11 +93,11 @@ BindGlobal("PrimGrpSameSocleType", function(stored, computed)
   fi;
   return IsBound(computed.name) and
          PositionSublist(computed.name, PrimGrpSocleToken(stored)) <> fail;
-end);
+end;
 
 ##  Check one group.  Returns a list of complaints, empty if all is well.
 ##  <checks> selects what to recompute; the socle is much the most expensive.
-BindGlobal("PrimGrpCheckGroup", function(deg, nr, checks)
+PrimGrpCheckGroup := function(deg, nr, checks)
   local out, g, h, note, s, t;
 
   out := [];
@@ -173,12 +173,12 @@ BindGlobal("PrimGrpCheckGroup", function(deg, nr, checks)
   fi;
 
   return out;
-end);
+end;
 
-BindGlobal("PrimGrpCheckDegree", function(deg, checks)
+PrimGrpCheckDegree := function(deg, checks)
   return Concatenation(List([1..NrPrimitiveGroups(deg)],
                             nr -> PrimGrpCheckGroup(deg, nr, checks)));
-end);
+end;
 
-BindGlobal("PrimGrpCheckAll", [ "size", "transitivity", "simple",
-                                "suborbits", "onanscott", "socle" ]);
+PrimGrpCheckAll := [ "size", "transitivity", "simple",
+                                "suborbits", "onanscott", "socle" ];
