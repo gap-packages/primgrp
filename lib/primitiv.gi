@@ -219,6 +219,88 @@ BindGlobal("PGProductActionGroup",function(m,b,topgens)
   return WreathProductProductAction(PrimitiveGroup(m,b), Group(topgens));
 end);
 
+#############################################################################
+##
+#F  PGClassicalGroup( <ser>, <d>, <q>, <ext> )
+##
+##  An almost simple group of O'Nan-Scott type 2 whose socle is the classical
+##  group <ser>_<d>(<q>), acting on the natural geometry: the projective
+##  points for series L and C, the isotropic points for 2A, the singular
+##  points for B, D and 2D.
+##
+##  Only the big group is built.  GAP's Omega(0,7,3) and GO(0,7,3) do not use
+##  the same Gram matrix, so their singular points are different sets and no
+##  one action carries both; taking the socle of the big group instead makes
+##  that mismatch impossible.
+##
+##  Everything between the socle T and A = N(T) is primitive of the same
+##  degree, so the subgroups of A/T of order <ext> are exactly the library
+##  entries of that order.  <ext> is recorded only where that subgroup is
+##  unique, which is what makes the entry recoverable.
+##
+BindGlobal("PRIMGRP_ClassicalCache", rec());
+
+BindGlobal("PGClassicalNormaliser",function(ser,d,q)
+  local key,n,Q,M,kind,all,pts,m,p,frob,A,r,gens;
+  key:=Concatenation(ser,"_",String(d),"_",String(q));
+  if IsBound(PRIMGRP_ClassicalCache.(key)) then
+    return PRIMGRP_ClassicalCache.(key);
+  fi;
+  if   ser="L"  then n:=d;     Q:=q;   M:=GL(d,q);         kind:="all";
+  elif ser="C"  then n:=2*d;   Q:=q;   M:=Sp(2*d,q);       kind:="all";
+  elif ser="2A" then n:=d+1;   Q:=q^2; M:=GU(d+1,q);       kind:="sesq";
+  elif ser="B"  then n:=2*d+1; Q:=q;   M:=GO(0,2*d+1,q);   kind:="quad";
+  elif ser="D"  then n:=2*d;   Q:=q;   M:=GO(1,2*d,q);     kind:="quad";
+  elif ser="2D" then n:=2*d;   Q:=q;   M:=GO(-1,2*d,q);    kind:="quad";
+  else Error("no natural action known for series ",ser);
+  fi;
+  all:=NormedRowVectors(GF(Q)^n);
+  if kind="all" then
+    pts:=all;
+  elif kind="sesq" then
+    m:=InvariantSesquilinearForm(M).matrix;
+    pts:=Filtered(all,v->v*m*List(v,x->x^RootInt(Q))=0*Z(Q)^0);
+  else
+    m:=InvariantQuadraticForm(M).matrix;
+    pts:=Filtered(all,v->v*m*v=0*Z(Q)^0);
+  fi;
+  p:=SmallestRootInt(Q);
+  gens:=GeneratorsOfGroup(Action(M,pts,OnLines));
+  # Frobenius permutes the points only when the Gram matrix is fixed by it,
+  # which fails for GO(-1,8,4) and its kin over non-prime fields of even
+  # characteristic.  Leave it out there: A comes out smaller, and asking for
+  # an <ext> it can no longer realise is refused below rather than guessed.
+  frob:=Permutation(p,pts,function(v,e) return OnLines(List(v,x->x^e),1); end);
+  if frob<>fail then
+    gens:=Concatenation(gens,[frob]);
+  fi;
+  A:=Group(gens);
+  r:=rec(deg:=Length(pts), A:=A, T:=Socle(A));
+  PRIMGRP_ClassicalCache.(key):=r;
+  return r;
+end);
+
+BindGlobal("PGClassicalGroup",function(ser,d,q,ext)
+  local r,hom,Q,cand;
+  r:=PGClassicalNormaliser(ser,d,q);
+  if ext=1 then
+    return r.T;
+  fi;
+  if Size(r.A)/Size(r.T) mod ext <> 0 then
+    Error(ser,"(",d,",",q,") realises only ",Size(r.A)/Size(r.T),
+          " outer automorphisms on its points, not ",ext);
+  fi;
+  hom:=NaturalHomomorphismByNormalSubgroup(r.A,r.T);
+  Q:=ImagesSource(hom);
+  cand:=Filtered(List(ConjugacyClassesSubgroups(Q),Representative),
+                 s->Size(s)=ext);
+  if Length(cand)<>1 then
+    Error(Length(cand)," subgroups of order ",ext," in the outer group of ",
+          ser,"(",d,",",q,")");
+  fi;
+  return PreImage(hom,cand[1]);
+end);
+
 BindGlobal("PGPsigmaL",function(dim,q)
   local n,e;
   n:=(q^dim-1)/(q-1);
@@ -323,6 +405,12 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
     g:= PSigmaL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 5 and l[9][1] = "cl" then
+    g:= PGClassicalGroup(l[9][2], l[9][3], l[9][4], l[9][5]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
   elif IsList(l[9]) and Length(l[9]) = 4 and l[9][1] = "pa" then
     g:= PGProductActionGroup(l[9][2], l[9][3], l[9][4]);
     if IsString(l[7]) and Length(l[7])>0 then

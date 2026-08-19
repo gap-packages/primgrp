@@ -142,5 +142,16 @@ gap> List([[625,6],[625,41],[1296,26]],
   [ [ 1, 1 ], [ 16, 1 ], [ 32, 3 ], [ 256, 2 ] ], 
   [ [ 1, 1 ], [ 20, 1 ], [ 50, 3 ], [ 500, 1 ], [ 625, 1 ] ] ]
 
+# Type 2 entries stored as ["cl",<series>,<d>,<q>,<ext>]: the socle acting on
+# its natural geometry, extended by <ext> outer automorphisms.  Degree 126 is
+# the case that shows why the point set is built by hand -- GAP's own
+# PSU(3,5) acts on all 651 projective points, not on the 126 isotropic ones.
+gap> g := PrimitiveGroup(126,3);;
+gap> Size(g) = Size(PSU(3,5)) and NrMovedPoints(g) = 126 and IsPrimitive(g);
+true
+gap> List([[126,6],[364,9],[820,7],[1066,1]],
+>         p -> Size(PrimitiveGroup(p[1],p[2])));
+[ 756000, 42064805779476480, 6886425600, 10151968619520 ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
