@@ -132,5 +132,15 @@ gap> List([[3906,3],[3906,4],[3969,9],[4095,1]],
   rec( parameter := [ 3, 2 ], series := "B", width := 2 ), 
   rec( parameter := [ 6, 2 ], series := "B", width := 1 ) ]
 
+# Type 4c entries stored as ["pa",m,b,topgens]: the top group's generators are
+# permutations, and a generator that is a product of two or more cycles was
+# once written out as several separate generators, giving a larger group.
+gap> List([[625,6],[625,41],[1296,26]],
+>         p -> Collected(List(OrbitsDomain(Stabilizer(PrimitiveGroup(p[1],p[2]),1),
+>                                          [1..p[1]]), Length)));
+[ [ [ 1, 1 ], [ 16, 1 ], [ 32, 3 ], [ 256, 2 ] ], 
+  [ [ 1, 1 ], [ 16, 1 ], [ 32, 3 ], [ 256, 2 ] ], 
+  [ [ 1, 1 ], [ 20, 1 ], [ 50, 3 ], [ 500, 1 ], [ 625, 1 ] ] ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);

@@ -53,3 +53,23 @@ end);
 
 PRIMGRP_ScanProductAction(PRIMGRP_Bases, PRIMGRP_MarkDir, PRIMGRP_LogFile);
 QUIT;
+
+# Serialise the hits found above.  The top group's generators are permutations,
+# and they must go through PRIMGRP_Compact: writing them by hand once split a
+# generator that is a product of cycles into one generator per cycle, which
+# yields a strictly larger group and was caught only by the suborbit check.
+BindGlobal("PRIMGRP_ProductActionEntries", function(hitsFile, outFile)
+  local out, l, p, gens, W;
+  out := OutputTextFile(outFile, false);
+  SetPrintFormattingStatus(out, false);
+  for l in SplitString(StringFile(hitsFile), "\n") do
+    if Length(l) = 0 or l[1] = '#' then continue; fi;
+    p := List(SplitString(l, " "), Int);
+    gens := GeneratorsOfGroup(TransitiveGroup(p[5], p[6]));
+    W := PGProductActionGroup(p[3], p[4], gens);
+    if NrMovedPoints(W) <> p[1] then Error("degree mismatch at ", p); fi;
+    PrintTo(out, p[1], " ", p[2], " ",
+            PRIMGRP_Compact(["pa", p[3], p[4], gens]), "\n");
+  od;
+  CloseStream(out);
+end);

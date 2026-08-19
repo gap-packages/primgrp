@@ -36,3 +36,28 @@ in `lib/primitiv.gi` (removed for now, but that is where it belongs), and the
 choice is a one-line change instead of a 230-entry rewrite. As of now the
 classical families are constructor-generated, but the sporadic, alternating
 and affine names are not.
+
+## Make PrimitiveIdentification cheaper by storing invariants
+
+`PrimitiveIdentification` does not fall back on `IsomorphismGroups`, contrary
+to a reasonable guess. It filters on a ladder of invariants: size, O'Nan-Scott
+type, suborbits and transitivity come free from the data file, and then, past
+the comment "now we need to create the groups", it computes the socle-quotient
+`IdGroup`, `AbelianInvariants`, Sylow subgroup orbit shapes, lower central
+series of those Sylow subgroups, Frattini subgroup orders, and finally the
+cycle structures of conjugacy class representatives.
+
+The cost is not the invariants. It is that everything after the fourth is
+computed on *constructed* candidates: to identify one group of degree 7776 it
+builds a dozen groups of degree 7776 and takes Sylow subgroups and conjugacy
+classes of each. Adding more invariants would make this worse, not better.
+
+The fix is to precompute a few of them once and store them next to the entry,
+so the filter runs on stored data for longer and constructs candidates only as
+a last resort. `AbelianInvariants` and the socle-quotient `IdGroup` are the
+obvious first two: small, cheap to store, and they cut deeply. A separate
+table, as with `PRIMGRP_SIMSNO`, avoids touching the entry format.
+
+This is what blocks compressing the product-action groups above degree 4095 --
+38.9 MB, the largest single block left -- because each conversion has to be
+confirmed by an identification, and at those degrees each one costs minutes.
