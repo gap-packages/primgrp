@@ -58,14 +58,46 @@ BindGlobal("PRIMGRP_CompactMatrices", function(mats, p)
                        PRIMGRP_Compact(List(mats, m -> List(m, r -> List(r, IntFFE)))));
 end);
 
+##  One d x d matrix over GF(p), read row by row as a base-p number, written
+##  in base 256 and base64 encoded.  Cuts an 8 x 8 matrix over GF(3) from
+##  about 150 characters to 22.
+BindGlobal("PRIMGRP_PackMatrix", function(p, d, m)
+  local n, r, x, len, bytes, k, i;
+  n := 0;
+  for r in m do
+    for x in r do
+      n := n*p + x;
+    od;
+  od;
+  len := 1;
+  while p^(d*d) > 256^len do len := len+1; od;
+  bytes := "";
+  k := n;
+  for i in [1..len] do
+    bytes := Concatenation([CHAR_INT(k mod 256)], bytes);
+    k := QuoInt(k, 256);
+  od;
+  return Base64String(bytes);
+end);
+
 BindGlobal("PRIMGRP_CompactAffine", function(mats, deg)
-  local fac;
+  local fac, p, d, ints;
   fac := Factors(deg);
-  if Length(mats) > 0 and IsFFE(mats[1][1][1]) then
-    return PRIMGRP_CompactMatrices(mats, fac[1]);
+  p := fac[1]; d := Length(fac);
+  if Length(mats) = 0 then
+    return "[]";
   fi;
-  # already integer matrices, e.g. straight from dev/affine.g
-  return Concatenation("Z(", String(fac[1]), ")^0*", PRIMGRP_Compact(mats));
+  if IsFFE(mats[1][1][1]) then
+    ints := List(mats, m -> List(m, r -> List(r, IntFFE)));
+  else
+    ints := mats;
+  fi;
+  # packed unless the matrices are so small that the packing is not a saving
+  if d*d >= 9 then
+    return Concatenation("[\"b64\",\"ffe\",",
+             PRIMGRP_Compact(List(ints, m -> PRIMGRP_PackMatrix(p, d, m))), "]");
+  fi;
+  return Concatenation("Z(", String(p), ")^0*", PRIMGRP_Compact(ints));
 end);
 
 # Field 9 of an entry: markers, matrices, permutations, or nothing.
@@ -80,6 +112,15 @@ BindGlobal("PRIMGRP_CompactGenerators", function(gens, deg, onanscott)
   elif IsString(gens[1]) then
     # ["int", mats]: affine, but enumerating F_p^d by base-p digit value rather
     # than by GAP's order on field elements.  See dev/affine.g.
+    # ["int", mats]: pack the same way, recording the enumeration
+    fac := Factors(deg);
+    if Length(fac)^2 >= 9 and Length(gens[2]) > 0 then
+      return Concatenation("[\"b64\",\"", gens[1], "\",",
+               PRIMGRP_Compact(List(gens[2],
+                 m -> PRIMGRP_PackMatrix(fac[1], Length(fac),
+                        List(m, r -> List(r, function(x)
+                          if IsFFE(x) then return IntFFE(x); fi; return x; end))))), "]");
+    fi;
     return Concatenation("[\"", gens[1], "\",",
                          PRIMGRP_CompactAffine(gens[2], deg), "]");
   elif not IsPerm(gens[1]) then                # affine: matrices over GF(p)

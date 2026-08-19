@@ -113,6 +113,36 @@ end);
 
 #############################################################################
 ##
+#F  PRIMGRP_UnpackMatrices( <p>, <d>, <strings> )
+##
+##  The matrices of an affine group, packed.  Each d x d matrix over GF(p) is
+##  read row by row as a number in base p, that number is written in base 256,
+##  and those bytes are base64 encoded.  An 8 x 8 matrix over GF(3) is 101
+##  bits, so about 20 characters instead of the 150 its digits take.
+##
+BindGlobal("PRIMGRP_UnpackMatrices",function(p,d,strings)
+  local out, str, bytes, n, c, m, i, j;
+  out:=[];
+  for str in strings do
+    # GAP's Base64String pads the input to a multiple of three bytes and
+    # records that in the trailing '=', so the string is kept verbatim.
+    bytes:=StringBase64(str);
+    n:=0;
+    for c in bytes do n:=n*256+INT_CHAR(c); od;
+    m:=NullMat(d,d);
+    for i in [d,d-1..1] do
+      for j in [d,d-1..1] do
+        m[i][j]:=n mod p;
+        n:=QuoInt(n,p);
+      od;
+    od;
+    Add(out,ImmutableMatrix(GF(p),Z(p)^0*m));
+  od;
+  return out;
+end);
+
+#############################################################################
+##
 #F  PRIMGRP_AffineVectors( <p>, <d>, <enum> )
 ##
 ##  The point set of an affine primitive group of degree p^d, identified with
@@ -279,7 +309,11 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif l[4] = "1" then
     gens:=l[9];
     enum:="ffe";
-    if Length(gens) = 2 and IsString(gens[1]) then
+    fac:=Factors(deg);
+    if Length(gens) = 3 and IsString(gens[1]) and gens[1] = "b64" then
+      enum:=gens[2];
+      gens:=PRIMGRP_UnpackMatrices(fac[1],Length(fac),gens[3]);
+    elif Length(gens) = 2 and IsString(gens[1]) then
       enum:=gens[1];             # see PRIMGRP_AffineVectors below
       gens:=gens[2];
     fi;
