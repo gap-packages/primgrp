@@ -1,0 +1,28 @@
+# One job per degree of the consistency sweep.
+#
+#   marta import-range dev/marta/sweep-range.toml --start 2 --stop 8191
+#
+# The worker needs  --tool gap=...  and a GAP root whose pkg/primgrp is this
+# worktree; pass that root as params.gaproot below, or override per import.
+[template]
+case_key = "primgrp-sweep-{n}"
+command = [
+    "{tools[gap]}",
+    "-q",
+    "-A",
+    "--quitonbreak",
+    "-l",
+    "{params[gaproot]}",
+    "-c",
+    "marta_deg := {n};",
+    "dev/marta/sweep-job.g",
+    "-c",
+    "QUIT;",
+]
+slots = 1
+tags = ["gap", "primgrp", "sweep"]
+max_attempts = 2
+
+[template.params]
+kind = "primgrp-sweep"
+gaproot = "/path/to/gaproot;"
