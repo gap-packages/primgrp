@@ -215,6 +215,54 @@ end);
 ##  so PrimitiveGroupsIterator still answers from the file without building
 ##  anything -- and the generators are all but the whole of such an entry.
 ##
+#############################################################################
+##
+#F  PGProductAction4c( <m>, <k>, <els> )
+##
+##  A group of O'Nan-Scott type 4c given by its own generators, written as
+##  elements of Sym(m) wreath Sym(k) rather than as permutations of the m^k
+##  points.  Each element of <els> is [ p_1, ..., p_k, sigma ]: it sends the
+##  point with coordinates (c_1,...,c_k) to the one with coordinates
+##  d_j = p_i(c_i) where i = j^(sigma^-1).
+##
+##  Points are numbered with c_1 most significant, so point
+##  1 + Sum_i (c_i-1)*m^(k-i) is (c_1,...,c_k).  Only 160 type 4c entries are
+##  the whole of PrimitiveGroup(m,b) wreath a transitive group; the rest are
+##  proper subgroups, and this writes down any of them.
+##
+BindGlobal("PGProductAction4c",function(m,k,els)
+  local deg,pw,tuple,index,gens,e,sigma,img,x,c,d,j,i;
+  deg:=m^k;
+  pw:=List([1..k],i->m^(k-i));
+  tuple:=function(x)
+    local c,i,r;
+    c:=[]; r:=x-1;
+    for i in [1..k] do c[i]:=QuoInt(r,pw[i])+1; r:=r mod pw[i]; od;
+    return c;
+  end;
+  index:=function(c)
+    local i,x;
+    x:=1;
+    for i in [1..k] do x:=x+(c[i]-1)*pw[i]; od;
+    return x;
+  end;
+  gens:=[];
+  for e in els do
+    sigma:=e[k+1];
+    img:=[];
+    for x in [1..deg] do
+      c:=tuple(x); d:=[];
+      for j in [1..k] do
+        i:=j^(sigma^-1);
+        d[j]:=c[i]^e[i];
+      od;
+      img[x]:=index(d);
+    od;
+    Add(gens,PermList(img));
+  od;
+  return Group(gens);
+end);
+
 BindGlobal("PGProductActionGroup",function(m,b,topgens)
   return WreathProductProductAction(PrimitiveGroup(m,b), Group(topgens));
 end);
@@ -278,6 +326,28 @@ BindGlobal("PGClassicalNormaliser",function(ser,d,q)
   r:=rec(deg:=Length(pts), A:=A, T:=Socle(A));
   PRIMGRP_ClassicalCache.(key):=r;
   return r;
+end);
+
+#############################################################################
+##
+#F  PGClassicalWords( <ser>, <d>, <q>, <words> )
+##
+##  The same groups as PGClassicalGroup, for the degrees where the order does
+##  not single one out: PSigmaL(2,25) and PSL(2,25).2_3 are both index 2 over
+##  PSL(2,25) on 26 points, and share socle, order and suborbits.
+##
+##  <words> name the generators to adjoin to the socle, as words in the
+##  generators of A: a list of integers, negative for an inverse.  Naming them
+##  rather than searching keeps reading cheap -- picking the right one out of
+##  the candidates needs an isomorphism invariant, which is fine once during
+##  conversion but not on every call.
+##
+BindGlobal("PGClassicalWords",function(ser,d,q,words)
+  local r,gens,els;
+  r:=PGClassicalNormaliser(ser,d,q);
+  gens:=GeneratorsOfGroup(r.A);
+  els:=List(words,w->Product(List(w,e->gens[AbsInt(e)]^SignInt(e)),One(r.A)));
+  return ClosureGroup(r.T,els);
 end);
 
 BindGlobal("PGClassicalGroup",function(ser,d,q,ext)
@@ -405,8 +475,20 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
     g:= PSigmaL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 5 and l[9][1] = "clw" then
+    g:= PGClassicalWords(l[9][2], l[9][3], l[9][4], l[9][5]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
   elif IsList(l[9]) and Length(l[9]) = 5 and l[9][1] = "cl" then
     g:= PGClassicalGroup(l[9][2], l[9][3], l[9][4], l[9][5]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
+  elif IsList(l[9]) and Length(l[9]) = 4 and l[9][1] = "4c" then
+    g:= PGProductAction4c(l[9][2], l[9][3], l[9][4]);
     if IsString(l[7]) and Length(l[7])>0 then
       SetName(g,l[7]);
     fi;

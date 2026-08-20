@@ -1,0 +1,88 @@
+513 3 2A(2,8) ext 3 OK ncc 36
+513 4 2A(2,8) ext 3 OK ncc 76
+513 5 2A(2,8) ext 3 OK ncc 28
+513 6 2A(2,8) ext 6 OK ncc 39
+513 7 2A(2,8) ext 6 OK ncc 53
+1066 3 2D(4,3) ext 2 SKIP 0 candidates with 155 classes
+1066 4 2D(4,3) ext 2 SKIP 0 candidates with 119 classes
+1066 2 2D(4,3) ext 2 OK ncc 188
+40 1 B(2,3) ext 1 SKIP shares its candidate with another entry
+40 3 B(2,3) ext 1 SKIP shares its candidate with another entry
+40 2 B(2,3) ext 2 SKIP shares its candidate with another entry
+40 4 B(2,3) ext 2 SKIP shares its candidate with another entry
+156 1 B(2,5) ext 1 SKIP shares its candidate with another entry
+156 3 B(2,5) ext 1 SKIP shares its candidate with another entry
+156 2 B(2,5) ext 2 SKIP shares its candidate with another entry
+156 4 B(2,5) ext 2 SKIP shares its candidate with another entry
+400 1 B(2,7) ext 1 SKIP shares its candidate with another entry
+400 3 B(2,7) ext 1 SKIP shares its candidate with another entry
+400 2 B(2,7) ext 2 SKIP shares its candidate with another entry
+400 4 B(2,7) ext 2 SKIP shares its candidate with another entry
+820 3 B(2,9) ext 1 SKIP shares its candidate with another entry
+820 8 B(2,9) ext 1 SKIP shares its candidate with another entry
+820 4 B(2,9) ext 2 SKIP shares its candidate with another entry
+820 5 B(2,9) ext 2 SKIP shares its candidate with another entry
+820 6 B(2,9) ext 2 SKIP shares its candidate with another entry
+820 9 B(2,9) ext 2 SKIP shares its candidate with another entry
+820 22 B(2,9) ext 2 SKIP shares its candidate with another entry
+820 23 B(2,9) ext 2 SKIP shares its candidate with another entry
+1464 1 B(2,11) ext 1 SKIP shares its candidate with another entry
+1464 2 B(2,11) ext 1 SKIP shares its candidate with another entry
+1464 3 B(2,11) ext 2 SKIP shares its candidate with another entry
+1464 4 B(2,11) ext 2 SKIP shares its candidate with another entry
+2380 1 B(2,13) ext 1 SKIP shares its candidate with another entry
+2380 2 B(2,13) ext 1 SKIP shares its candidate with another entry
+2380 3 B(2,13) ext 2 SKIP shares its candidate with another entry
+2380 4 B(2,13) ext 2 SKIP shares its candidate with another entry
+5220 1 B(2,17) ext 1 SKIP shares its candidate with another entry
+5220 3 B(2,17) ext 1 SKIP shares its candidate with another entry
+5220 2 B(2,17) ext 2 SKIP shares its candidate with another entry
+5220 4 B(2,17) ext 2 SKIP shares its candidate with another entry
+7240 1 B(2,19) ext 1 SKIP shares its candidate with another entry
+7240 3 B(2,19) ext 1 SKIP shares its candidate with another entry
+7240 2 B(2,19) ext 2 SKIP shares its candidate with another entry
+7240 4 B(2,19) ext 2 SKIP shares its candidate with another entry
+1120 9 D(4,3) ext 2 SKIP 2 candidates with 135 classes
+1120 8 D(4,3) ext 2 SKIP shares its candidate with another entry
+1120 10 D(4,3) ext 2 SKIP shares its candidate with another entry
+1120 11 D(4,3) ext 4 SKIP 0 candidates with 144 classes
+1120 12 D(4,3) ext 4 SKIP 0 candidates with 219 classes
+1120 13 D(4,3) ext 4 OK ncc 213
+5525 4 D(4,4) ext 2 OK ncc 282
+5525 5 D(4,4) ext 2 OK ncc 375
+5525 6 D(4,4) ext 2 OK ncc 261
+26 3 L(2,25) ext 2 OK ncc 18
+26 4 L(2,25) ext 2 OK ncc 15
+50 5 L(2,49) ext 2 OK ncc 27
+50 6 L(2,49) ext 2 OK ncc 24
+82 2 L(2,81) ext 2 OK ncc 38
+82 4 L(2,81) ext 2 OK ncc 35
+82 5 L(2,81) ext 4 OK ncc 58
+82 6 L(2,81) ext 4 OK ncc 34
+82 7 L(2,81) ext 4 OK ncc 28
+122 3 L(2,121) ext 2 OK ncc 51
+122 4 L(2,121) ext 2 OK ncc 48
+170 3 L(2,169) ext 2 OK ncc 66
+170 4 L(2,169) ext 2 OK ncc 63
+290 3 L(2,289) ext 2 OK ncc 102
+290 4 L(2,289) ext 2 OK ncc 99
+362 3 L(2,361) ext 2 OK ncc 123
+362 4 L(2,361) ext 2 OK ncc 120
+530 3 L(2,529) ext 2 OK ncc 171
+530 4 L(2,529) ext 2 OK ncc 168
+626 2 L(2,625) ext 2 OK ncc 198
+626 4 L(2,625) ext 2 OK ncc 195
+626 5 L(2,625) ext 4 OK ncc 354
+626 6 L(2,625) ext 4 OK ncc 120
+626 7 L(2,625) ext 4 OK ncc 114
+730 6 L(2,729) ext 2 OK ncc 227
+730 7 L(2,729) ext 2 OK ncc 224
+730 10 L(2,729) ext 6 OK ncc 273
+730 11 L(2,729) ext 6 OK ncc 105
+730 12 L(2,729) ext 6 OK ncc 96
+842 3 L(2,841) ext 2 OK ncc 258
+842 4 L(2,841) ext 2 OK ncc 255
+962 3 L(2,961) ext 2 OK ncc 291
+962 4 L(2,961) ext 2 OK ncc 288
+1370 3 L(2,1369) ext 2 OK ncc 399
+1370 4 L(2,1369) ext 2 OK ncc 402
