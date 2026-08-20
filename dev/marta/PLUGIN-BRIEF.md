@@ -71,15 +71,16 @@ Suggested envelope, following the `grpconst` pattern:
   "task_family": "primgrp_sweep",
   "degree": 100,
   "result_format": "integer-list",
-  "result": [100, 38, 0],
-  "complaints": []
+  "result": [100, 38, 0]
 }
 ```
 
-Complaints are free text and may contain quotes and backslashes; if that is
-awkward for the result contract, put the count in `result` and the strings in
-the attempt's stdout, prefixed `COMPLAINT `. Do not drop them: a complaint is
-the entire point of the job.
+**Decided:** the complaint strings go to the attempt's stdout, one per line,
+prefixed `COMPLAINT `. They are free text and may contain quotes and
+backslashes, so keeping them out of the result contract avoids an escaping
+problem for no benefit. The count stays in `result`. Do not drop the strings:
+a complaint is the entire point of the job, and the count alone does not say
+which group disagreed or how.
 
 **Working standalone version:** `dev/marta/sweep-job.g`, driven by
 `marta_deg` set via `-c`.
