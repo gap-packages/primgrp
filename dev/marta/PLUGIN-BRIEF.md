@@ -29,7 +29,7 @@ They are independent of each other and can run concurrently.
 |---|---|
 | repository | `git@github.com:gap-packages/primgrp` |
 | branch | `claude/data-compression-consistency-8cb77d` |
-| commit to launch from | `5e23807` or later on that branch |
+| commit to launch from | `d0d6a87` or later on that branch |
 | GAP used locally | `4.17dev-75-g525144b` |
 
 Pin an exact commit when you generate jobs and record it. **The data files
@@ -189,7 +189,7 @@ So MARTA has **2836 + 83 sweep degrees** and **636 type 4c entries** left.
 
 ### The staged results have now been applied
 
-At commit `5e23807` the 917 converted 4c entries and 82 almost simple entries
+At commit `d0d6a87` the 917 converted 4c entries and 82 almost simple entries
 were written into `data/`, taking it from 92.31 MB to 78.36 MB.  That changed
 85 degrees.
 
