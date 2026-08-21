@@ -102,6 +102,7 @@ end);
 
 # Field 9 of an entry: markers, matrices, permutations, or nothing.
 BindGlobal("PRIMGRP_CompactGenerators", function(gens, deg, onanscott)
+  local fac;
   if IsString(gens) and not IsEmpty(gens) then  # "Alt", "Sym", "psl", "pgl"
     return PRIMGRP_QuoteString(gens);
   elif Length(gens) = 0 then
@@ -138,8 +139,11 @@ end);
 # generalising over a disagreement is how wrong data gets baked in.
 BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
   local parts, generic;
-  if IsBound(PRIMGRP_GenericFields) then
-    generic := PRIMGRP_GenericFields(entry, deg, entry[1]);
+  # PRIMGRP_GenericFields and PRIMGRP_PglIdentified live in dev/generic.g and
+  # are optional here.  Reached through ValueGlobal so that reading this file
+  # without them is silent rather than a parse-time warning.
+  if IsBoundGlobal("PRIMGRP_GenericFields") then
+    generic := ValueGlobal("PRIMGRP_GenericFields")(entry, deg, entry[1]);
     # Fields 1..8 must agree exactly.  Field 9 need not: it is what the
     # constructor replaces, whether that was the marker "psl" or a list of
     # permutations spelling out PSL(d,q) the long way.
@@ -150,8 +154,8 @@ BindGlobal("PRIMGRP_CompactEntry", function(entry, deg)
        and generic.fields{[1..6]} = entry{[1..6]}
        and generic.fields[8] = entry[8]
        and (generic.fields[7] = entry[7] or entry[7] = ""
-            or (IsBound(PRIMGRP_PglIdentified)
-                and [deg,entry[1]] in PRIMGRP_PglIdentified)) then
+            or (IsBoundGlobal("PRIMGRP_PglIdentified")
+                and [deg,entry[1]] in ValueGlobal("PRIMGRP_PglIdentified"))) then
       return generic.text;
     fi;
   fi;

@@ -17,7 +17,7 @@ end;
 
 ##  Fields 1..8 of the entry the generic form would produce, or fail.
 PRIMGRP_GenericFields := function(entry, deg, nr)
-  local q, t, d, e;
+  local q, t, d, e, sg;
   if entry[9] = "Alt" then
     return rec(text := "PGAlt", fields :=
            [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
@@ -51,13 +51,17 @@ PRIMGRP_GenericFields := function(entry, deg, nr)
   # PSigmaL and PGammaL, likewise only on an explicit list: their orders are
   # |PSL|*e and |PGL|*e for q = p^e, and at many degrees a sibling extension
   # has the same order.
-  if IsBound(PRIMGRP_SigmaGamma) and IsBound(PRIMGRP_SigmaGamma.(String(deg)))
-     and IsBound(PRIMGRP_SigmaGamma.(String(deg)).(String(nr)))
+  sg := fail;
+  if IsBoundGlobal("PRIMGRP_SigmaGamma") then
+    sg := ValueGlobal("PRIMGRP_SigmaGamma");
+  fi;
+  if sg <> fail and IsBound(sg.(String(deg)))
+     and IsBound(sg.(String(deg)).(String(nr)))
      and IsList(entry[8]) and entry[8][1] = "L" and IsList(entry[8][2])
      and entry[8][3] = 1 and not IsString(entry[9]) then
     d := entry[8][2][1]; q := entry[8][2][2];
     e := Length(Factors(q));
-    if PRIMGRP_SigmaGamma.(String(deg)).(String(nr)) = "sigma" then
+    if sg.(String(deg)).(String(nr)) = "sigma" then
       return rec(text := Concatenation("PGPsigmaL(", String(d), ",", String(q), ")"),
                  fields := [ nr, PRIMGRP_PslOrder(d,q)*e, 0, "2", [[deg-1,1]], 2,
                              Concatenation("PSigmaL(", String(d), ", ", String(q), ")"),
@@ -78,8 +82,12 @@ PRIMGRP_GenericFields := function(entry, deg, nr)
   # only where no other entry of that degree has the same socle and order.
   # At degree 170, PGL(2,169), PSigmaL(2,169) and PSL(2,169).2_3 all do, and
   # they are different groups; PRIMGRP_PglUnambiguous lists the safe ones.
-  if ((IsBound(PRIMGRP_PglUnambiguous) and [deg,nr] in PRIMGRP_PglUnambiguous)
-      or (IsBound(PRIMGRP_PglIdentified) and [deg,nr] in PRIMGRP_PglIdentified))
+  # The three tables below are optional side inputs; reaching them through
+  # ValueGlobal keeps reading this file silent when they are absent.
+  if ((IsBoundGlobal("PRIMGRP_PglUnambiguous")
+       and [deg,nr] in ValueGlobal("PRIMGRP_PglUnambiguous"))
+      or (IsBoundGlobal("PRIMGRP_PglIdentified")
+          and [deg,nr] in ValueGlobal("PRIMGRP_PglIdentified")))
      and IsList(entry[8]) and entry[8][1] = "L" and IsList(entry[8][2])
      and entry[8][3] = 1 and not IsString(entry[9]) then
     d := entry[8][2][1]; q := entry[8][2][2];
