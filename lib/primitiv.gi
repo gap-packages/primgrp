@@ -288,9 +288,21 @@ end);
 ##
 BindGlobal("PRIMGRP_ClassicalCache", rec());
 
-BindGlobal("PGClassicalNormaliser",function(ser,d,q)
-  local key,n,Q,M,kind,all,pts,m,p,frob,A,r,gens;
-  key:=Concatenation(ser,"_",String(d),"_",String(q));
+##  <variety> picks which of the group's varieties carries the action:
+##
+##    "points" -- the projective, isotropic or singular 1-spaces.
+##    "lines"  -- the totally singular 2-spaces.
+##
+##  For B(2,q) both have (q^2+1)(q+1) elements and the two actions are
+##  inequivalent for odd q, the quadrangle Q(4,q) being self-dual only in even
+##  characteristic.  That is why degrees 40, 156, 400, 820, 1464, 2380, 5220
+##  and 7240 each carry two entries of equal order, equal socle and equal
+##  suborbits.  They differ in the permutation character, and in the
+##  isomorphism type of a point stabiliser -- the two maximal parabolics.
+##
+BindGlobal("PGClassicalNormaliserOn",function(ser,d,q,variety)
+  local key,n,Q,M,kind,all,pts,m,bil,u,cand,L,p,frob,act,onset,A,r,gens;
+  key:=Concatenation(ser,"_",String(d),"_",String(q),"_",variety);
   if IsBound(PRIMGRP_ClassicalCache.(key)) then
     return PRIMGRP_ClassicalCache.(key);
   fi;
@@ -313,12 +325,33 @@ BindGlobal("PGClassicalNormaliser",function(ser,d,q)
     pts:=Filtered(all,v->v*m*v=0*Z(Q)^0);
   fi;
   p:=SmallestRootInt(Q);
-  gens:=GeneratorsOfGroup(Action(M,pts,OnLines));
+  if variety="points" then
+    onset:=OnLines;
+    act:=function(v,e) return OnLines(List(v,x->x^e),1); end;
+  elif variety="lines" then
+    if kind="all" then
+      Error("no singular lines for series ",ser);
+    fi;
+    # transitive on totally singular lines, so one orbit is the whole variety
+    bil:=m+TransposedMat(m);
+    u:=pts[1];
+    cand:=Filtered(pts,v->v*bil*u=0*Z(Q)^0 and RankMat([u,v])=2);
+    if IsEmpty(cand) then
+      Error("no totally singular line through the first point of ",ser);
+    fi;
+    L:=TriangulizedMat([u,cand[1]]);
+    pts:=Orbit(M,L,OnSubspacesByCanonicalBasis);
+    onset:=OnSubspacesByCanonicalBasis;
+    act:=function(L,e) return TriangulizedMat(List(L,x->List(x,y->y^e))); end;
+  else
+    Error("unknown variety \"",variety,"\"");
+  fi;
+  gens:=GeneratorsOfGroup(Action(M,pts,onset));
   # Frobenius permutes the points only when the Gram matrix is fixed by it,
   # which fails for GO(-1,8,4) and its kin over non-prime fields of even
   # characteristic.  Leave it out there: A comes out smaller, and asking for
   # an <ext> it can no longer realise is refused below rather than guessed.
-  frob:=Permutation(p,pts,function(v,e) return OnLines(List(v,x->x^e),1); end);
+  frob:=Permutation(p,pts,act);
   if frob<>fail then
     gens:=Concatenation(gens,[frob]);
   fi;
@@ -342,17 +375,25 @@ end);
 ##  the candidates needs an isomorphism invariant, which is fine once during
 ##  conversion but not on every call.
 ##
-BindGlobal("PGClassicalWords",function(ser,d,q,words)
+BindGlobal("PGClassicalWordsOn",function(ser,d,q,words,variety)
   local r,gens,els;
-  r:=PGClassicalNormaliser(ser,d,q);
+  r:=PGClassicalNormaliserOn(ser,d,q,variety);
   gens:=GeneratorsOfGroup(r.A);
   els:=List(words,w->Product(List(w,e->gens[AbsInt(e)]^SignInt(e)),One(r.A)));
   return ClosureGroup(r.T,els);
 end);
 
-BindGlobal("PGClassicalGroup",function(ser,d,q,ext)
+BindGlobal("PGClassicalWords",function(ser,d,q,words)
+  return PGClassicalWordsOn(ser,d,q,words,"points");
+end);
+
+BindGlobal("PGClassicalNormaliser",function(ser,d,q)
+  return PGClassicalNormaliserOn(ser,d,q,"points");
+end);
+
+BindGlobal("PGClassicalGroupOn",function(ser,d,q,ext,variety)
   local r,hom,Q,cand;
-  r:=PGClassicalNormaliser(ser,d,q);
+  r:=PGClassicalNormaliserOn(ser,d,q,variety);
   if ext=1 then
     return r.T;
   fi;
@@ -369,6 +410,10 @@ BindGlobal("PGClassicalGroup",function(ser,d,q,ext)
           ser,"(",d,",",q,")");
   fi;
   return PreImage(hom,cand[1]);
+end);
+
+BindGlobal("PGClassicalGroup",function(ser,d,q,ext)
+  return PGClassicalGroupOn(ser,d,q,ext,"points");
 end);
 
 BindGlobal("PGPsigmaL",function(dim,q)
@@ -475,6 +520,18 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
     g:= PSigmaL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 6 and l[9][1] = "clw" then
+    g:= PGClassicalWordsOn(l[9][2], l[9][3], l[9][4], l[9][5], l[9][6]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
+  elif IsList(l[9]) and Length(l[9]) = 6 and l[9][1] = "cl" then
+    g:= PGClassicalGroupOn(l[9][2], l[9][3], l[9][4], l[9][5], l[9][6]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
   elif IsList(l[9]) and Length(l[9]) = 5 and l[9][1] = "clw" then
     g:= PGClassicalWords(l[9][2], l[9][3], l[9][4], l[9][5]);
     if IsString(l[7]) and Length(l[7])>0 then

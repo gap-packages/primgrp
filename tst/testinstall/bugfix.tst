@@ -153,5 +153,18 @@ gap> List([[126,6],[364,9],[820,7],[1066,1]],
 >         p -> Size(PrimitiveGroup(p[1],p[2])));
 [ 756000, 42064805779476480, 6886425600, 10151968619520 ]
 
+# Type 2 entries stored as ["cl"/"clw",...,<variety>].  B(2,q) acts on the
+# (q^2+1)(q+1) singular points and on just as many totally singular lines,
+# and for odd q those actions are inequivalent -- the quadrangle Q(4,q) is
+# self-dual only in even characteristic.  So degree 40 carries PSp(4,3)
+# twice, with equal order, equal socle and equal suborbits; what differs is
+# the point stabiliser, the two maximal parabolics.
+gap> List([[40,1],[40,3]], p -> Collected(List(OrbitsDomain(
+>         Stabilizer(PrimitiveGroup(p[1],p[2]),1), [2..40]), Length)));
+[ [ [ 12, 1 ], [ 27, 1 ] ], [ [ 12, 1 ], [ 27, 1 ] ] ]
+gap> List([[40,1],[40,3]],
+>         p -> AbelianInvariants(Stabilizer(PrimitiveGroup(p[1],p[2]), 1)));
+[ [ 3 ], [ 2 ] ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
