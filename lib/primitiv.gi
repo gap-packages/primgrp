@@ -59,6 +59,39 @@ end);
 
 #############################################################################
 ##
+#F  PGOnSets( <inner>, <k> ) . . . . . . . a group acting on its own k-subsets
+##
+##  <inner> names a group in its natural action, and the result is that group
+##  acting on the k-subsets of those points.  PrimitiveGroup(2278,3) is
+##  Alt(68) on the 2278 = Binomial(68,2) pairs, and PrimitiveGroup(2278,1) is
+##  PSL(2,67) on the pairs of the 68 points of the projective line.
+##
+##  <inner> is one of [ "Alt", n ], [ "Sym", n ], [ "psl", d, q ] or
+##  [ "pgl", d, q ].  The inner degree has to be stored: unlike the entries
+##  where the action is the natural one, it is not the degree of the entry.
+##
+##  All of these are k-homogeneous for the k that occur here, so the k-subsets
+##  form one orbit and the action is found without enumerating them: the orbit
+##  of [1..k] is the whole set.
+##
+BindGlobal("PGOnSetsGroup",function(inner,k)
+  local G,pts;
+  if   inner[1] = "Alt" then G:=AlternatingGroup(inner[2]);
+  elif inner[1] = "Sym" then G:=SymmetricGroup(inner[2]);
+  elif inner[1] = "psl" then G:=PSL(inner[2],inner[3]);
+  elif inner[1] = "pgl" then G:=PGL(inner[2],inner[3]);
+  else Error("PGOnSets: unknown inner group ",inner[1]);
+  fi;
+  pts:=Orbit(G,[1..k],OnSets);
+  if Length(pts) <> Binomial(NrMovedPoints(G),k) then
+    Error("PGOnSets: ",inner[1]," is not ",k,"-homogeneous on ",
+          NrMovedPoints(G)," points");
+  fi;
+  return Action(G,pts,OnSets);
+end);
+
+#############################################################################
+##
 #F  PGPrime( <d> ) . . . . . . a subgroup of AGL(1,p) of order p*<d>, p prime
 ##
 ##  For prime degree p the affine primitive groups are exactly the subgroups
@@ -202,6 +235,50 @@ end);
 ##  wrong one silently yields a conjugate of the intended group.  Entries of
 ##  the second kind therefore store [ "int", <mats> ] rather than bare <mats>.
 ##
+#############################################################################
+##
+#F  PRIMGRP_AffineAction( <p>, <d>, <enum>, <v>, <mat> )
+##
+##  The permutation induced on the points by <mat>.
+##
+##  For the "int" enumeration the base-p digits of a point number are the
+##  vector itself, so the image number is read off the image vector and no
+##  search is needed.  Permutation(mat,v,OnRight) instead looks each image up
+##  in <v>, which is a linear scan over a hand-built list: 4985 ms against
+##  17 ms for one generator of PrimitiveGroup(6561,1).
+##
+BindGlobal("PRIMGRP_AffineTranslation",function(p,d,enum,v,t)
+  local pw,img,i,w,x,j;
+  if enum <> "int" then
+    return Permutation(t,v,function(a,b) return a+b; end);
+  fi;
+  pw:=List([1..d],j->p^(d-j));
+  img:=EmptyPlist(p^d);
+  for i in [1..p^d] do
+    w:=v[i]+t;
+    x:=1;
+    for j in [1..d] do x:=x+IntFFE(w[j])*pw[j]; od;
+    img[i]:=x;
+  od;
+  return PermList(img);
+end);
+
+BindGlobal("PRIMGRP_AffineAction",function(p,d,enum,v,mat)
+  local pw,img,i,w,x,j;
+  if enum <> "int" then
+    return Permutation(mat,v,OnRight);
+  fi;
+  pw:=List([1..d],j->p^(d-j));
+  img:=EmptyPlist(p^d);
+  for i in [1..p^d] do
+    w:=v[i]*mat;
+    x:=1;
+    for j in [1..d] do x:=x+IntFFE(w[j])*pw[j]; od;
+    img[i]:=x;
+  od;
+  return PermList(img);
+end);
+
 BindGlobal("PRIMGRP_AffineVectors",function(p,d,enum)
   local out,i,x,w,j;
   if enum = "ffe" then
@@ -563,6 +640,12 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
     g:= PSigmaL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "sets" then
+    g:= PGOnSetsGroup(l[9][2], l[9][3]);
+    if IsString(l[7]) and Length(l[7])>0 then
+      SetName(g,l[7]);
+    fi;
+    SetSize(g,l[2]);
   elif IsList(l[9]) and Length(l[9]) = 6 and l[9][1] = "clw" then
     g:= PGClassicalWordsOn(l[9][2], l[9][3], l[9][4], l[9][5], l[9][6]);
     if IsString(l[7]) and Length(l[7])>0 then
@@ -617,15 +700,23 @@ local l,g,gens,enum,fac,mats,perms,v,t;
       fac:= Factors(deg);
       mats:=List(gens,i->ImmutableMatrix(GF(fac[1]),i));
       v:=PRIMGRP_AffineVectors(fac[1],Length(fac),enum);
-      perms:=List(mats,i->Permutation(i,v,OnRight));
+      perms:=List(mats,i->PRIMGRP_AffineAction(fac[1],Length(fac),enum,v,i));
       t:=First(v,i->not IsZero(i)); # one nonzero translation
                                     #suffices as matrix
                                     # action is irreducible
-      Add(perms,Permutation(t,v,function(i,j) return i+j;end));
+      Add(perms,PRIMGRP_AffineTranslation(fac[1],Length(fac),enum,v,t));
       g:= Group(perms);
       SetSize(g, l[2]);
     else
-      g:= Image(IsomorphismPermGroup(CyclicGroup(deg)));
+      # No matrix generators: the group is the translations alone.  Build it
+      # in the same point labelling as every other entry of this degree
+      # rather than via IsomorphismPermGroup(CyclicGroup(deg)), which is a
+      # different regular representation and costs 500 ms at degree 8191.
+      fac:= Factors(deg);
+      v:=PRIMGRP_AffineVectors(fac[1],Length(fac),enum);
+      t:=First(v,i->not IsZero(i));
+      g:= Group([PRIMGRP_AffineTranslation(fac[1],Length(fac),enum,v,t)]);
+      SetSize(g, l[2]);
     fi;
     if IsString(l[7]) and Length(l[7])>0 then
       SetName(g, l[7]);
