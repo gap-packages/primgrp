@@ -31,7 +31,7 @@ PRIMGRP_MarkDir := "$out/marks";;
 PRIMGRP_LogFile := "$out/log-$shard.txt";;
 Read("dev/check-sweep.g");
 GEOF
-    timeout "${TIMEOUT:-7200}" gap -q -b -l "$ROOT;" < "$out/chunk-$shard.g" \
+    timeout "${TIMEOUT:-7200}" gap -q -b -A --quitonbreak -l "$ROOT;" "$out/chunk-$shard.g" \
         >> "$out/run-$shard.log" 2>&1
   done
   ;;
@@ -63,7 +63,7 @@ od;
 CloseStream(out); CloseStream(log);
 QUIT;
 GEOF
-    timeout "${TIMEOUT:-7200}" gap -q -b -l "$ROOT;" < "$out/chunk-$shard.g" \
+    timeout "${TIMEOUT:-7200}" gap -q -b -A --quitonbreak -l "$ROOT;" "$out/chunk-$shard.g" \
         >> "$out/run-$shard.log" 2>&1
   done
   ;;

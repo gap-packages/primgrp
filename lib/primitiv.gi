@@ -74,14 +74,67 @@ end);
 ##  form one orbit and the action is found without enumerating them: the orbit
 ##  of [1..k] is the whole set.
 ##
+##  The inner group is named by the same kind of tag the data files use for a
+##  group in its own right, so anything constructible there can be composed
+##  with "take the k-subsets".  PSL(5,2).2 on 2-subsets needs the graph
+##  automorphism, which "psl" and "pgl" cannot express but ["cl","L",...] can.
+BindGlobal("PRIMGRP_InnerGroup",function(inner)
+  if   inner[1] = "Alt" then return AlternatingGroup(inner[2]);
+  elif inner[1] = "Sym" then return SymmetricGroup(inner[2]);
+  elif inner[1] = "psl" then return PSL(inner[2],inner[3]);
+  elif inner[1] = "pgl" then return PGL(inner[2],inner[3]);
+  elif inner[1] = "cl"  then
+    # These two are defined further down the file; reaching them through
+    # ValueGlobal keeps this a forward reference rather than a load-time
+    # warning, without moving the definitions apart from their kin.
+    return ValueGlobal("PGClassicalGroupOn")(inner[2],inner[3],inner[4],
+                                             inner[5],inner[6]);
+  elif inner[1] = "clw" then
+    return ValueGlobal("PGClassicalWordsOn")(inner[2],inner[3],inner[4],
+                                             inner[5],inner[6]);
+  fi;
+  Error("PGOnSets: unknown inner group ",inner[1]);
+end);
+
+#############################################################################
+##
+#F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
+#F  PGSymOnSets( <n>, <k> )
+##
+##  Everything about such an entry follows from n and k, so nothing else is
+##  stored.  The suborbits are the subdegrees of the Johnson scheme,
+##  Binomial(k,i)*Binomial(n-k,i) for i = 1..k, so at n = 45, k = 2 they are
+##  2*43 = 86 and 1*903 = 903 -- which is what the file used to spell out
+##  beside a 56-digit order.
+##
+##  The three naming conventions in use, "Alt(45)", "A(5)" and no name at all
+##  for 162 of the 362 entries, collapse to the first.
+##
+BindGlobal("PRIMGRP_JohnsonSuborbits",function(n,k)
+  return Set(Collected(List([1..k],i->Binomial(k,i)*Binomial(n-k,i))));
+end);
+
+BindGlobal("PGAltOnSets",function(n,k)
+  return function(deg,nr)
+    Assert(0, deg = Binomial(n,k));
+    return [ nr, Factorial(n)/2, 1, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
+             Concatenation("Alt(",String(n),")"), ["A",n,1],
+             ["sets",["Alt",n],k] ];
+  end;
+end);
+
+BindGlobal("PGSymOnSets",function(n,k)
+  return function(deg,nr)
+    Assert(0, deg = Binomial(n,k));
+    return [ nr, Factorial(n), 0, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
+             Concatenation("Sym(",String(n),")"), ["A",n,1],
+             ["sets",["Sym",n],k] ];
+  end;
+end);
+
 BindGlobal("PGOnSetsGroup",function(inner,k)
   local G,pts;
-  if   inner[1] = "Alt" then G:=AlternatingGroup(inner[2]);
-  elif inner[1] = "Sym" then G:=SymmetricGroup(inner[2]);
-  elif inner[1] = "psl" then G:=PSL(inner[2],inner[3]);
-  elif inner[1] = "pgl" then G:=PGL(inner[2],inner[3]);
-  else Error("PGOnSets: unknown inner group ",inner[1]);
-  fi;
+  G:=PRIMGRP_InnerGroup(inner);
   pts:=Orbit(G,[1..k],OnSets);
   if Length(pts) <> Binomial(NrMovedPoints(G),k) then
     Error("PGOnSets: ",inner[1]," is not ",k,"-homogeneous on ",
@@ -708,15 +761,16 @@ local l,g,gens,enum,fac,mats,perms,v,t;
       g:= Group(perms);
       SetSize(g, l[2]);
     else
-      # No matrix generators: the group is the translations alone.  Build it
-      # in the same point labelling as every other entry of this degree
-      # rather than via IsomorphismPermGroup(CyclicGroup(deg)), which is a
-      # different regular representation and costs 500 ms at degree 8191.
-      fac:= Factors(deg);
-      v:=PRIMGRP_AffineVectors(fac[1],Length(fac),enum);
-      t:=First(v,i->not IsZero(i));
-      g:= Group([PRIMGRP_AffineTranslation(fac[1],Length(fac),enum,v,t)]);
-      SetSize(g, l[2]);
+      # No matrix generators: the group is the translations alone, which is
+      # regular, and a regular elementary abelian group is primitive only in
+      # dimension one -- so deg is prime and this is the cyclic group of
+      # order deg in its regular action.  All 1026 entries that reach here
+      # are of that shape.  Say so directly: IsomorphismPermGroup(
+      # CyclicGroup(deg)) took 500 ms at degree 8191 and guaranteed nothing
+      # about the representation it returned, and CyclicGroup(IsPermGroup,
+      # deg) leaves the degree to chance.
+      g:= Group(CycleFromList([1..deg]));
+      SetSize(g, deg);
     fi;
     if IsString(l[7]) and Length(l[7])>0 then
       SetName(g, l[7]);
