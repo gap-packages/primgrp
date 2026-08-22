@@ -1,0 +1,7 @@
+2D(4,3) ext 2 nr 3 SKIP 0 candidates match
+2D(4,3) ext 2 nr 4 SKIP 0 candidates match
+2D(4,3) ext 4 nr 5 SKIP no candidates
+2D(4,4) ext 4 nr 3 SKIP no candidates
+B(2,9) ext 4 nr 24 OK points
+B(3,3) ext 1 nr 3 OK points
+B(3,3) ext 2 nr 4 OK points
