@@ -98,6 +98,93 @@ end);
 
 #############################################################################
 ##
+#F  PGDiagonal( <tspec>, <ext> ) . . . . . . . . . . . the diagonal action of T
+#F  PGDiagonalWords( <tspec>, <words> )
+##
+##  O'Nan-Scott types 3a and 3b of socle width 2: the socle is T x T acting on
+##  the |T| elements of T by g -> x^-1 g y.  The degree is |T|, which is why
+##  PrimitiveGroup(7800,6) has socle PSL(2,25) of order 7800.
+##
+##  The normaliser of that in Sym(|T|) is T^2.(Out(T) x 2), the extra 2 being
+##  g -> g^-1, and every entry lies between T^2 and it.  |N/T^2| is 2 to 8
+##  here, so an entry is a subgroup of a very small group -- <ext> where the
+##  subgroup of that order is unique, <words> in the generators of N where it
+##  is not.  Degree 60 has three subgroups of order 2 and needs the latter.
+##
+BindGlobal("PRIMGRP_DiagonalCache", rec());
+
+BindGlobal("PRIMGRP_SimpleGroupFromSpec",function(tspec)
+  if   tspec[1] = "A"    then return AlternatingGroup(tspec[2]);
+  elif tspec[1] = "L"    then return PSL(tspec[2],tspec[3]);
+  elif tspec[1] = "2A"   then return PSU(tspec[2]+1,tspec[3]);
+  elif tspec[1] = "Spor" then
+    # only the Mathieu groups occur here, and those are in the GAP library;
+    # anything else would need AtlasRep, which primgrp does not depend on
+    if tspec[2] = "M(11)" then return MathieuGroup(11); fi;
+    if tspec[2] = "M(12)" then return MathieuGroup(12); fi;
+    if tspec[2] = "M(22)" then return MathieuGroup(22); fi;
+    if tspec[2] = "M(23)" then return MathieuGroup(23); fi;
+    if tspec[2] = "M(24)" then return MathieuGroup(24); fi;
+  fi;
+  Error("no simple group known for ",tspec[1]," ",tspec[2]);
+end);
+
+BindGlobal("PGDiagonalNormaliser",function(tspec)
+  local key,T,els,act,gens,t,A,a,N,r;
+  key:=JoinStringsWithSeparator(List(tspec,String),"_");
+  if IsBound(PRIMGRP_DiagonalCache.(key)) then
+    return PRIMGRP_DiagonalCache.(key);
+  fi;
+  T:=PRIMGRP_SimpleGroupFromSpec(tspec);
+  els:=AsSSortedList(T);
+  # els is sorted, so PositionSorted is a binary search rather than a scan
+  act:=f->PermList(List(els,g->PositionSorted(els,f(g))));
+  gens:=[];
+  for t in GeneratorsOfGroup(T) do
+    Add(gens,act(g->g*t));
+    Add(gens,act(g->t^-1*g));
+  od;
+  Add(gens,act(g->g^-1));
+  A:=AutomorphismGroup(T);
+  for a in GeneratorsOfGroup(A) do
+    Add(gens,act(g->Image(a,g)));
+  od;
+  N:=Group(gens);
+  r:=rec(deg:=Length(els), N:=N, T2:=Socle(N));
+  PRIMGRP_DiagonalCache.(key):=r;
+  return r;
+end);
+
+BindGlobal("PGDiagonal",function(tspec,ext)
+  local r,hom,Q,cand;
+  r:=PGDiagonalNormaliser(tspec);
+  if ext=1 then
+    return r.T2;
+  fi;
+  if (Size(r.N)/Size(r.T2)) mod ext <> 0 then
+    Error("the diagonal normaliser of ",tspec[1]," realises only ",
+          Size(r.N)/Size(r.T2)," outer automorphisms, not ",ext);
+  fi;
+  hom:=NaturalHomomorphismByNormalSubgroup(r.N,r.T2);
+  Q:=ImagesSource(hom);
+  cand:=Filtered(List(ConjugacyClassesSubgroups(Q),Representative),
+                 s->Size(s)=ext);
+  if Length(cand)<>1 then
+    Error(Length(cand)," subgroups of order ",ext," above the diagonal socle");
+  fi;
+  return PreImage(hom,cand[1]);
+end);
+
+BindGlobal("PGDiagonalWords",function(tspec,words)
+  local r,gens,els;
+  r:=PGDiagonalNormaliser(tspec);
+  gens:=GeneratorsOfGroup(r.N);
+  els:=List(words,w->Product(List(w,e->gens[AbsInt(e)]^SignInt(e)),One(r.N)));
+  return ClosureGroup(r.T2,els);
+end);
+
+#############################################################################
+##
 #F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
 #F  PGSymOnSets( <n>, <k> )
 ##
@@ -693,6 +780,14 @@ local l,g,gens,enum,fac,mats,perms,v,t;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "psigmal" then
     g:= PSigmaL(l[9][2], l[9][3]);
     SetName(g, Concatenation("PSigmaL(", String(l[9][2]), ",", String(l[9][3]), ")"));
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "diag" then
+    g:= PGDiagonal(l[9][2], l[9][3]);
+    if IsString(l[7]) and Length(l[7])>0 then SetName(g,l[7]); fi;
+    SetSize(g,l[2]);
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "diagw" then
+    g:= PGDiagonalWords(l[9][2], l[9][3]);
+    if IsString(l[7]) and Length(l[7])>0 then SetName(g,l[7]); fi;
+    SetSize(g,l[2]);
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "sets" then
     g:= PGOnSetsGroup(l[9][2], l[9][3]);
     if IsString(l[7]) and Length(l[7])>0 then
