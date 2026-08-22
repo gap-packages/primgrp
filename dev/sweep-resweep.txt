@@ -1,5 +1,6 @@
 # Degrees whose data/ entries changed after they were swept.
-# Any sweep result for these from an earlier commit is void.
+# Any sweep result for these from an earlier revision is void,
+# whoever produced it -- local or MARTA.
 25
 26
 36
@@ -75,11 +76,44 @@
 2380
 2401
 2500
+2601
+2704
 2744
 2809
+2916
+3025
+3125
 3136
+3249
+3364
 3375
 3481
+3600
+3721
+3844
+3969
 4096
 4225
+4356
+4489
+4624
+4761
+4900
+4913
+5041
+5184
 5220
+5329
+5476
+5625
+5776
+5832
+5929
+6084
+6241
+6400
+6561
+6724
+6859
+7056
+7225
