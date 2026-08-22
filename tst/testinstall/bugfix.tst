@@ -166,5 +166,16 @@ gap> List([[40,1],[40,3]],
 >         p -> AbelianInvariants(Stabilizer(PrimitiveGroup(p[1],p[2]), 1)));
 [ [ 3 ], [ 2 ] ]
 
+# Affine entries of prime degree are stored as PGPrime(d), one per divisor d
+# of p-1.  Degrees below 4096 keep the names they always had; degrees 4096 to
+# 8191 had no name at all before, and now use the same convention.
+gap> List([[59,1],[59,2],[59,3],[59,4]], p -> PRIMGrp(p[1],p[2])[7]);
+[ "C(59)", "D(2*59)", "59:29", "AGL(1, 59)" ]
+gap> List([[4099,1],[4099,2],[4099,7]], p -> PRIMGrp(p[1],p[2])[7]);
+[ "C(4099)", "D(2*4099)", "4099:2049" ]
+gap> g := PrimitiveGroup(4099,7);;
+gap> Size(g) = 4099*2049 and NrMovedPoints(g) = 4099 and IsPrimitive(g);
+true
+
 #
 gap> STOP_TEST("bugfix.tst", 1);

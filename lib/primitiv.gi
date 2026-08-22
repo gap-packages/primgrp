@@ -59,6 +59,49 @@ end);
 
 #############################################################################
 ##
+#F  PGPrime( <d> ) . . . . . . a subgroup of AGL(1,p) of order p*<d>, p prime
+##
+##  For prime degree p the affine primitive groups are exactly the subgroups
+##  of AGL(1,p) containing the translations, one for each divisor d of p-1.
+##  Everything about such an entry follows from p and d, so only d is stored.
+##
+##  The multiplicative group of GF(p) is cyclic, so its subgroup of order d is
+##  unique: any element of order d generates the same group, and the entry is
+##  determined by (p,d) rather than by the choice of generator.
+##
+##  Names follow the convention already used below degree 4096 -- C(p), the
+##  dihedral D(2*p), AGL(1,p), and p:d otherwise.  The 7744 entries at degrees
+##  4096 to 8191 had no name at all, and gain one here.
+##
+BindGlobal("PGPrime",function(d)
+  return function(deg,nr)
+    local a,name,gens,flags,trans;
+    if (deg-1) mod d <> 0 then
+      Error("PGPrime(",d,") at degree ",deg,": ",d," does not divide ",deg-1);
+    fi;
+    if d = 1 then
+      name:=Concatenation("C(",String(deg),")");
+      gens:=[];
+    else
+      a:=PowerModInt(PrimitiveRootMod(deg),(deg-1)/d,deg);
+      gens:=[ [ [ a*Z(deg)^0 ] ] ];
+      if d = 2 then
+        name:=Concatenation("D(2*",String(deg),")");
+      elif d = deg-1 then
+        name:=Concatenation("AGL(1, ",String(deg),")");
+      else
+        name:=Concatenation(String(deg),":",String(d));
+      fi;
+    fi;
+    if d = 1 then flags:=3; else flags:=2; fi;      # simple and solvable
+    if d = deg-1 then trans:=2; else trans:=1; fi;  # AGL(1,p) is 2-transitive
+    return [ nr, deg*d, flags, "1", [[d,(deg-1)/d]],
+             trans, name, ["Z",deg,1], gens ];
+  end;
+end);
+
+#############################################################################
+##
 #F  PGPsl( <dim>, <q> ) . . . . . . . . PSL and PGL on projective points
 #F  PGPgl( <dim>, <q> )
 ##
