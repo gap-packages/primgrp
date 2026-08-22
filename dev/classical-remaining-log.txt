@@ -5,3 +5,6 @@
 B(2,9) ext 4 nr 24 OK points
 B(3,3) ext 1 nr 3 OK points
 B(3,3) ext 2 nr 4 OK points
+B(3,5) ext 1 nr 4 OK points
+B(3,5) ext 2 nr 6 OK points
+B(4,3) ext 1 DRIVER FAILED
