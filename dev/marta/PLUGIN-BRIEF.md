@@ -29,7 +29,7 @@ They are independent of each other and can run concurrently.
 |---|---|
 | repository | `git@github.com:gap-packages/primgrp` |
 | branch | `claude/data-compression-consistency-8cb77d` |
-| commit to launch from | `d0d6a87` or later on that branch |
+| commit to launch from | `660bfb8`, tagged `data-frozen-2026-08-22` |
 | GAP used locally | `4.17dev-75-g525144b` |
 
 Pin an exact commit when you generate jobs and record it. **The data files
@@ -180,29 +180,27 @@ Do not redo work. Skip lists are in the branch:
 
 | file | lines | meaning |
 |---|---|---|
-| `dev/sweep-done.txt` | 5271 | degrees swept clean **and still valid** |
-| `dev/sweep-resweep.txt` | 83 | degrees swept, then invalidated -- redo these |
-| `dev/4c-done.txt` | 917 | 4c entries converted **and now applied to data/** |
-| `dev/4c-worklist.txt` | 1553 | all 4c units |
+| `dev/4c-done.txt` | 1412 | type 4c entries already converted and applied |
+| `dev/4c-worklist.txt` | 1553 | all type 4c units |
 
-So MARTA has **2836 + 83 sweep degrees** and **636 type 4c entries** left.
+### data/ is frozen at `data-frozen-2026-08-22`
 
-### The staged results have now been applied
+It does not change again until the sweep has run.  That matters because a
+sweep result is per-degree: any change to a degree voids it, whoever produced
+it.  Four conversions were applied while earlier sweeps were running and
+invalidated 85, then 41, then 464 degrees between them.
 
-At commit `d0d6a87` the 917 converted 4c entries and 82 almost simple entries
-were written into `data/`, taking it from 92.31 MB to 78.36 MB.  That changed
-85 degrees.
+**Every sweep result from before this tag is void.**  Do not use
+`dev/sweep-done.txt` or `dev/sweep-resweep.txt` as skip lists any more --
+they describe superseded data and are kept only as a record.  Run the sweep
+over all 8190 degrees at this one revision, so every case key carries the same
+revision and no invalidation ledger is needed.
 
-**Any sweep result for those 85 degrees produced before this commit is void,
-whoever produced it** -- including MARTA's own, if the sweep had already
-reached them.  `dev/sweep-resweep.txt` lists the 83 of them that had been
-swept locally; if MARTA swept any of the same degrees, those results must be
-discarded too and the degrees re-run.  The other 5271 local results are
-unaffected, since no entry of those degrees changed.
-
-This is the §8 rule in practice: results are pinned to the commit whose data
-produced them, and applying results invalidates a *narrow, enumerable* set of
-degrees rather than the whole sweep.
+Type 4c is different and does not need the freeze: extraction reads only its
+own entry, so results stay valid across changes to other entries.  141 units
+remain, listed by taking `dev/4c-worklist.txt` less `dev/4c-done.txt`.  One,
+degree 5041 entry 208, has failed twice and wants a look rather than another
+retry; one, degree 2401 entry 1173, hangs and is best left out.
 
 `dev/marta/generate_4c_jobs.py` takes `--worklist` and `--skip` and emits
 JSONL for `marta import -`. It also takes `--count`.
