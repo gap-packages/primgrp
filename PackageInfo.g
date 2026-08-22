@@ -9,7 +9,7 @@ SetPackageInfo( rec(
 
 PackageName := "PrimGrp",
 Subtitle := "GAP Primitive Permutation Groups Library",
-Version := "4.0.3",
+Version := "4.1.0dev",
 Date := "28/07/2026",
 License := "GPL-2.0-or-later",
 
