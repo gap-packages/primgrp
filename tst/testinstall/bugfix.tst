@@ -94,5 +94,20 @@ gap> ForAny([2..4095], function(d)
 >    end);
 false
 
+# Twenty-nine socle types recorded a rank one too high, in degrees 3159 to
+# 4095: PrimitiveGroup(4095,1) claimed C(7,2) where the socle is B(6,2).  The
+# series letter moves with some of them, which is harmless where the two names
+# denote the same group, but the rank never was.
+gap> List([[3640,1],[3969,9],[4095,1]], p -> PRIMGrp(p[1],p[2])[8]);
+[ [ "C", [ 3, 3 ], 1 ], [ "B", [ 3, 2 ], 2 ], [ "B", [ 6, 2 ], 1 ] ]
+
+# one from each affected degree: what is stored must be what GAP computes
+gap> soc := p -> SocleTypePrimitiveGroup(PrimitiveGroup(p[1],p[2]));;
+gap> flat := s -> [s.series, s.parameter, s.width];;
+gap> ForAll([[3159,3],[3240,9],[3280,1],[3321,14],
+>            [3640,2],[3906,3],[3969,9],[4095,1]],
+>           p -> flat(soc(p)) = PRIMGrp(p[1],p[2])[8]);
+true
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
