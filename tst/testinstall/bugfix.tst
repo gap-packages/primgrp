@@ -109,5 +109,20 @@ gap> ForAll([[3159,3],[3240,9],[3280,1],[3321,14],
 >           p -> flat(soc(p)) = PRIMGrp(p[1],p[2])[8]);
 true
 
+# PrimitiveGroup(1057,1) and (1057,2) were named PSL(2, 32) and
+# PSigmaL(2, 32), contradicting field 8 of the very same entries, which gives
+# the socle as L(3,32).  |PSL(2,32)| is 32736; these groups have order
+# 1098404364288.  The degree settles it too: 1057 = (32^3-1)/(32-1), the
+# points of PG(2,32), where PSL(2,32) acts on 33.
+gap> List([1,2], i -> PRIMGrp(1057,i)[7]);
+[ "PSL(3, 32)", "PSigmaL(3, 32)" ]
+gap> Size(PrimitiveGroup(1057,1)) = Size(PSL(3,32));
+true
+
+# gcd(3,31) = 1, so PSL(3,32) has no diagonal outer automorphisms and the only
+# extension of index 5 acting on these points is PSigmaL, 32 being 2^5
+gap> Size(PrimitiveGroup(1057,2)) = 5 * Size(PSL(3,32));
+true
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
