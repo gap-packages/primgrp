@@ -144,5 +144,16 @@ gap> List([[26,2],[26,4],[50,4],[50,6]],
 >                Stabilizer(PrimitiveGroup(p[1],p[2]), 1), 2)));
 [ true, false, true, false ]
 
+# A type 4c entry stores its generators as elements of Sym(m) wreath Sym(k),
+# so the reader has to recover both: k is the socle width in field 8 and m the
+# k-th root of the degree, neither of which field 9 repeats.  Recomputing the
+# order and primitivity measures the group that gets built rather than the
+# attributes the reader sets from the entry itself.
+gap> List([[25,23],[1000,23]],
+>         p -> [ Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))),
+>                IsPrimitive(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2]))),
+>                            [1..p[1]]) ]);
+[ [ 7200, true ], [ 559872000, true ] ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
