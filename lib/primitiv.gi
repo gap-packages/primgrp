@@ -26,6 +26,31 @@ Unbind(PRIMGRP);
 ##  9: generators
 BindGlobal("PRIMGRP", []);
 
+#############################################################################
+##
+#F  PGAlt( <deg>, <nr> ) . . . . . . . . . . . the natural A_n and S_n entries
+#F  PGSym( <deg>, <nr> )
+##
+##  Everything an entry records about the natural alternating and symmetric
+##  group follows from the degree: the order, that A_n is simple and S_n is
+##  not, the O'Nan-Scott type, the single suborbit of a 2-transitive group,
+##  the transitivity, the name and the socle.  So the entry can be the call
+##  itself.
+##
+##  An entry that is a function is evaluated by PRIMGrp on first use. This
+##  keeps Factorial(deg) from being computed for every degree in a data file
+##  merely because the file was read.
+##
+BindGlobal("PGAlt",function(deg,nr)
+  return [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
+           Concatenation("Alt(",String(deg),")"), ["A",deg,1], "Alt" ];
+end);
+
+BindGlobal("PGSym",function(deg,nr)
+  return [ nr, Factorial(deg), 0, "2", [[deg-1,1]], deg,
+           Concatenation("Sym(",String(deg),")"), ["A",deg,1], "Sym" ];
+end);
+
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
@@ -72,7 +97,16 @@ BindGlobal("PRIMGrp",function(deg,nr)
     return l;
   fi;
   PrimGrpLoad(deg);
-  return PRIMGRP[deg][nr];
+  l:=PRIMGRP[deg][nr];
+  if IsFunction(l) then
+    # An entry may be "lazy", that is, encoded in a function. We call such a
+    # function the degree and index as arguments to produce the actual entry.
+    # To avoid recomputing it, we store the the computed entry into `PRIMGRP`,
+    # overwriting the function that produced it.
+    l:=l(deg,nr);
+    PRIMGRP[deg][nr]:=l;
+  fi;
+  return l;
 end);
 
 InstallGlobalFunction(NrPrimitiveGroups, function(deg)
@@ -183,12 +217,10 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
     Error("Group must operate primitively");
   fi;
   deg:=Length(dom);
-  if deg <= 4095 then
-    PrimGrpLoad(deg);
-    PD:=PRIMGRP[deg];
-  else
-    PD:=List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
-  fi;
+  # through PRIMGrp, not PRIMGRP[deg]: an entry may be the call that produces
+  # it, and PD[i][2] below would be indexing a function.  The upper range has
+  # always come this way; the lower one now does too.
+  PD:=List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
 
   if IsNaturalAlternatingGroup(grp) then
     SetSize(grp, Factorial(deg)/2);
