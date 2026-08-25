@@ -155,5 +155,21 @@ gap> List([[25,23],[1000,23]],
 >                            [1..p[1]]) ]);
 [ [ 7200, true ], [ 559872000, true ] ]
 
+# Alt(n) and Sym(n) on the k-subsets are the call PGAltOnSets(n,k) or
+# PGSymOnSets(n,k): the order, the transitivity, the socle and the Johnson
+# suborbits Binomial(k,i)*Binomial(n-k,i) all follow from n and k, so the entry
+# stores none of them.  The order is recomputed here rather than read off the
+# entry, and the name is checked because it comes from the constructor now
+# rather than from the file.
+gap> List([[10,1],[35,3],[126,12]],
+>         p -> [ Name(PrimitiveGroup(p[1],p[2])),
+>                Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))),
+>                Collected(OrbitLengthsDomain(
+>                  Stabilizer(PrimitiveGroup(p[1],p[2]),1), [1..p[1]])) ]);
+[ [ "A(5)", 60, [ [ 1, 1 ], [ 3, 1 ], [ 6, 1 ] ] ], 
+  [ "A(7)", 2520, [ [ 1, 1 ], [ 4, 1 ], [ 12, 1 ], [ 18, 1 ] ] ], 
+  [ "A(9)", 181440, [ [ 1, 1 ], [ 5, 1 ], [ 20, 1 ], [ 40, 1 ], [ 60, 1 ] ] ] 
+ ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
