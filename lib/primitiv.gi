@@ -166,14 +166,7 @@ local l,g,fac,mats,perms,v,t,filename,strm,r;
   fi;
   SetTransitivity(g, l[6]);
   if deg<=50 then
-    # Sims' number moved out of the entries into a table of its own; the
-    # tenth field is still read while any data file still carries it, so that
-    # dev/move-simsno.py can be run between one commit and the next
-    if IsBoundGlobal("PRIMGRP_SIMSNO") then
-      SetSimsNo(g,ValueGlobal("PRIMGRP_SIMSNO")[deg-1][num]);
-    else
-      SetSimsNo(g,l[10]);
-    fi;
+    SetSimsNo(g, PRIMGRP_SIMSNO[deg-1][num]);
   fi;
   return g;
 end );
