@@ -127,5 +127,22 @@ gap> List([[10,3],[9,5],[12,4]],
 >                Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))));
 [ 3, 5, 4 ]
 
+# PGL(d,q) is 3-transitive only on the projective line: for d >= 3 a
+# projectivity is not free on triples.  Assuming 3 everywhere does not corrupt
+# anything -- the entry simply fails to match and is left alone -- but it left
+# nine entries unconverted for no reason.
+gap> List([[2,7],[3,4],[4,3]], p -> Transitivity(PGL(p[1],p[2])));
+[ 3, 2, 2 ]
+
+# PGL(2,q^2) and PSL(2,q^2).2_3 are the two sharply 3-transitive groups of
+# degree q^2+1.  They agree on order, suborbits, socle and transitivity, so an
+# entry cannot be recognised as PGL from those alone.  Their two-point
+# stabilisers differ: the torus for PGL, a nearfield's multiplicative group
+# for the other.
+gap> List([[26,2],[26,4],[50,4],[50,6]],
+>         p -> IsCyclic(Stabilizer(
+>                Stabilizer(PrimitiveGroup(p[1],p[2]), 1), 2)));
+[ true, false, true, false ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
