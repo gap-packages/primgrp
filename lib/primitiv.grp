@@ -553,11 +553,9 @@ BindGlobal("PRIMLENGTHS",[
 ##
 #V  PRIMGRP_SIMSNO
 ##
-##  Sims' numbering of the primitive groups of degree at most 50.  It
-##  orders the same groups differently, so PRIMGRP_SIMSNO[deg-1][nr] is Sims'
-##  number for PrimitiveGroup(deg,nr), and it is not the identity: 113 of
-##  these 406 numbers differ from nr.  Small enough to keep here rather
-##  than as a tenth field on every entry of PRIMGRP.
+##  Sims' numbering of the primitive groups of degree at most 50 differs
+##  from our numbering. Sims' number for PrimitiveGroup(deg,nr) can be
+##  read from PRIMGRP_SIMSNO[deg-1][nr].
 ##
 BindGlobal("PRIMGRP_SIMSNO", [
 [1],
