@@ -31,16 +31,18 @@
 ##
 ##  Return one of the k simple direct factors of <S>, or fail.
 ##
-##  Found by chance, because asking MinimalNormalSubgroups is hopeless once the
-##  factors are large: at degree 1089 the socle is A(33)^2 and that call does
-##  not finish in twenty minutes, where this takes seconds.
+##  Asking MinimalNormalSubgroups would also do this in theory, but in
+##  practice is hopeless once the factors are large: at degree 1089 the socle
+##  is A(33)^2 and that call does not finish in twenty minutes, where this
+##  function takes seconds.
 ##
-##  A random element of prime order lies in a single factor with high
-##  probability.  Its conjugates then generate that factor, together with
-##  whatever traces of the others came along, and the derived subgroup sheds
-##  those.  Whether it worked shows in the order, since the k factors are
-##  isomorphic and so a factor has |S|^(1/k); a caller that gets fail should
-##  simply ask again.
+##  A random element of prime order lies with high probability in a socle
+##  component. Its S-conjugates then generate that component. Whether it
+##  worked can be tested by computing its order, since the k factors are
+##  isomorphic and so a component has order |S|^(1/k).
+##
+##  Thus this is a Las Vegas algorithm. A caller that gets fail should simply
+##  ask again.
 ##
 PRIMGRP_OneSocleComponent := function(S, k)
   local x, p, U;
@@ -48,7 +50,6 @@ PRIMGRP_OneSocleComponent := function(S, k)
   p := Random(PrimeDivisors(Order(x)));
   x := x^(Order(x)/p);
   U := Group(List([1..10], i -> x^PseudoRandom(S)));
-  U := DerivedSubgroup(U);
   if Size(U)^k <> Size(S) then
     return fail;
   fi;
