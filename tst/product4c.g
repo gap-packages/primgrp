@@ -18,9 +18,9 @@
 ##  identification of the points with tuples, after which each generator reads
 ##  off as (p_1,...,p_k; sigma).  PGProductAction4c puts one back together.
 ##
-##  This is what wrote the type 4c entries in data/, and it is kept because the
-##  same work recurs: entries yet to be imported, and any later check that an
-##  entry is the group it claims to be.
+##  This code was instrumental in "compressing" the type 4c entries in data/.
+##  We keep it around so we can use it when adding more data, and it also may
+##  be helpful for consistency tests in the future.
 ##
 ##  Nothing here is read when the package loads.
 ##
