@@ -1,5 +1,13 @@
 # CHANGES to the 'primgrp' GAP package
 
+## unreleased
+
+  - Fix the dimension in the names of PrimitiveGroup(1057,1) and (1057,2)
+  - Fix 29 socle types recorded with a rank one too high
+  - Fix the corrupted name of PrimitiveGroup(625,657)
+  - Actually run the cohort consistency check
+  - Fix socle type series for unitary groups
+
 ## 4.0.3 (2026-07-28)
 
   - Drop spurious dependency on GAPDoc
