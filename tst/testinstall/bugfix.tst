@@ -111,7 +111,7 @@ true
 # 1098404364288.  The degree settles it too: 1057 = (32^3-1)/(32-1), the
 # points of PG(2,32), where PSL(2,32) acts on 33.
 gap> List([1,2], i -> PRIMGrp(1057,i)[7]);
-[ "PSL(3, 32)", "PSigmaL(3, 32)" ]
+[ "PSL(3,32)", "PSigmaL(3,32)" ]
 gap> Size(PrimitiveGroup(1057,1)) = Size(PSL(3,32));
 true
 
