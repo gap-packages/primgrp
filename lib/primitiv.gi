@@ -166,7 +166,7 @@ local l,g,fac,mats,perms,v,t,filename,strm,r;
   fi;
   SetTransitivity(g, l[6]);
   if deg<=50 then
-    SetSimsNo(g,l[10]);
+    SetSimsNo(g, PRIMGRP_SIMSNO[deg-1][num]);
   fi;
   return g;
 end );
