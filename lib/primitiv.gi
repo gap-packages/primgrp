@@ -43,12 +43,12 @@ BindGlobal("PRIMGRP", []);
 ##
 BindGlobal("PGAlt",function(deg,nr)
   return [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
-           Concatenation("Alt(",String(deg),")"), ["A",deg,1], "Alt" ];
+           Concatenation("A(",String(deg),")"), ["A",deg,1], "Alt" ];
 end);
 
 BindGlobal("PGSym",function(deg,nr)
   return [ nr, Factorial(deg), 0, "2", [[deg-1,1]], deg,
-           Concatenation("Sym(",String(deg),")"), ["A",deg,1], "Sym" ];
+           Concatenation("S(",String(deg),")"), ["A",deg,1], "Sym" ];
 end);
 
 #############################################################################
@@ -87,7 +87,7 @@ BindGlobal("PGPsl",function(dim,q)
       t:=3;
     fi;
     return [ nr, PGPslOrder(dim,q), 1, "2", [[deg-1,1]], t,
-             Concatenation("PSL(",String(dim),", ",String(q),")"),
+             Concatenation("PSL(",String(dim),",",String(q),")"),
              ["L",[dim,q],1], "psl" ];
   end;
 end);
@@ -106,7 +106,7 @@ BindGlobal("PGPgl",function(dim,q)
       t:=3;
     fi;
     return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1), 0, "2", [[deg-1,1]], t,
-             Concatenation("PGL(",String(dim),", ",String(q),")"),
+             Concatenation("PGL(",String(dim),",",String(q),")"),
              ["L",[dim,q],1], "pgl" ];
   end;
 end);
@@ -127,7 +127,7 @@ BindGlobal("PGPsigmaL",function(dim,q)
       t:=3;
     fi;
     return [ nr, PGPslOrder(dim,q)*e, 0, "2", [[deg-1,1]], t,
-             Concatenation("PSigmaL(",String(dim),", ",String(q),")"),
+             Concatenation("PSigmaL(",String(dim),",",String(q),")"),
              ["L",[dim,q],1], "psigmal" ];
   end;
 end);
@@ -148,7 +148,7 @@ BindGlobal("PGPgammaL",function(dim,q)
       t:=3;
     fi;
     return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1)*e, 0, "2", [[deg-1,1]], t,
-             Concatenation("PGammaL(",String(dim),", ",String(q),")"),
+             Concatenation("PGammaL(",String(dim),",",String(q),")"),
              ["L",[dim,q],1], "pgammal" ];
   end;
 end);
@@ -247,10 +247,8 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
   # special case: Symmetric and Alternating Group
   if l[9]="Alt" then
     g:=AlternatingGroup(deg);
-    SetName(g,Concatenation("A(",String(deg),")"));
   elif l[9]="Sym" then
     g:=SymmetricGroup(deg);
-    SetName(g,Concatenation("S(",String(deg),")"));
   elif l[9] in ["psl","pgl","psigmal","pgammal"] then
     # extract the dimension and field from the socle type in field 8
     dim:=l[8][2][1];
@@ -264,7 +262,6 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
     else
       g:= PGammaL(dim,q);
     fi;
-    SetName(g, l[7]);
   elif l[4] = "1" and deg <= 4095 then
     # affine type groups described by matrices
     if Length(l[9]) > 0 then
@@ -277,25 +274,22 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
                                     # action is irreducible
       Add(perms,Permutation(t,v,function(i,j) return i+j;end));
       g:= Group(perms);
-      SetSize(g, l[2]);
     else
       g:= Image(IsomorphismPermGroup(CyclicGroup(deg)));
-    fi;
-    if IsString(l[7]) and Length(l[7])>0 then
-      SetName(g, l[7]);
     fi;
   else
     # general case: generators given as permutations
     g:= GroupByGenerators( l[9], () );
-    if IsString(l[7]) and Length(l[7])>0 then
-      SetName(g,l[7]);
-    #else
-    #  SetName(g,Concatenation("p",String(deg),"n",String(num)));
-    fi;
-    SetSize(g,l[2]);
   fi;
+
+  # now use information from the PRIMGRP entry to prop up the group
   SetPrimitiveIdentification(g,l[1]);
+  SetSize(g,l[2]);
+  Assert(0, Size(g) = l[2]); # not redundant if g had the size set before
   SetONanScottType(g,l[4]);
+  if IsString(l[7]) and Length(l[7])>0 then
+    SetName(g,l[7]);
+  fi;
   SetSocleTypePrimitiveGroup(g,rec(series:=l[8][1],
                                    parameter:=l[8][2],
                                    width:=l[8][3]));
