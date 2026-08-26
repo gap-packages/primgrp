@@ -51,6 +51,111 @@ BindGlobal("PGSym",function(deg,nr)
            Concatenation("Sym(",String(deg),")"), ["A",deg,1], "Sym" ];
 end);
 
+#############################################################################
+##
+#F  PGPsl( <dim>, <q> ) . . . . the natural projective actions of the L series
+#F  PGPgl( <dim>, <q> )
+#F  PGPsigmaL( <dim>, <q> )
+#F  PGPgammaL( <dim>, <q> )
+##
+##  PSL, PGL, PSigmaL and PGammaL on the points of PG(dim-1,q), of which there
+##  are (q^dim-1)/(q-1).  Unlike PGAlt and PGSym these take arguments, because
+##  the degree does not determine the dimension. They then return functions
+##  with argument `deg` and `nr` that are inserted as entries into PRIMGRP.
+##  These functions are then invoked as needed by PRIMGrp.
+##
+BindGlobal("PGPslOrder",function(dim,q)
+  local o,i;
+  o:=q^(dim*(dim-1)/2);
+  for i in [2..dim] do
+    o:=o*(q^i-1);
+  od;
+  return o/Gcd(dim,q-1);
+end);
+
+BindGlobal("PGPsl",function(dim,q)
+  local n;
+  n:=(q^dim-1)/(q-1);
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPsl(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 and q mod 2 = 0 then
+      # PSL(2,q) = PGL(2,q) in even characteristic is 3-transitive
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q), 1, "2", [[deg-1,1]], t,
+             Concatenation("PSL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], "psl" ];
+  end;
+end);
+
+BindGlobal("PGPgl",function(dim,q)
+  local n;
+  n:=(q^dim-1)/(q-1);
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPgl(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 then
+      # PGL(2,q) is sharply 3-transitive on the projective line.
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1), 0, "2", [[deg-1,1]], t,
+             Concatenation("PGL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], "pgl" ];
+  end;
+end);
+
+BindGlobal("PGPsigmaL",function(dim,q)
+  local n,e;
+  n:=(q^dim-1)/(q-1);
+  e:=Length(Factors(q));
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPsigmaL(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 and q mod 2 = 0 then
+      # PSL(2,q) = PGL(2,q) in even characteristic is 3-transitive,
+      # and PSigmaL contains it
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q)*e, 0, "2", [[deg-1,1]], t,
+             Concatenation("PSigmaL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], "psigmal" ];
+  end;
+end);
+
+BindGlobal("PGPgammaL",function(dim,q)
+  local n,e;
+  n:=(q^dim-1)/(q-1);
+  e:=Length(Factors(q));
+  return function(deg,nr)
+    local t;
+    if deg <> n then
+      Error("PGPgammaL(",dim,",",q,") describes degree ",n,", not ",deg);
+    fi;
+    t:=2;
+    if dim = 2 then
+      # PGL(2,q) is sharply 3-transitive on the projective line,
+      # and PGammaL contains it.
+      t:=3;
+    fi;
+    return [ nr, PGPslOrder(dim,q)*Gcd(dim,q-1)*e, 0, "2", [[deg-1,1]], t,
+             Concatenation("PGammaL(",String(dim),", ",String(q),")"),
+             ["L",[dim,q],1], "pgammal" ];
+  end;
+end);
+
+#############################################################################
+##
+##
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
@@ -135,7 +240,7 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t,filename,strm,r;
+local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
 
   l:=PRIMGrp(deg,num);
 
@@ -146,13 +251,22 @@ local l,g,fac,mats,perms,v,t,filename,strm,r;
   elif l[9]="Sym" then
     g:=SymmetricGroup(deg);
     SetName(g,Concatenation("S(",String(deg),")"));
-  elif l[9] = "psl" then
-    g:= PSL(2, deg-1);
-    SetName(g, Concatenation("PSL(2,", String(deg-1),")"));
-  elif l[9] = "pgl" then
-    g:= PGL(2, deg-1);
-    SetName(g, Concatenation("PGL(2,", String(deg-1), ")"));
+  elif l[9] in ["psl","pgl","psigmal","pgammal"] then
+    # extract the dimension and field from the socle type in field 8
+    dim:=l[8][2][1];
+    q:=l[8][2][2];
+    if l[9] = "psl" then
+      g:= PSL(dim,q);
+    elif l[9] = "pgl" then
+      g:= PGL(dim,q);
+    elif l[9] = "psigmal" then
+      g:= PSigmaL(dim,q);
+    else
+      g:= PGammaL(dim,q);
+    fi;
+    SetName(g, l[7]);
   elif l[4] = "1" and deg <= 4095 then
+    # affine type groups described by matrices
     if Length(l[9]) > 0 then
       fac:= Factors(deg);
       mats:=List(l[9],i->ImmutableMatrix(GF(fac[1]),i));
@@ -171,6 +285,7 @@ local l,g,fac,mats,perms,v,t,filename,strm,r;
       SetName(g, l[7]);
     fi;
   else
+    # general case: generators given as permutations
     g:= GroupByGenerators( l[9], () );
     if IsString(l[7]) and Length(l[7])>0 then
       SetName(g,l[7]);
