@@ -155,6 +155,62 @@ end);
 
 #############################################################################
 ##
+#F  PGProductAction4c( <m>, <k>, <els> ) . . . . . . . . .  the product action
+##
+##  Return a group of O'Nan-Scott type 4c, that is, a subgroup of the full
+##  wreath product Sym(m) wreath Sym(k) embedded in Sym(m^k).  A point of the
+##  latter is a tuple (c_1,...,c_k) over [1..m], numbered with c_1 most
+##  significant as 1 + Sum_i (c_i-1)*m^(k-i).
+##
+##  The list <els> holds the generators, each as [ p_1, ..., p_k, sigma ],
+##  meaning the element that sends (c_1,...,c_k) to (d_1,...,d_k) where
+##  d_j = p_i(c_i) for i = j^(sigma^-1).
+##
+##  Only a minority of the type 4c entries are the whole of a primitive group
+##  wreath a transitive one; the rest are proper subgroups, and any of them
+##  can be written this way.
+##
+BindGlobal("PGProductAction4c",function(m,k,els)
+  local deg,pw,tuple,index,gens,e,sigma,img,x,c,d,j,i;
+  deg:=m^k;
+  pw:=List([1..k],i->m^(k-i));
+  tuple:=function(x)
+    local c,i,r;
+    c:=[]; r:=x-1;
+    for i in [1..k] do
+      c[i]:=QuoInt(r,pw[i])+1;
+      r:=r mod pw[i];
+    od;
+    return c;
+  end;
+  index:=function(c)
+    local i,x;
+    x:=1;
+    for i in [1..k] do
+      x:=x+(c[i]-1)*pw[i];
+    od;
+    return x;
+  end;
+  gens:=[];
+  for e in els do
+    sigma:=e[k+1];
+    img:=[];
+    for x in [1..deg] do
+      c:=tuple(x);
+      d:=[];
+      for j in [1..k] do
+        i:=j^(sigma^-1);
+        d[j]:=c[i]^e[i];
+      od;
+      img[x]:=index(d);
+    od;
+    Add(gens,PermList(img));
+  od;
+  return Group(gens);
+end);
+
+#############################################################################
+##
 ##
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
@@ -240,7 +296,7 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
+local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
 
   l:=PRIMGrp(deg,num);
 
@@ -262,6 +318,11 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q;
     else
       g:= PGammaL(dim,q);
     fi;
+  elif Length(l[9]) = 2 and l[9][1] = "4c" then
+    # product action: the socle width in field 8 gives k, and the degree
+    # its k-th root gives m
+    k:=l[8][3];
+    g:= PGProductAction4c(RootInt(deg,k), k, l[9][2]);
   elif l[4] = "1" and deg <= 4095 then
     # affine type groups described by matrices
     if Length(l[9]) > 0 then
