@@ -8,6 +8,9 @@ gap> for d in [ 1 .. 100 ] do
 >        Error( "inconsistency" );
 >      fi;
 >    od;
+gap> AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, true ) =
+>    AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, x -> x <> false );
+true
 
 #
 gap> STOP_TEST( "interface.tst" );
