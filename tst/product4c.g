@@ -154,7 +154,7 @@ PRIMGRP_DecomposeProductAction := function(arg)
   for i in [1..k] do
     others := Subgroup(S, Concatenation(List(Filtered([1..k], j -> j <> i),
                                              j -> GeneratorsOfGroup(facs[j]))));
-    orbs := Set(List(Orbits(others, [1..deg]), Set));
+    orbs := Set(Orbits(others, [1..deg]), Set);
     if Length(orbs) <> m then
       return rec(err := "wrong number of fibres");
     fi;

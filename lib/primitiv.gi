@@ -398,9 +398,8 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
     SetSize(grp, Factorial(deg));
   fi;
 
-  s:=Size(grp);
-
   # size
+  s:=Size(grp);
   cand:=Filtered([1..PRIMLENGTHS[deg]],i->PD[i][2]=s);
 
   #ons
@@ -411,8 +410,8 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
 
   # suborbits
   if Length(cand)>1 and Length(Set(PD{cand},i->i[5]))>1 then
-    a:=Collected(List(Orbits(Stabilizer(grp,dom[1]),dom{[2..Length(dom)]}),
-                      Length));
+    s:=Stabilizer(grp,dom[1]);
+    a:=Collected(OrbitLengths(s,dom{[2..Length(dom)]}));
     cand:=Filtered(cand,i->Set(PD[i][5])=Set(a));
   fi;
 
@@ -458,13 +457,12 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
     # sylow orbits
     gl:=Reversed(Set(Factors(Size(grp))));
     while Length(cand)>1 and Length(gl)>0 do
-      a:=Collected(List(Orbits(SylowSubgroup(grp,gl[1]),MovedPoints(grp)),
-                        Length));
+      s:=SylowSubgroup(grp,gl[1]);
+      a:=Collected(OrbitLengths(s,MovedPoints(grp)));
       b:=[];
       for i in [1..Length(cand)] do
-        b[i]:=Collected(List(Orbits(SylowSubgroup(p[i],gl[1]),
-                                    MovedPoints(p[i])),
-                          Length));
+        s:=SylowSubgroup(p[i],gl[1]);
+        b[i]:=Collected(OrbitLengths(s,MovedPoints(p[i])));
       od;
       s:=Filtered([1..Length(cand)],i->b[i]=a);
       cand:=cand{s};
