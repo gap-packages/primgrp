@@ -328,7 +328,7 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     if Length(l[9]) > 0 then
       fac:= Factors(deg);
       mats:=List(l[9],i->ImmutableMatrix(GF(fac[1]),i));
-      v:=Elements(GF(fac[1])^Length(fac));
+      v:=AsSet(GF(fac[1])^Length(fac));
       perms:=List(mats,i->Permutation(i,v,OnRight));
       t:=First(v,i->not IsZero(i)); # one nonzero translation
                                     #suffices as matrix
@@ -455,7 +455,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
 
   if Length(cand)>1 then
     # sylow orbits
-    gl:=Reversed(Set(Factors(Size(grp))));
+    gl:=Reversed(PrimeDivisors(Size(grp)));
     while Length(cand)>1 and Length(gl)>0 do
       s:=SylowSubgroup(grp,gl[1]);
       a:=Collected(OrbitLengths(s,MovedPoints(grp)));
@@ -473,7 +473,7 @@ local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,con
 
   if Length(cand) > 1 then
     # Some further tests for the sylow subgroups
-    for q in Set(Factors(Size(grp)/Size(Socle(grp)))) do
+    for q in PrimeDivisors(Size(grp)/Size(Socle(grp))) do
       if q=1 then
         q:=2;
       fi;
