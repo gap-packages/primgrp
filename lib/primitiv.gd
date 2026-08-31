@@ -158,8 +158,8 @@ DeclareGlobalFunction( "NrPrimitiveGroups" );
 
 ##  <#GAPDoc Label="[2]{primitiv}">
 ##  The selection functions (see&nbsp;<Ref BookName="ref" Sect="Selection Functions"/>) for
-##  the primitive groups library are <C>AllPrimitiveGroups</C> and
-##  <C>OnePrimitiveGroup</C>.
+##  the primitive groups library are <Ref Func="AllPrimitiveGroups"/> and
+##  <Ref Func="OnePrimitiveGroup"/>.
 ##  They obtain the following properties from the database without having to
 ##  compute them anew:
 ##  <P/>
@@ -168,6 +168,7 @@ DeclareGlobalFunction( "NrPrimitiveGroups" );
 ##  <Ref BookName="ref" Attr="Transitivity" Label="for a group and an action domain"/>,
 ##  <Ref BookName="ref" Attr="ONanScottType"/>,
 ##  <Ref BookName="ref" Prop="IsSimpleGroup"/>,
+##  <Ref BookName="ref" Prop="IsAlmostSimpleGroup"/>,
 ##  <Ref BookName="ref" Prop="IsSolvableGroup"/>,
 ##  and <Ref BookName="ref" Attr="SocleTypePrimitiveGroup"/>.
 ##  <P/>

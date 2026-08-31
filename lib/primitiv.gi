@@ -646,7 +646,7 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,i,j,a,b,bfunc,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
+local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -731,18 +731,27 @@ local arglis,i,j,a,b,bfunc,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
         gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[3] mod 2=1,b));
       elif a=IsAlmostSimpleGroup or a=IsAlmostSimple then
         # for primitive groups, almost simple means O'Nan-Scott type 2
-        if b = true then
-          b:= "2";
-        elif b = false then
-          b:= ["1","3a","3b","4a","4b","4c","5"];
-        elif IsFunction(b) then
+        if IsFunction(b) then
           # does not really make sense but is allowed
-          bfunc:= b;
-          b:= val -> bfunc(val = "2");
+          gut[i]:=Filtered(gut[i],j->b(PRIMGrp(i,j)[4]="2"));
         else
-          b:= "0";
+          if IsBool(b) then
+            b:= [b];
+          fi;
+          if IsList(b) then
+            if true in b and false in b then
+              # nothing is to do
+            elif true in b then
+              gut[i]:=Filtered(gut[i],j->PRIMGrp(i,j)[4]="2");
+            elif false in b then
+              gut[i]:=Filtered(gut[i],j->PRIMGrp(i,j)[4]<>"2");
+            else
+              gut[i]:=[];
+            fi;
+          else
+            gut[i]:=[];
+          fi;
         fi;
-        gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[4],b));
       elif a=IsSolvableGroup or a=IsSolvable then
         gut[i]:=Filtered(gut[i],j->STGSelFunc(QuoInt(PRIMGrp(i,j)[3],2)=1,b));
       elif a=SocleTypePrimitiveGroup then

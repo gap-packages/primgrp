@@ -1,4 +1,4 @@
-#@local d
+#@local d, grps
 gap> START_TEST( "interface.tst" );
 
 #
@@ -8,8 +8,19 @@ gap> for d in [ 1 .. 100 ] do
 >        Error( "inconsistency" );
 >      fi;
 >    od;
-gap> AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, true ) =
+gap> grps:= AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, true );;
+gap> grps =
 >    AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, x -> x <> false );
+true
+gap> grps =
+>    AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, [ true ] );
+true
+gap> AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, [ true, false ] ) =
+>    AllPrimitiveGroups( NrMovedPoints, 8 );
+true
+gap> Length( AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, fail ) ) = 0;
+true
+gap> Length( AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, 0 ) ) = 0;
 true
 
 #
