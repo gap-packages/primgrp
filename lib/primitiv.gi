@@ -641,7 +641,7 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
+local arglis,l,deg,pos,f,lists,funs,pp,p,fun,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -653,25 +653,41 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
   fi;
   deg:=PRIMRANGE;
   # do we ask for the degree?
-  p:=Position(arglis,NrMovedPoints);
-  if p<>fail then
-    p:=arglis[p+1];
-    if IsInt(p) then
-      f:=not p in deg;
-      p:=[p];
+  pos:=Positions(arglis,NrMovedPoints);
+  f:= true;  # no degree restriction
+  if not IsEmpty(pos) then
+    lists:= [];
+    funs:= [];
+    for pp in pos do
+      p:=arglis[pp+1];
+      if IsInt(p) then
+        Add(lists, [p]);
+      elif IsList(p) then
+        Add(lists, p);
+      else
+        Add(funs, p);
+      fi;
+    od;
+    if not IsEmpty(lists) then
+      p:= Intersection(lists);
+      if IsSubset(deg, p) then
+        # no warning
+        f:= false;
+        deg:= p;
+      else
+        # warning
+        deg:= Intersection(deg, p);
+      fi;
     fi;
-    if IsList(p) then
-      f:=not IsSubset(deg,Difference(p,[1]));
-      deg:=Intersection(deg,p);
-    else
-      # b is a function (wondering, whether anyone will ever use it...)
-      f:=true;
-      deg:=Filtered(deg,p);
-    fi;
+    for fun in funs do
+      # fun is a function (wondering, whether anyone will ever use it...)
+      deg:= Filtered(deg, fun);
+    od;
   else
     f:=true; #warnung weil kein Degree angegeben ?
     b:=true;
     for a in [Size,Order] do
+      # Use just the first occurrences of `Size` and `Order`
       p:=Position(arglis,a);
       if p<>fail then
         p:=arglis[p+1];
