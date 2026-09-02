@@ -10,6 +10,7 @@ gap> SetInfoLevel(InfoWarning,0);
 # Define a function to check the primitive groups of degree n
 #
 gap> ReadPackage("primgrp", "lib/testutils.g");
+true
 gap> PrimGrpConsistencyCheckDegree(2);
 gap> PrimGrpConsistencyCheckDegree(3);
 gap> PrimGrpConsistencyCheckDegree(4);
