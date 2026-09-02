@@ -254,6 +254,7 @@ CheckCohortConsistency := function(deg)
             fi;
         od;
     od;
+end; 
 
 ######################################################################
 #
