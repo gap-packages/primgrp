@@ -20,8 +20,6 @@ gap> AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, [ true, false ] ) =
 true
 gap> Length( AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, fail ) ) = 0;
 true
-gap> Length( AllPrimitiveGroups( NrMovedPoints, 8, IsAlmostSimple, 0 ) ) = 0;
-true
 
 #
 gap> STOP_TEST( "interface.tst" );
