@@ -368,6 +368,9 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     SetIsSimpleGroup(g, true);
     SetIsSolvableGroup(g, true);
   fi;
+
+  SetIsAlmostSimpleGroup(g, l[4] = "2");
+
   SetTransitivity(g, l[6]);
   if deg<=50 then
     SetSimsNo(g, PRIMGRP_SIMSNO[deg-1][num]);
@@ -724,6 +727,9 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
         gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[nr],b));
       elif a=IsSimpleGroup or a=IsSimple then
         gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[3] mod 2=1,b));
+      elif a=IsAlmostSimpleGroup or a=IsAlmostSimple then
+        # for primitive groups, almost simple means O'Nan-Scott type 2
+        gut[i]:=Filtered(gut[i],j->STGSelFunc(PRIMGrp(i,j)[4]="2",b));
       elif a=IsSolvableGroup or a=IsSolvable then
         gut[i]:=Filtered(gut[i],j->STGSelFunc(QuoInt(PRIMGrp(i,j)[3],2)=1,b));
       elif a=SocleTypePrimitiveGroup then
@@ -760,6 +766,7 @@ local arglis,i,j,a,b,l,p,deg,gut,g,grp,nr,f,RFL,ind,it;
   for i in [1..l] do
     if not arglis[2*i-1] in
       [NrMovedPoints,Size,Transitivity,ONanScottType,IsSimpleGroup,IsSimple,
+       IsAlmostSimpleGroup,IsAlmostSimple,
        IsSolvableGroup,IsSolvable,SocleTypePrimitiveGroup] then
       Add(p,arglis{[2*i-1,2*i]});
     fi;
