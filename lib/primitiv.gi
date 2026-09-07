@@ -644,7 +644,7 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,l,deg,pos,f,lists,funs,pp,p,fun,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
+local arglis,l,deg,pos,unrestrictedDegree,pp,p,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -656,38 +656,23 @@ local arglis,l,deg,pos,f,lists,funs,pp,p,fun,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   fi;
   deg:=PRIMRANGE;
   # do we ask for the degree?
-  pos:=Positions(arglis,NrMovedPoints);
-  f:= true;  # no degree restriction
-  if not IsEmpty(pos) then
-    lists:= [];
-    funs:= [];
-    for pp in pos do
-      p:=arglis[pp+1];
-      if IsInt(p) then
-        Add(lists, [p]);
-      elif IsList(p) then
-        Add(lists, p);
-      else
-        Add(funs, p);
-      fi;
-    od;
-    if not IsEmpty(lists) then
-      p:= Intersection(lists);
-      if IsSubset(deg, p) then
-        # no warning
-        f:= false;
-        deg:= p;
-      else
-        # warning
-        deg:= Intersection(deg, p);
-      fi;
+  pos:=Filtered([1..l],i->arglis[2*i-1]=NrMovedPoints);
+  unrestrictedDegree:= true;   # no degree restriction given yet
+  for pp in pos do
+    p:=arglis[2*pp];
+    if IsInt(p) then
+      p:=[p];
     fi;
-    for fun in funs do
-      # fun is a function (wondering, whether anyone will ever use it...)
-      deg:= Filtered(deg, fun);
-    od;
-  else
-    f:=true; #warnung weil kein Degree angegeben ?
+    if IsList(p) then
+      unrestrictedDegree:= unrestrictedDegree and not IsSubset(PRIMRANGE, p);
+      deg:= Intersection(deg, p);
+    else
+      # a function (wondering, whether anyone will ever use it...)
+      deg:= Filtered(deg, p);
+    fi;
+  od;
+
+  if IsEmpty(pos) then
     b:=true;
     for a in [Size,Order] do
       # Use just the first occurrences of `Size` and `Order`
@@ -702,7 +687,7 @@ local arglis,l,deg,pos,f,lists,funs,pp,p,fun,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
           deg := Filtered( deg,
                d -> ForAny( p, k -> 0 = k mod d ) );
           b := false;
-          f := not IsSubset( PRIMRANGE, p );
+          unrestrictedDegree := not IsSubset( PRIMRANGE, p );
         fi;
       fi;
     od;
@@ -770,7 +755,7 @@ local arglis,l,deg,pos,f,lists,funs,pp,p,fun,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
     od;
   od;
 
-  if f then
+  if unrestrictedDegree then
     Print( "#W  AllPrimitiveGroups: Degree restricted to [ 2 .. ",
            PRIMRANGE[ Length( PRIMRANGE ) ], " ]\n" );
   fi;
