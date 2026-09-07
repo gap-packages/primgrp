@@ -31,11 +31,11 @@ gap> COHORTS_PRIMITIVE_GROUPS[49];
   [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
   [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
 
-# doc/../lib/primitiv.gd:317-320
+# doc/../lib/primitiv.gd:318-321
 gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
 2
 
-# doc/../lib/primitiv.gd:251-256
+# doc/../lib/primitiv.gd:252-257
 gap> g:=PrimitiveGroup(25,2);
 5^2:S(3)
 gap> SimsNo(g);

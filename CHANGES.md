@@ -7,6 +7,8 @@
   - Fix the corrupted name of PrimitiveGroup(625,657)
   - Actually run the cohort consistency check
   - Fix socle type series for unitary groups
+  - Add `IsAlmostSimpleGroup` to the properties for which
+    `AllPrimitiveGroups` and `OnePrimitiveGroup` need not compute the values
 
 ## 4.0.3 (2026-07-28)
 
