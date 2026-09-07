@@ -40,5 +40,17 @@ gap> List( AllPrimitiveGroups( Size, [ 1 .. 100 ], Size, IsPrimeInt ), Size ) =
 >    Filtered( [ 1 .. 100 ], IsPrimeInt );
 true
 
+# All `Size` and `Order` conditions restrict the degree, also next to
+# an explicit `NrMovedPoints` condition.
+gap> AllPrimitiveGroups( Size, 168, Size, 336 );
+[  ]
+gap> ForAll( AllPrimitiveGroups( Size, [ 1 .. 100 ], Order, [ 50 .. 200 ] ),
+>            g -> Size( g ) in [ 50 .. 100 ] );
+true
+gap> List( AllPrimitiveGroups( NrMovedPoints, [ 1 .. 200 ], Size, 168 ),
+>          NrMovedPoints ) =
+>    List( AllPrimitiveGroups( Size, 168 ), NrMovedPoints );
+true
+
 #
 gap> STOP_TEST( "interface.tst" );

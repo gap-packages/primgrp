@@ -644,7 +644,7 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,l,deg,pos,unrestrictedDegree,pp,p,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
+local arglis,l,deg,pos,unrestrictedDegree,pp,p,sizes,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -672,29 +672,32 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
     fi;
   od;
 
-  if IsEmpty(pos) then
-    b:=true;
-    for a in [Size,Order] do
-      # Use just the first occurrences of `Size` and `Order`
-      p:=Position(arglis,a);
-      if p<>fail then
-        p:=arglis[p+1];
-        if IsInt(p) then
-          p:=[p];
-        fi;
-
-        if IsList(p) then
-          deg := Filtered( deg,
-               d -> ForAny( p, k -> 0 = k mod d ) );
-          b := false;
-          unrestrictedDegree := not IsSubset( PRIMRANGE, p );
+  # A primitive group is transitive, so its degree divides its order:
+  # order conditions restrict the degree as well, and bound it inside
+  # PRIMRANGE as soon as the orders themselves lie there.
+  sizes:= fail;
+  for ind in [1..l] do
+    if arglis[2*ind-1] = Size or arglis[2*ind-1] = Order then
+      p:= arglis[2*ind];
+      if IsInt(p) then
+        p:= [p];
+      fi;
+      if IsList(p) then
+        if sizes = fail then
+          sizes:= Set(p);
+        else
+          sizes:= Intersection(sizes, p);
         fi;
       fi;
-    od;
-    if b then
-      Info(InfoWarning,1,"No degree restriction given!\n",
-           "#I  A search over the whole library will take a long time!");
     fi;
+  od;
+
+  if sizes <> fail then
+    unrestrictedDegree:= unrestrictedDegree and not IsSubset(PRIMRANGE, sizes);
+    deg:= Filtered(deg, d -> ForAny(sizes, k -> 0 = k mod d));
+  elif IsEmpty(pos) then
+    Info(InfoWarning,1,"No degree restriction given!\n",
+         "#I  A search over the whole library will take a long time!");
   fi;
   gut:=[];
   for i in deg do
