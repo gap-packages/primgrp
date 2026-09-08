@@ -644,7 +644,7 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,l,deg,pos,unrestrictedDegree,pp,p,sizes,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
+local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -658,19 +658,33 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,sizes,i,j,a,b,gut,g,grp,nr,RFL,in
   # do we ask for the degree?
   pos:=Filtered([1..l],i->arglis[2*i-1]=NrMovedPoints);
   unrestrictedDegree:= true;   # no degree restriction given yet
+  degrees:= fail;              # intersection of the degree lists given
   for pp in pos do
     p:=arglis[2*pp];
     if IsInt(p) then
       p:=[p];
     fi;
-    if IsList(p) then
-      unrestrictedDegree:= unrestrictedDegree and not IsSubset(PRIMRANGE, p);
-      deg:= Intersection(deg, p);
-    else
+
+    if not IsList(p) then
       # a function (wondering, whether anyone will ever use it...)
       deg:= Filtered(deg, p);
+      continue;
+    fi;
+
+    if degrees = fail then
+      degrees:= Set(p);
+    else
+      degrees:= Intersection(degrees, p);
     fi;
   od;
+
+  # Only the intersection tells whether the library covers the request:
+  # each single list may reach outside PRIMRANGE without a degree being
+  # missed, as long as the degrees they agree on lie inside.
+  if degrees <> fail then
+    unrestrictedDegree:= not IsSubset(PRIMRANGE, degrees);
+    deg:= Intersection(deg, degrees);
+  fi;
 
   # A primitive group is transitive, so its degree divides its order:
   # order conditions restrict the degree as well, and bound it inside
