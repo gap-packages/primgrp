@@ -644,7 +644,8 @@ end);
 #F  PrimitiveGroupsIterator(arglis,alle)  . . . . . selection function
 ##
 InstallGlobalFunction(PrimitiveGroupsIterator,function(arg)
-local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,nr,RFL,ind,it;
+local arglis,l,deg,pos,mayBeIncomplete,pp,p,requestedDegrees,requestedSizes,
+      i,j,a,b,gut,g,grp,nr,RFL,ind,it;
   if Length(arg)=1 and IsList(arg[1]) then
     arglis:=arg[1];
   else
@@ -657,8 +658,10 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,n
   deg:=PRIMRANGE;
   # do we ask for the degree?
   pos:=Filtered([1..l],i->arglis[2*i-1]=NrMovedPoints);
-  unrestrictedDegree:= true;   # no degree restriction given yet
-  degrees:= fail;              # intersection of the degree lists given
+  # The library reaches only up to PRIMRANGE, so a request that may name a
+  # degree beyond it cannot be answered in full; that is reported below.
+  mayBeIncomplete:= true;
+  requestedDegrees:= fail;   # intersection of the degree lists given
   for pp in pos do
     p:=arglis[2*pp];
     if IsInt(p) then
@@ -671,25 +674,25 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,n
       continue;
     fi;
 
-    if degrees = fail then
-      degrees:= Set(p);
+    if requestedDegrees = fail then
+      requestedDegrees:= Set(p);
     else
-      degrees:= Intersection(degrees, p);
+      requestedDegrees:= Intersection(requestedDegrees, p);
     fi;
   od;
 
   # Only the intersection tells whether the library covers the request:
   # each single list may reach outside PRIMRANGE without a degree being
-  # missed, as long as the degrees they agree on lie inside.
-  if degrees <> fail then
-    unrestrictedDegree:= not IsSubset(PRIMRANGE, degrees);
-    deg:= Intersection(deg, degrees);
+  # missed, as long as the ones they agree on lie inside.
+  if requestedDegrees <> fail then
+    mayBeIncomplete:= not IsSubset(PRIMRANGE, requestedDegrees);
+    deg:= Intersection(deg, requestedDegrees);
   fi;
 
   # A primitive group is transitive, so its degree divides its order:
   # order conditions restrict the degree as well, and bound it inside
   # PRIMRANGE as soon as the orders themselves lie there.
-  sizes:= fail;
+  requestedSizes:= fail;
   for ind in [1..l] do
     if arglis[2*ind-1] = Size or arglis[2*ind-1] = Order then
       p:= arglis[2*ind];
@@ -697,18 +700,19 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,n
         p:= [p];
       fi;
       if IsList(p) then
-        if sizes = fail then
-          sizes:= Set(p);
+        if requestedSizes = fail then
+          requestedSizes:= Set(p);
         else
-          sizes:= Intersection(sizes, p);
+          requestedSizes:= Intersection(requestedSizes, p);
         fi;
       fi;
     fi;
   od;
 
-  if sizes <> fail then
-    unrestrictedDegree:= unrestrictedDegree and not IsSubset(PRIMRANGE, sizes);
-    deg:= Filtered(deg, d -> ForAny(sizes, k -> 0 = k mod d));
+  if requestedSizes <> fail then
+    mayBeIncomplete:= mayBeIncomplete
+                      and not IsSubset(PRIMRANGE, requestedSizes);
+    deg:= Filtered(deg, d -> ForAny(requestedSizes, k -> 0 = k mod d));
   elif IsEmpty(pos) then
     Info(InfoWarning,1,"No degree restriction given!\n",
          "#I  A search over the whole library will take a long time!");
@@ -772,7 +776,7 @@ local arglis,l,deg,pos,unrestrictedDegree,pp,p,degrees,sizes,i,j,a,b,gut,g,grp,n
     od;
   od;
 
-  if unrestrictedDegree then
+  if mayBeIncomplete then
     Print( "#W  AllPrimitiveGroups: Degree restricted to [ 2 .. ",
            PRIMRANGE[ Length( PRIMRANGE ) ], " ]\n" );
   fi;
