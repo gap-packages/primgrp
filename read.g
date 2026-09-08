@@ -9,8 +9,6 @@
 ##
 ReadPackage( "primgrp", "lib/primitiv.grp" );
 ReadPackage( "primgrp", "lib/primitiv.gi" );
-ReadPackage( "primgrp", "lib/irredsol.grp" );
-ReadPackage( "primgrp", "lib/irredsol.gi" );
 ReadPackage( "primgrp", "lib/cohorts.grp" );
 
 #E  read.g . . . . . . . . . . . . . . . . . . . . . . . . . . . .  ends here

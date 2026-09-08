@@ -97,7 +97,6 @@ Discrete Mathematics), <URL>https://www.codima.ac.uk/</URL>.
 <Body>
 
 <#Include SYSTEM "prim.xml">
-<#Include SYSTEM "irredsol.xml">
 
 </Body>
 
