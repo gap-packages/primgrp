@@ -181,6 +181,13 @@ gap> List([1..4], nr -> [ Name(PrimitiveGroup(11,nr)),
 [ [ "C(11)", 11, 1 ], [ "D(2*11)", 22, 1 ], [ "11:5", 55, 1 ], 
   [ "AGL(1, 11)", 110, 2 ] ]
 
+# PGPrime stops short of degrees 2 and 3, where AGL(1,p) is all of Sym(p): the
+# library names those S(2), A(3) and S(3), and PGPrime would call them C(2),
+# C(3) and D(2*3).  It would also make S(3) 2-transitive, which is the rule for
+# AGL(1,p) and wrong at p = 3.
+gap> PGPrime(2)(3,2);
+Error, PGPrime: AGL(1,3) is Sym(3), which PGAlt and PGSym describe
+
 # An entry may be a description of itself: a list naming a construction, with
 # its arguments.  A real entry begins with its number, so the two are told
 # apart by whether the first element is a string, and PRIMGrp puts the built

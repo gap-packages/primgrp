@@ -68,9 +68,18 @@ end);
 ##  the translations alone, D(2*p) when d = 2, AGL(1, p) when d = p-1, and p:d
 ##  otherwise.
 ##
+##  This starts at p = 5.  AGL(1,2) and AGL(1,3) are Sym(2) and Sym(3), which
+##  the library names S(2), A(3) and S(3) and PGAlt and PGSym describe; and
+##  Sym(3) is 3-transitive where AGL(1,p) is 2-transitive, so the rules below
+##  would get those entries wrong rather than merely name them differently.
+##
 BindGlobal("PGPrime",function(d)
   return function(deg,nr)
     local a,name,gens,flags,trans;
+    if deg < 5 then
+      Error("PGPrime: AGL(1,",deg,") is Sym(",deg,
+            "), which PGAlt and PGSym describe");
+    fi;
     if (deg-1) mod d <> 0 then
       Error("PGPrime(",d,") at degree ",deg,": ",d," does not divide ",deg-1);
     fi;
