@@ -155,8 +155,8 @@ gap> List([[25,23],[1000,23]],
 >                            [1..p[1]]) ]);
 [ [ 7200, true ], [ 559872000, true ] ]
 
-# Alt(n) and Sym(n) on the k-subsets are the call PGAltOnSets(n,k) or
-# PGSymOnSets(n,k): the order, the transitivity, the socle and the Johnson
+# Alt(n) and Sym(n) on the k-subsets are ["AltOnSets",n,k] or
+# ["SymOnSets",n,k]: the order, the transitivity, the socle and the Johnson
 # suborbits Binomial(k,i)*Binomial(n-k,i) all follow from n and k, so the entry
 # stores none of them.  The order is recomputed here rather than read off the
 # entry, and the name is checked because it comes from the constructor now
@@ -170,6 +170,24 @@ gap> List([[10,1],[35,3],[126,12]],
   [ "A(7)", 2520, [ [ 1, 1 ], [ 4, 1 ], [ 12, 1 ], [ 18, 1 ] ] ], 
   [ "A(9)", 181440, [ [ 1, 1 ], [ 5, 1 ], [ 20, 1 ], [ 40, 1 ], [ 60, 1 ] ] ] 
  ]
+
+# An entry may be a description of itself: a list naming a construction, with
+# its arguments.  A real entry begins with its number, so the two are told
+# apart by whether the first element is a string, and PRIMGrp puts the built
+# entry back in place of the description.
+gap> List([[6,1],[6,3],[10,1]], p -> PRIMGrp(p[1],p[2])[7]);
+[ "PSL(2,5)", "A(6)", "A(5)" ]
+gap> PRIMGRP_EntryFromDescription(["PSL",2,5], 6, 1) = PRIMGrp(6,1);
+true
+gap> PRIMGRP_EntryFromDescription(["Alt"], 6, 3) = PRIMGrp(6,3);
+true
+gap> PRIMGRP_EntryFromDescription(["AltOnSets",5,2], 10, 1) = PRIMGrp(10,1);
+true
+
+# A description naming something the library does not offer is refused rather
+# than looked up as a global.
+gap> PRIMGRP_EntryFromDescription(["NoSuchThing"], 6, 1);
+Error, unknown construction "NoSuchThing" for entry 1 of degree 6
 
 #
 gap> STOP_TEST("bugfix.tst", 1);
