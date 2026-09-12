@@ -53,6 +53,50 @@ end);
 
 #############################################################################
 ##
+#F  PGPrime( <d> ) . . . . . . a subgroup of AGL(1,p) of order p*<d>, p prime
+##
+##  For prime degree p the affine primitive groups are exactly the subgroups of
+##  AGL(1,p) that contain the translations, one for each divisor d of p-1.
+##  Everything the entry records follows from p and d, so a data file stores
+##  only d, as ["Prime",d].
+##
+##  The multiplicative group of GF(p) is cyclic, so its subgroup of order d is
+##  unique: any element of order d generates it, and the group does not depend
+##  on which primitive root PrimitiveRootMod happens to return.
+##
+##  The names are the ones the library already uses at these degrees: C(p) for
+##  the translations alone, D(2*p) when d = 2, AGL(1, p) when d = p-1, and p:d
+##  otherwise.
+##
+BindGlobal("PGPrime",function(d)
+  return function(deg,nr)
+    local a,name,gens,flags,trans;
+    if (deg-1) mod d <> 0 then
+      Error("PGPrime(",d,") at degree ",deg,": ",d," does not divide ",deg-1);
+    fi;
+    if d = 1 then
+      name:=Concatenation("C(",String(deg),")");
+      gens:=[];
+    else
+      a:=PowerModInt(PrimitiveRootMod(deg),(deg-1)/d,deg);
+      gens:=[ [ [ a*Z(deg)^0 ] ] ];
+      if d = 2 then
+        name:=Concatenation("D(2*",String(deg),")");
+      elif d = deg-1 then
+        name:=Concatenation("AGL(1, ",String(deg),")");
+      else
+        name:=Concatenation(String(deg),":",String(d));
+      fi;
+    fi;
+    if d = 1 then flags:=3; else flags:=2; fi;      # simple and solvable
+    if d = deg-1 then trans:=2; else trans:=1; fi;  # AGL(1,p) is 2-transitive
+    return [ nr, deg*d, flags, "1", [[d,(deg-1)/d]],
+             trans, name, ["Z",deg,1], gens ];
+  end;
+end);
+
+#############################################################################
+##
 #F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
 #F  PGSymOnSets( <n>, <k> )
 ##
@@ -321,6 +365,8 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGAltOnSets(desc[2],desc[3])(deg,nr);
   elif desc[1] = "SymOnSets" then
     return PGSymOnSets(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "Prime" then
+    return PGPrime(desc[2])(deg,nr);
   elif desc[1] = "PSL" then
     return PGPsl(desc[2],desc[3])(deg,nr);
   elif desc[1] = "PGL" then
