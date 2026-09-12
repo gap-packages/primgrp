@@ -53,6 +53,92 @@ end);
 
 #############################################################################
 ##
+#F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
+#F  PGSymOnSets( <n>, <k> )
+##
+##  Alt(n) and Sym(n) acting on the k-element subsets of [1..n], which is a
+##  primitive group of degree Binomial(n,k).  Like PGPsl and unlike PGAlt these
+##  take arguments, because the degree alone determines neither n nor k, and
+##  they return a function of `deg` and `nr` that is inserted as an entry into
+##  PRIMGRP and invoked by PRIMGrp on first use.
+##
+##  Everything the entry records follows from n and k.  Two of the nine fields
+##  are worth spelling out:
+##
+##  The suborbits are the subdegrees of the Johnson scheme.  The stabiliser of
+##  a k-set S has one orbit for each i = 1..k, holding the k-sets that agree
+##  with S in all but i of its points: Binomial(k,i) choices of which points of
+##  S to drop, and Binomial(n-k,i) of what to put in their place.  At n = 45,
+##  k = 2 that is 2*43 = 86 sets sharing a point with S, and 1*903 = 903
+##  disjoint from it.
+##
+##  Field 9 is ["sets", <inner>, <k>], where <inner> describes the group being
+##  acted with rather than being it -- here ["Alt",n] or ["Sym",n].  A family
+##  with a different inner group, such as PSL(2,q) on the 2-subsets of the
+##  projective line, then wants a case in PRIMGRP_InnerGroup below and not a
+##  form of its own.
+##
+BindGlobal("PRIMGRP_JohnsonSuborbits",function(n,k)
+  return Set(Collected(List([1..k],i->Binomial(k,i)*Binomial(n-k,i))));
+end);
+
+BindGlobal("PGAltOnSets",function(n,k)
+  return function(deg,nr)
+    Assert(0, deg = Binomial(n,k));
+    return [ nr, Factorial(n)/2, 1, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
+             Concatenation("A(",String(n),")"), ["A",n,1],
+             ["sets",["Alt",n],k] ];
+  end;
+end);
+
+BindGlobal("PGSymOnSets",function(n,k)
+  return function(deg,nr)
+    Assert(0, deg = Binomial(n,k));
+    return [ nr, Factorial(n), 0, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
+             Concatenation("S(",String(n),")"), ["A",n,1],
+             ["sets",["Sym",n],k] ];
+  end;
+end);
+
+#############################################################################
+##
+#F  PGOnSetsGroup( <inner>, <k> ) . . . . . . an inner group on the k-subsets
+##
+##  Build the group an entry's field 9 asks for: PRIMGRP_InnerGroup turns the
+##  description <inner> into a group, and PGOnSetsGroup returns its action on
+##  the k-element subsets of its points.
+##
+##  The action is taken on the orbit of one k-set, so it is the action on all
+##  of them only if the group is k-homogeneous.  A group that is not would give
+##  a group of the wrong degree rather than an error, so that is checked.
+##
+##  The orbit is sorted before it is acted on.  Which permutation group comes
+##  out depends on the order of the points, and Orbit does not promise one, so
+##  without this the group would be at the mercy of how Orbit happens to be
+##  implemented.
+##
+BindGlobal("PRIMGRP_InnerGroup",function(inner)
+  if inner[1] = "Alt" then
+    return AlternatingGroup(inner[2]);
+  elif inner[1] = "Sym" then
+    return SymmetricGroup(inner[2]);
+  fi;
+  Error("PGOnSetsGroup: unknown inner group ",inner[1]);
+end);
+
+BindGlobal("PGOnSetsGroup",function(inner,k)
+  local g,pts;
+  g:=PRIMGRP_InnerGroup(inner);
+  pts:=Set(Orbit(g,[1..k],OnSets));
+  if Length(pts) <> Binomial(NrMovedPoints(g),k) then
+    Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",
+          NrMovedPoints(g)," points");
+  fi;
+  return Action(g,pts,OnSets);
+end);
+
+#############################################################################
+##
 #F  PGPsl( <dim>, <q> ) . . . . the natural projective actions of the L series
 #F  PGPgl( <dim>, <q> )
 #F  PGPsigmaL( <dim>, <q> )
@@ -318,6 +404,8 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     else
       g:= PGammaL(dim,q);
     fi;
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "sets" then
+    g:= PGOnSetsGroup(l[9][2], l[9][3]);
   elif Length(l[9]) = 2 and l[9][1] = "4c" then
     # product action: the socle width in field 8 gives k, and the degree
     # its k-th root gives m
