@@ -171,6 +171,16 @@ gap> List([[10,1],[35,3],[126,12]],
   [ "A(9)", 181440, [ [ 1, 1 ], [ 5, 1 ], [ 20, 1 ], [ 40, 1 ], [ 60, 1 ] ] ] 
  ]
 
+# For prime degree p the affine primitive groups are the subgroups of AGL(1,p)
+# containing the translations, one for each divisor d of p-1, so the entry is
+# ["Prime",d] and nothing else.  Degree 11 has the four divisors of 10, and
+# only the largest is 2-transitive.
+gap> List([1..4], nr -> [ Name(PrimitiveGroup(11,nr)),
+>                         Size(Group(GeneratorsOfGroup(PrimitiveGroup(11,nr)))),
+>                         Transitivity(PrimitiveGroup(11,nr),[1..11]) ]);
+[ [ "C(11)", 11, 1 ], [ "D(2*11)", 22, 1 ], [ "11:5", 55, 1 ], 
+  [ "AGL(1, 11)", 110, 2 ] ]
+
 # An entry may be a description of itself: a list naming a construction, with
 # its arguments.  A real entry begins with its number, so the two are told
 # apart by whether the first element is a string, and PRIMGrp puts the built
