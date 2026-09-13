@@ -37,9 +37,9 @@ BindGlobal("PRIMGRP", []);
 ##  the transitivity, the name and the socle.  So the entry can be the call
 ##  itself.
 ##
-##  An entry that is a function is evaluated by PRIMGrp on first use. This
-##  keeps Factorial(deg) from being computed for every degree in a data file
-##  merely because the file was read.
+##  A data file names these rather than calling them, as ["Alt"] and ["Sym"];
+##  PRIMGrp evaluates that on first use.  Factorial(deg) is then not computed
+##  for every degree in the file merely because the file was read.
 ##
 BindGlobal("PGAlt",function(deg,nr)
   return [ nr, Factorial(deg)/2, 1, "2", [[deg-1,1]], deg-2,
@@ -59,8 +59,9 @@ end);
 ##  Alt(n) and Sym(n) acting on the k-element subsets of [1..n], which is a
 ##  primitive group of degree Binomial(n,k).  Like PGPsl and unlike PGAlt these
 ##  take arguments, because the degree alone determines neither n nor k, and
-##  they return a function of `deg` and `nr` that is inserted as an entry into
-##  PRIMGRP and invoked by PRIMGrp on first use.
+##  they return a function of `deg` and `nr`.  A data file names them with
+##  their arguments, as ["AltOnSets",n,k], and PRIMGrp evaluates that on first
+##  use.
 ##
 ##  Everything the entry records follows from n and k.  Two of the nine fields
 ##  are worth spelling out:
@@ -146,9 +147,9 @@ end);
 ##
 ##  PSL, PGL, PSigmaL and PGammaL on the points of PG(dim-1,q), of which there
 ##  are (q^dim-1)/(q-1).  Unlike PGAlt and PGSym these take arguments, because
-##  the degree does not determine the dimension. They then return functions
-##  with argument `deg` and `nr` that are inserted as entries into PRIMGRP.
-##  These functions are then invoked as needed by PRIMGrp.
+##  the degree does not determine the dimension.  They then return functions
+##  with argument `deg` and `nr`, which a data file names with its arguments,
+##  as ["PSL",dim,q], for PRIMGrp to evaluate on first use.
 ##
 BindGlobal("PGPslOrder",function(dim,q)
   local o,i;
@@ -297,6 +298,44 @@ end);
 
 #############################################################################
 ##
+#F  PRIMGRP_EntryFromDescription( <desc>, <deg>, <nr> ) . . . . an entry, built
+##
+##  A data file may hold a description of an entry in place of the entry: a
+##  list whose first element is a string naming a construction, and whose
+##  remaining elements are its arguments.  ["Alt"] is the natural alternating
+##  group of the degree it stands at.
+##
+##  A real entry begins with its own number, so the two are told apart by
+##  whether the first element is a string, and nothing has to be marked.
+##
+##  The names are matched here rather than looked up as globals.  A data file
+##  is data: it should be able to ask for one of the constructions the library
+##  offers, and for nothing else.
+##
+BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
+  if desc[1] = "Alt" then
+    return PGAlt(deg,nr);
+  elif desc[1] = "Sym" then
+    return PGSym(deg,nr);
+  elif desc[1] = "AltOnSets" then
+    return PGAltOnSets(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "SymOnSets" then
+    return PGSymOnSets(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "PSL" then
+    return PGPsl(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "PGL" then
+    return PGPgl(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "PSigmaL" then
+    return PGPsigmaL(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "PGammaL" then
+    return PGPgammaL(desc[2],desc[3])(deg,nr);
+  fi;
+  Error("unknown construction \"",desc[1],"\" for entry ",nr,
+        " of degree ",deg);
+end);
+
+#############################################################################
+##
 ##
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
@@ -345,12 +384,11 @@ BindGlobal("PRIMGrp",function(deg,nr)
   fi;
   PrimGrpLoad(deg);
   l:=PRIMGRP[deg][nr];
-  if IsFunction(l) then
-    # An entry may be "lazy", that is, encoded in a function. We call such a
-    # function the degree and index as arguments to produce the actual entry.
-    # To avoid recomputing it, we store the the computed entry into `PRIMGRP`,
-    # overwriting the function that produced it.
-    l:=l(deg,nr);
+  if IsStringRep(l[1]) then
+    # The entry is a description of itself rather than itself: a construction
+    # named by a string, with its arguments.  Build it, and put the result back
+    # so that the next reader finds the entry and not the description.
+    l:=PRIMGRP_EntryFromDescription(l,deg,nr);
     PRIMGRP[deg][nr]:=l;
   fi;
   return l;
