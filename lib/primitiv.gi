@@ -295,6 +295,106 @@ end);
 
 #############################################################################
 ##
+#F  PGOnSubspaces( <inner>, <k> ) . . . . . . . . the L series on its k-spaces
+#F  PGOnSubspacesGroup( <inner>, <k> )
+##
+##  The inner group, one of ["PSL",dim,q], ["PGL",dim,q], ["PSigmaL",dim,q] and
+##  ["PGammaL",dim,q], acting on the k-dimensional subspaces of GF(q)^dim, for
+##  2 <= k <= dim/2.  A k-space and its annihilator give the same permutation
+##  group, so a larger k is the action on dim-k, and k = 1 is the inner group's
+##  own action on points.  A data file names it ["subspaces", <inner>, k],
+##  which is also the entry's field 9.
+##
+##  The order, the name and the socle are the inner group's, from
+##  PRIMGRP_InnerFields.  The suborbits are those of the Grassmann scheme: the
+##  k-spaces meeting a given one in a (k-i)-space number
+##  q^(i^2) [k,i]_q [dim-k,i]_q, with Gaussian binomials.
+##
+##  PGOnSubspacesGroup builds the group.  A k-space is the set of the
+##  projective points it contains, so the group is built on the points and acts
+##  on those sets; the points and the orbit are sorted, as in PGOnSetsGroup.
+##
+BindGlobal("PRIMGRP_GaussianBinomial",function(n,k,q)
+  return Product([0..k-1],i->(q^(n-i)-1)/(q^(i+1)-1));
+end);
+
+##  the index of a named projective group over PSL(dim,q)
+BindGlobal("PRIMGRP_ProjectiveIndex",function(name,dim,q)
+  if name = "PSL" then
+    return 1;
+  elif name = "PGL" then
+    return Gcd(dim,q-1);
+  elif name = "PSigmaL" then
+    return Length(Factors(q));
+  elif name = "PGammaL" then
+    return Gcd(dim,q-1)*Length(Factors(q));
+  fi;
+  Error("unknown projective group ",name);
+end);
+
+##  What an inner group gives the entry of an action of it: its order, whether
+##  it is simple or solvable, its name and its socle.
+BindGlobal("PRIMGRP_InnerFields",function(inner)
+  local idx,flags;
+  if inner[1] in ["PSL","PGL","PSigmaL","PGammaL"] then
+    idx:=PRIMGRP_ProjectiveIndex(inner[1],inner[2],inner[3]);
+    if idx = 1 then
+      flags:=1;       # simple
+    else
+      flags:=0;
+    fi;
+    return rec(order:=PGPslOrder(inner[2],inner[3])*idx, flags:=flags,
+               name:=Concatenation(inner[1],"(",String(inner[2]),",",
+                                   String(inner[3]),")"),
+               socle:=["L",[inner[2],inner[3]],1]);
+  fi;
+  Error("unknown inner group ",inner[1]);
+end);
+
+BindGlobal("PGOnSubspaces",function(inner,k)
+  local dim,q,f;
+  dim:=inner[2];
+  q:=inner[3];
+  f:=PRIMGRP_InnerFields(inner);
+  return function(deg,nr)
+    Assert(0, 2 <= k and 2*k <= dim
+              and deg = PRIMGRP_GaussianBinomial(dim,k,q));
+    return [ nr, f.order, f.flags, "2",
+             Set(Collected(List([1..k],
+               i->q^(i^2)*PRIMGRP_GaussianBinomial(k,i,q)
+                         *PRIMGRP_GaussianBinomial(dim-k,i,q)))),
+             1, f.name, f.socle, ["subspaces",inner,k] ];
+  end;
+end);
+
+BindGlobal("PGOnSubspacesGroup",function(inner,k)
+  local dim,q,mats,vecs,gens,g,seed,pts;
+  dim:=inner[2];
+  q:=inner[3];
+  Assert(0, 2 <= k and 2*k <= dim);
+  if inner[1] in ["PSL","PSigmaL"] then
+    mats:=GeneratorsOfGroup(SL(dim,q));
+  elif inner[1] in ["PGL","PGammaL"] then
+    mats:=GeneratorsOfGroup(GL(dim,q));
+  else
+    Error("PGOnSubspacesGroup: unknown group ",inner[1]);
+  fi;
+
+  vecs:=Set(NormedRowVectors(GF(q)^dim));
+  gens:=List(mats,m->Permutation(m,vecs,OnLines));
+  if inner[1] in ["PSigmaL","PGammaL"] then
+    Add(gens,Permutation(FrobeniusAutomorphism(GF(q)),vecs,
+                         function(v,e) return List(v,x->x^e); end));
+  fi;
+  g:=GroupWithGenerators(gens);
+
+  seed:=Filtered([1..Length(vecs)],i->IsZero(vecs[i]{[k+1..dim]}));
+  pts:=Set(Orbit(g,seed,OnSets));
+  return Action(g,pts,OnSets);
+end);
+
+#############################################################################
+##
 #F  PGProductAction4c( <m>, <k>, <els> ) . . . . . . . . .  the product action
 ##
 ##  Return a group of O'Nan-Scott type 4c, that is, a subgroup of the full
@@ -384,6 +484,8 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGPsigmaL(desc[2],desc[3])(deg,nr);
   elif desc[1] = "PGammaL" then
     return PGPgammaL(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "subspaces" then
+    return PGOnSubspaces(desc[2],desc[3])(deg,nr);
   fi;
   Error("unknown construction \"",desc[1],"\" for entry ",nr,
         " of degree ",deg);
@@ -499,6 +601,8 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     fi;
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "sets" then
     g:= PGOnSetsGroup(l[9][2], l[9][3]);
+  elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "subspaces" then
+    g:= PGOnSubspacesGroup(l[9][2], l[9][3]);
   elif Length(l[9]) = 2 and l[9][1] = "4c" then
     # product action: the socle width in field 8 gives k, and the degree
     # its k-th root gives m
