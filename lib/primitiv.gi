@@ -162,14 +162,11 @@ end);
 ##  description <inner> into a group, and PGOnSetsGroup returns its action on
 ##  the k-element subsets of its points.
 ##
-##  The action is taken on the orbit of one k-set, so it is the action on all
-##  of them only if the group is k-homogeneous.  A group that is not would give
-##  a group of the wrong degree rather than an error, so that is checked.
-##
-##  The orbit is sorted before it is acted on.  Which permutation group comes
-##  out depends on the order of the points, and Orbit does not promise one, so
-##  without this the group would be at the mercy of how Orbit happens to be
-##  implemented.
+##  The points are all k-subsets of [1..n] in sorted order, and the image of a
+##  k-set is located by its rank in that order rather than searched for.  That
+##  order is fixed; one given by Orbit would not be, and which permutation group
+##  comes out depends on it.  The result is transitive only if the group is
+##  k-homogeneous, so that is checked.
 ##
 BindGlobal("PRIMGRP_InnerGroup",function(inner)
   if inner[1] = "Alt" then
@@ -181,14 +178,43 @@ BindGlobal("PRIMGRP_InnerGroup",function(inner)
 end);
 
 BindGlobal("PGOnSetsGroup",function(inner,k)
-  local g,pts;
+  local g,n,sets,pre,i,c,gens,x,img,pos,j,s,r,prev,h;
   g:=PRIMGRP_InnerGroup(inner);
-  pts:=Set(Orbit(g,[1..k],OnSets));
-  if Length(pts) <> Binomial(NrMovedPoints(g),k) then
-    Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",
-          NrMovedPoints(g)," points");
+  n:=LargestMovedPoint(g);
+  sets:=Combinations([1..n],k);
+
+  # pre[i][c] counts the k-sets that agree with a given one in their first i-1
+  # points and have an i-th point smaller than c
+  pre:=List([1..k],i->0*[1..n+1]);
+  for i in [1..k] do
+    for c in [1..n] do
+      pre[i][c+1]:=pre[i][c]+Binomial(n-c,k-i);
+    od;
+  od;
+
+  gens:=[];
+  for x in GeneratorsOfGroup(g) do
+    img:=ListPerm(x,n);
+    pos:=[];
+    for j in [1..Length(sets)] do
+      s:=SortedList(img{sets[j]});
+      r:=1;
+      prev:=0;
+      for i in [1..k] do
+        r:=r+pre[i][s[i]]-pre[i][prev+1];
+        prev:=s[i];
+      od;
+      pos[j]:=r;
+    od;
+    Add(gens,PermList(pos));
+  od;
+
+  h:=GroupWithGenerators(gens);
+  if not IsTransitive(h,[1..Length(sets)]) then
+    Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",n,
+          " points");
   fi;
-  return Action(g,pts,OnSets);
+  return h;
 end);
 
 #############################################################################
