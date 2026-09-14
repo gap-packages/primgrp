@@ -157,14 +157,10 @@ end);
 ##  description <inner> into a group, and PGOnSetsGroup returns its action on
 ##  the k-element subsets of its points.
 ##
-##  The action is taken on the orbit of one k-set, so it is the action on all
-##  of them only if the group is k-homogeneous.  A group that is not would give
-##  a group of the wrong degree rather than an error, so that is checked.
-##
-##  The orbit is sorted before it is acted on.  Which permutation group comes
-##  out depends on the order of the points, and Orbit does not promise one, so
-##  without this the group would be at the mercy of how Orbit happens to be
-##  implemented.
+##  The points are all k-subsets of [1..n], in the order Combinations gives
+##  them.  That order is fixed; one given by Orbit would not be, and which
+##  permutation group comes out depends on it.  The result is transitive only
+##  if the group is k-homogeneous, so that is checked.
 ##
 BindGlobal("PRIMGRP_InnerGroup",function(inner)
   if inner[1] = "Alt" then
@@ -176,14 +172,15 @@ BindGlobal("PRIMGRP_InnerGroup",function(inner)
 end);
 
 BindGlobal("PGOnSetsGroup",function(inner,k)
-  local g,pts;
+  local g,sets,h;
   g:=PRIMGRP_InnerGroup(inner);
-  pts:=Set(Orbit(g,[1..k],OnSets));
-  if Length(pts) <> Binomial(NrMovedPoints(g),k) then
+  sets:=Combinations([1..LargestMovedPoint(g)],k);
+  h:=Action(g,sets,OnSets);
+  if not IsTransitive(h,[1..Length(sets)]) then
     Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",
-          NrMovedPoints(g)," points");
+          LargestMovedPoint(g)," points");
   fi;
-  return Action(g,pts,OnSets);
+  return h;
 end);
 
 #############################################################################
