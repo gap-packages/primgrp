@@ -395,8 +395,8 @@ PRIMGRP[2774]:=[
 ["Sym"],
 ];
 PRIMGRP[2775]:=[
-["AltOnSets",75,2],
-["SymOnSets",75,2],
+["sets",["Alt",75],2],
+["sets",["Sym",75],2],
 ["Alt"],
 ["Sym"],
 ];
