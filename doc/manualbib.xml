@@ -3089,6 +3089,18 @@
   <other type="pages">xi+624</other>
 </book></entry>
 
+<entry id="Lansdown23"><misc>
+  <author>
+    <name><first>Jesse</first><last>Lansdown</last></name>
+  </author>
+  <title><C>P</C>rimitive groups of degree 4096 to 8191 for <C>PrimGrp</C>
+         in <C>GAP</C></title>
+  <howpublished><C>Z</C>enodo</howpublished>
+  <year>2023</year>
+  <url>https://doi.org/10.5281/zenodo.10411366</url>
+  <other type="doi">10.5281/zenodo.10411366</other>
+</misc></entry>
+
 <entry id="Lau82"><book>
   <author>
     <name><first>Reinhard</first><last>Laue</last></name>
@@ -4790,6 +4802,17 @@
   <other type="coden">PJMAAI</other>
   <other type="fjournal">Pacific Journal of Mathematics</other>
 </article></entry>
+
+<entry id="Stratford22"><phdthesis>
+  <author>
+    <name><first>Benjamin Mark</first><last>Stratford</last></name>
+  </author>
+  <title><C>T</C>opics in computational group theory relating to
+         classifications of permutation groups</title>
+  <school>Mathematics Institute, University of Warwick</school>
+  <year>2022</year>
+  <url>http://wrap.warwick.ac.uk/169404/</url>
+</phdthesis></entry>
 
 <entry id="Tay87"><article>
   <author>

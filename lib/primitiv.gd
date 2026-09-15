@@ -14,7 +14,8 @@
 ##  up to permutation isomorphism (i.e., up to conjugacy in the corresponding
 ##  symmetric group),
 ##  all  primitive  permutation groups of  degree <M>&lt;&nbsp;8192</M>,
-##  calculated in <Cite Key="RoneyDougal05"/> and <Cite Key="CRDQ11"/>,
+##  calculated in <Cite Key="RoneyDougal05"/>, <Cite Key="CRDQ11"/> and
+##  <Cite Key="Stratford22"/>,
 ##  in particular,
 ##  <List>
 ##  <Item>
@@ -41,6 +42,11 @@
 ##    The primitive groups of affine type of degree up to <M>999</M> as
 ##    calculated in <Cite Key="RoneyDougal02"/>.
 ##  </Item>
+##  <Item>
+##    The primitive groups of degree <M>4096</M> to <M>8191</M> as
+##    calculated in <Cite Key="Stratford22"/> and prepared for &GAP; by
+##    J.&nbsp;Lansdown <Cite Key="Lansdown23"/>.
+##  </Item>
 ##  </List>
 ##  <P/>
 ##  Not all groups are named, those which do have names use ATLAS notation.
@@ -65,6 +71,10 @@
 ##    a permutation isomorphic group.
 ##    Note however that we do not guarantee to keep the chosen
 ##    <M>S_n</M>-representative, the generating set or the name for eternity.
+##    Nor need the representative be the one other sources give for the same
+##    group, such as <Cite Key="Lansdown23"/> for degree <M>4096</M> to
+##    <M>8191</M>, earlier versions of this library, or
+##    <Package>Magma</Package>.
 ##  </Item>
 ##  <Item>
 ##    Different groups in the library are not conjugate in <M>S_n</M>.
