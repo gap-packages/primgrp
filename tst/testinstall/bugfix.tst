@@ -155,8 +155,8 @@ gap> List([[25,23],[1000,23]],
 >                            [1..p[1]]) ]);
 [ [ 7200, true ], [ 559872000, true ] ]
 
-# Alt(n) and Sym(n) on the k-subsets are ["AltOnSets",n,k] or
-# ["SymOnSets",n,k]: the order, the transitivity, the socle and the Johnson
+# Alt(n) and Sym(n) on the k-subsets are ["sets",["Alt",n],k] or
+# ["sets",["Sym",n],k]: the order, the transitivity, the socle and the Johnson
 # suborbits Binomial(k,i)*Binomial(n-k,i) all follow from n and k, so the entry
 # stores none of them.  The order is recomputed here rather than read off the
 # entry, and the name is checked because it comes from the constructor now
@@ -226,7 +226,7 @@ gap> PRIMGRP_EntryFromDescription(["PSL",2,5], 6, 1) = PRIMGrp(6,1);
 true
 gap> PRIMGRP_EntryFromDescription(["Alt"], 6, 3) = PRIMGrp(6,3);
 true
-gap> PRIMGRP_EntryFromDescription(["AltOnSets",5,2], 10, 1) = PRIMGrp(10,1);
+gap> PRIMGRP_EntryFromDescription(["sets",["Alt",5],2], 10, 1) = PRIMGrp(10,1);
 true
 
 # A description naming something the library does not offer is refused rather

@@ -101,52 +101,16 @@ end);
 
 #############################################################################
 ##
-#F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
-#F  PGSymOnSets( <n>, <k> )
+#F  PRIMGRP_JohnsonSuborbits( <n>, <k> ) . . . . Alt(n) and Sym(n) on k-sets
 ##
-##  Alt(n) and Sym(n) acting on the k-element subsets of [1..n], which is a
-##  primitive group of degree Binomial(n,k).  Like PGPsl and unlike PGAlt these
-##  take arguments, because the degree alone determines neither n nor k, and
-##  they return a function of `deg` and `nr`.  A data file names them with
-##  their arguments, as ["AltOnSets",n,k], and PRIMGrp evaluates that on first
-##  use.
-##
-##  Everything the entry records follows from n and k.  Two of the nine fields
-##  are worth spelling out:
-##
-##  The suborbits are the subdegrees of the Johnson scheme.  The stabiliser of
-##  a k-set S has one orbit for each i = 1..k, holding the k-sets that agree
-##  with S in all but i of its points: Binomial(k,i) choices of which points of
-##  S to drop, and Binomial(n-k,i) of what to put in their place.  At n = 45,
-##  k = 2 that is 2*43 = 86 sets sharing a point with S, and 1*903 = 903
-##  disjoint from it.
-##
-##  Field 9 is ["sets", <inner>, <k>], where <inner> describes the group being
-##  acted with rather than being it -- here ["Alt",n] or ["Sym",n].  A family
-##  with a different inner group, such as PSL(2,q) on the 2-subsets of the
-##  projective line, then wants a case in PRIMGRP_InnerGroup below and not a
-##  form of its own.
+##  The subdegrees of the Johnson scheme.  The stabiliser of a k-set S has one
+##  orbit for each i = 1..k, holding the k-sets that agree with S in all but i
+##  of its points: Binomial(k,i) choices of which points of S to drop, and
+##  Binomial(n-k,i) of what to put in their place.  At n = 45, k = 2 that is
+##  2*43 = 86 sets sharing a point with S, and 1*903 = 903 disjoint from it.
 ##
 BindGlobal("PRIMGRP_JohnsonSuborbits",function(n,k)
   return Set(Collected(List([1..k],i->Binomial(k,i)*Binomial(n-k,i))));
-end);
-
-BindGlobal("PGAltOnSets",function(n,k)
-  return function(deg,nr)
-    Assert(0, deg = Binomial(n,k));
-    return [ nr, Factorial(n)/2, 1, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
-             Concatenation("A(",String(n),")"), ["A",n,1],
-             ["sets",["Alt",n],k] ];
-  end;
-end);
-
-BindGlobal("PGSymOnSets",function(n,k)
-  return function(deg,nr)
-    Assert(0, deg = Binomial(n,k));
-    return [ nr, Factorial(n), 0, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
-             Concatenation("S(",String(n),")"), ["A",n,1],
-             ["sets",["Sym",n],k] ];
-  end;
 end);
 
 #############################################################################
@@ -518,10 +482,6 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGAlt(deg,nr);
   elif desc[1] = "Sym" then
     return PGSym(deg,nr);
-  elif desc[1] = "AltOnSets" then
-    return PGAltOnSets(desc[2],desc[3])(deg,nr);
-  elif desc[1] = "SymOnSets" then
-    return PGSymOnSets(desc[2],desc[3])(deg,nr);
   elif desc[1] = "Prime" then
     return PGPrime(desc[2])(deg,nr);
   elif desc[1] = "PSL" then
