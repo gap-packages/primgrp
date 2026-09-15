@@ -216,6 +216,21 @@ gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(4005,1))));
 gap> PGOnSetsGroup(["PSL",2,13],3);
 Error, PGOnSetsGroup: PSL is not 3-homogeneous on 14 points
 
+# The groups on the points of PG(dim-1,q) between PSL and PGammaL.  One of the
+# four named ones is that description and takes the constructor's name; any
+# other is ["PSL",dim,q,<words>,<name>], PSL extended by diag(Z(q)^i,1,...,1)
+# followed by the j-th power of the Frobenius for each word [i,j], and carries
+# its name.  13/7 is PSL(3,3) on points, which on lines is the same group.
+gap> PRIMGrp(13,7){[6,7,9]};
+[ 2, "PSL(3,3)", "psl" ]
+gap> PRIMGrp(170,4){[6,7]};
+[ 3, "PSL(2, 13^2).2_3" ]
+gap> PRIMGrp(170,4)[9];
+[ "PSL", 2, 169, [ [ 1, 1 ] ], "PSL(2, 13^2).2_3" ]
+gap> List([[13,7],[170,4]],
+>         p -> Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))));
+[ 5616, 4826640 ]
+
 # An entry may be a description of itself: a list naming a construction, with
 # its arguments.  A real entry begins with its number, so the two are told
 # apart by whether the first element is a string, and PRIMGrp puts the built
