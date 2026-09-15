@@ -106,52 +106,16 @@ end);
 
 #############################################################################
 ##
-#F  PGAltOnSets( <n>, <k> ) . . . . Alt(n) and Sym(n) on the k-subsets of [1..n]
-#F  PGSymOnSets( <n>, <k> )
+#F  PRIMGRP_JohnsonSuborbits( <n>, <k> ) . . . . Alt(n) and Sym(n) on k-sets
 ##
-##  Alt(n) and Sym(n) acting on the k-element subsets of [1..n], which is a
-##  primitive group of degree Binomial(n,k).  Like PGPsl and unlike PGAlt these
-##  take arguments, because the degree alone determines neither n nor k, and
-##  they return a function of `deg` and `nr`.  A data file names them with
-##  their arguments, as ["AltOnSets",n,k], and PRIMGrp evaluates that on first
-##  use.
-##
-##  Everything the entry records follows from n and k.  Two of the nine fields
-##  are worth spelling out:
-##
-##  The suborbits are the subdegrees of the Johnson scheme.  The stabiliser of
-##  a k-set S has one orbit for each i = 1..k, holding the k-sets that agree
-##  with S in all but i of its points: Binomial(k,i) choices of which points of
-##  S to drop, and Binomial(n-k,i) of what to put in their place.  At n = 45,
-##  k = 2 that is 2*43 = 86 sets sharing a point with S, and 1*903 = 903
-##  disjoint from it.
-##
-##  Field 9 is ["sets", <inner>, <k>], where <inner> describes the group being
-##  acted with rather than being it -- here ["Alt",n] or ["Sym",n].  A family
-##  with a different inner group, such as PSL(2,q) on the 2-subsets of the
-##  projective line, then wants a case in PRIMGRP_InnerGroup below and not a
-##  form of its own.
+##  The subdegrees of the Johnson scheme.  The stabiliser of a k-set S has one
+##  orbit for each i = 1..k, holding the k-sets that agree with S in all but i
+##  of its points: Binomial(k,i) choices of which points of S to drop, and
+##  Binomial(n-k,i) of what to put in their place.  At n = 45, k = 2 that is
+##  2*43 = 86 sets sharing a point with S, and 1*903 = 903 disjoint from it.
 ##
 BindGlobal("PRIMGRP_JohnsonSuborbits",function(n,k)
   return Set(Collected(List([1..k],i->Binomial(k,i)*Binomial(n-k,i))));
-end);
-
-BindGlobal("PGAltOnSets",function(n,k)
-  return function(deg,nr)
-    Assert(0, deg = Binomial(n,k));
-    return [ nr, Factorial(n)/2, 1, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
-             Concatenation("A(",String(n),")"), ["A",n,1],
-             ["sets",["Alt",n],k] ];
-  end;
-end);
-
-BindGlobal("PGSymOnSets",function(n,k)
-  return function(deg,nr)
-    Assert(0, deg = Binomial(n,k));
-    return [ nr, Factorial(n), 0, "2", PRIMGRP_JohnsonSuborbits(n,k), 1,
-             Concatenation("S(",String(n),")"), ["A",n,1],
-             ["sets",["Sym",n],k] ];
-  end;
 end);
 
 #############################################################################
@@ -162,33 +126,67 @@ end);
 ##  description <inner> into a group, and PGOnSetsGroup returns its action on
 ##  the k-element subsets of its points.
 ##
-##  The action is taken on the orbit of one k-set, so it is the action on all
-##  of them only if the group is k-homogeneous.  A group that is not would give
-##  a group of the wrong degree rather than an error, so that is checked.
-##
-##  The orbit is sorted before it is acted on.  Which permutation group comes
-##  out depends on the order of the points, and Orbit does not promise one, so
-##  without this the group would be at the mercy of how Orbit happens to be
-##  implemented.
+##  The points are all k-subsets of [1..n] in sorted order, and the image of a
+##  k-set is located by its rank in that order rather than searched for.  That
+##  order is fixed; one given by Orbit would not be, and which permutation group
+##  comes out depends on it.  The result is transitive only if the group is
+##  k-homogeneous, so that is checked.
 ##
 BindGlobal("PRIMGRP_InnerGroup",function(inner)
   if inner[1] = "Alt" then
     return AlternatingGroup(inner[2]);
   elif inner[1] = "Sym" then
     return SymmetricGroup(inner[2]);
+  elif inner[1] = "PSL" then
+    return PSL(inner[2],inner[3]);
+  elif inner[1] = "PGL" then
+    return PGL(inner[2],inner[3]);
+  elif inner[1] = "PSigmaL" then
+    return PSigmaL(inner[2],inner[3]);
+  elif inner[1] = "PGammaL" then
+    return PGammaL(inner[2],inner[3]);
   fi;
   Error("PGOnSetsGroup: unknown inner group ",inner[1]);
 end);
 
 BindGlobal("PGOnSetsGroup",function(inner,k)
-  local g,pts;
+  local g,n,sets,pre,i,c,gens,x,img,pos,j,s,r,prev,h;
   g:=PRIMGRP_InnerGroup(inner);
-  pts:=Set(Orbit(g,[1..k],OnSets));
-  if Length(pts) <> Binomial(NrMovedPoints(g),k) then
-    Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",
-          NrMovedPoints(g)," points");
+  n:=LargestMovedPoint(g);
+  sets:=Combinations([1..n],k);
+
+  # pre[i][c] counts the k-sets that agree with a given one in their first i-1
+  # points and have an i-th point smaller than c
+  pre:=List([1..k],i->0*[1..n+1]);
+  for i in [1..k] do
+    for c in [1..n] do
+      pre[i][c+1]:=pre[i][c]+Binomial(n-c,k-i);
+    od;
+  od;
+
+  gens:=[];
+  for x in GeneratorsOfGroup(g) do
+    img:=ListPerm(x,n);
+    pos:=[];
+    for j in [1..Length(sets)] do
+      s:=SortedList(img{sets[j]});
+      r:=1;
+      prev:=0;
+      for i in [1..k] do
+        r:=r+pre[i][s[i]]-pre[i][prev+1];
+        prev:=s[i];
+      od;
+      pos[j]:=r;
+    od;
+    Add(gens,PermList(pos));
+  od;
+
+  h:=GroupWithGenerators(gens);
+  if not IsTransitive(h,[1..Length(sets)]) then
+    Error("PGOnSetsGroup: ",inner[1]," is not ",k,"-homogeneous on ",n,
+          " points");
   fi;
-  return Action(g,pts,OnSets);
+  return h;
 end);
 
 #############################################################################
@@ -332,21 +330,31 @@ BindGlobal("PRIMGRP_ProjectiveIndex",function(name,dim,q)
   Error("unknown projective group ",name);
 end);
 
-##  What an inner group gives the entry of an action of it: its order, whether
-##  it is simple or solvable, its name and its socle.
+##  What an inner group gives the entry of an action of it: the number of its
+##  points, its order, whether it is simple or solvable, its name and its socle.
 BindGlobal("PRIMGRP_InnerFields",function(inner)
-  local idx,flags;
-  if inner[1] in ["PSL","PGL","PSigmaL","PGammaL"] then
-    idx:=PRIMGRP_ProjectiveIndex(inner[1],inner[2],inner[3]);
+  local n,dim,q,idx,flags;
+  if inner[1] = "Alt" then
+    n:=inner[2];
+    return rec(degree:=n, order:=Factorial(n)/2, flags:=1,
+               name:=Concatenation("A(",String(n),")"), socle:=["A",n,1]);
+  elif inner[1] = "Sym" then
+    n:=inner[2];
+    return rec(degree:=n, order:=Factorial(n), flags:=0,
+               name:=Concatenation("S(",String(n),")"), socle:=["A",n,1]);
+  elif inner[1] in ["PSL","PGL","PSigmaL","PGammaL"] then
+    dim:=inner[2];
+    q:=inner[3];
+    idx:=PRIMGRP_ProjectiveIndex(inner[1],dim,q);
     if idx = 1 then
       flags:=1;       # simple
     else
       flags:=0;
     fi;
-    return rec(order:=PGPslOrder(inner[2],inner[3])*idx, flags:=flags,
-               name:=Concatenation(inner[1],"(",String(inner[2]),",",
-                                   String(inner[3]),")"),
-               socle:=["L",[inner[2],inner[3]],1]);
+    return rec(degree:=(q^dim-1)/(q-1), order:=PGPslOrder(dim,q)*idx,
+               flags:=flags,
+               name:=Concatenation(inner[1],"(",String(dim),",",String(q),")"),
+               socle:=["L",[dim,q],1]);
   fi;
   Error("unknown inner group ",inner[1]);
 end);
@@ -391,6 +399,44 @@ BindGlobal("PGOnSubspacesGroup",function(inner,k)
   seed:=Filtered([1..Length(vecs)],i->IsZero(vecs[i]{[k+1..dim]}));
   pts:=Set(Orbit(g,seed,OnSets));
   return Action(g,pts,OnSets);
+end);
+
+#############################################################################
+##
+#F  PGOnSets( <inner>, <k> ) . . . . . . . . . an inner group on its k-subsets
+##
+##  The inner group, ["Alt",n], ["Sym",n] or a projective one such as
+##  ["PSL",dim,q], acting on the k-subsets of its points.  A data file names it
+##  ["sets", <inner>, k], which is also the entry's field 9 and is built by
+##  PGOnSetsGroup.
+##
+##  The order, the name and the socle are the inner group's, from
+##  PRIMGRP_InnerFields.  The suborbits of Alt(n) and Sym(n) are those of the
+##  Johnson scheme.  Those of a projective group are the orbits of the
+##  stabiliser of one k-set on the others, computed in the group on the points,
+##  which is small.
+##
+BindGlobal("PRIMGRP_SetsSuborbits",function(inner,k)
+  local g,seed,s;
+  if inner[1] in ["Alt","Sym"] then
+    return PRIMGRP_JohnsonSuborbits(inner[2],k);
+  fi;
+  g:=PRIMGRP_InnerGroup(inner);
+  seed:=[1..k];
+  s:=Stabilizer(g,seed,OnSets);
+  return Set(Collected(List(Filtered(
+           OrbitsDomain(s,Combinations([1..LargestMovedPoint(g)],k),OnSets),
+           o->not seed in o),Length)));
+end);
+
+BindGlobal("PGOnSets",function(inner,k)
+  local f;
+  f:=PRIMGRP_InnerFields(inner);
+  return function(deg,nr)
+    Assert(0, deg = Binomial(f.degree,k));
+    return [ nr, f.order, f.flags, "2", PRIMGRP_SetsSuborbits(inner,k), 1,
+             f.name, f.socle, ["sets",inner,k] ];
+  end;
 end);
 
 #############################################################################
@@ -470,10 +516,6 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGAlt(deg,nr);
   elif desc[1] = "Sym" then
     return PGSym(deg,nr);
-  elif desc[1] = "AltOnSets" then
-    return PGAltOnSets(desc[2],desc[3])(deg,nr);
-  elif desc[1] = "SymOnSets" then
-    return PGSymOnSets(desc[2],desc[3])(deg,nr);
   elif desc[1] = "Prime" then
     return PGPrime(desc[2])(deg,nr);
   elif desc[1] = "PSL" then
@@ -486,6 +528,8 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGPgammaL(desc[2],desc[3])(deg,nr);
   elif desc[1] = "subspaces" then
     return PGOnSubspaces(desc[2],desc[3])(deg,nr);
+  elif desc[1] = "sets" then
+    return PGOnSets(desc[2],desc[3])(deg,nr);
   fi;
   Error("unknown construction \"",desc[1],"\" for entry ",nr,
         " of degree ",deg);
