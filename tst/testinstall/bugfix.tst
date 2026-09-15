@@ -202,6 +202,20 @@ Error, Assertion failure
 gap> PGOnSubspacesGroup(["Sp",4,3],2);
 Error, PGOnSubspacesGroup: unknown group Sp
 
+# PSL(2,q) and its companions on the pairs of points of the projective line.
+# Every field but the name and the suborbits follows from the description; the
+# suborbits come from the group on the points.  The order is recomputed from
+# the generators rather than read from the entry, and a group that is not
+# k-homogeneous is refused.
+gap> PRIMGrp(28,1){[5,6,7]};
+[ [ [ 3, 1 ], [ 6, 2 ], [ 12, 1 ] ], 1, "PGL(2,7)" ]
+gap> PRIMGrp(28,1)[9];
+[ "sets", [ "PGL", 2, 7 ], 2 ]
+gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(4005,1))));
+352440
+gap> PGOnSetsGroup(["PSL",2,13],3);
+Error, PGOnSetsGroup: PSL is not 3-homogeneous on 14 points
+
 # An entry may be a description of itself: a list naming a construction, with
 # its arguments.  A real entry begins with its number, so the two are told
 # apart by whether the first element is a string, and PRIMGrp puts the built
