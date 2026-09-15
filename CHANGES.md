@@ -2,6 +2,13 @@
 
 ## unreleased
 
+  - Ship the primitive groups of degree 4096 to 8191 with the package, so
+    they need no separate download; `PrimitiveGroupsAvailable` now returns
+    `true` for every degree below 8192
+  - For degree 4096 to 8191, `PrimitiveGroup(n, nr)` may return a conjugate
+    in the symmetric group of the group with that number in the separately
+    distributed data set; the numbering is unchanged, and 8869 groups that
+    had no name now have one
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
     argument, not just the first one
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
