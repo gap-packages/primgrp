@@ -632,9 +632,6 @@ end);
 BindGlobal("PrimGrpLoad",function(deg)
   local s,fname,ind;
   if not IsBound(PRIMGRP[deg]) then
-    if deg > 4095 then
-      Error("This method is not for primitive groups of degree greater than 4095!");
-    fi;
     if not (deg in PRIMRANGE and IsBound(PRIMINDX[deg])) then
       Error("Primitive groups of degree ",deg," are not known!");
     fi;
@@ -645,34 +642,10 @@ BindGlobal("PrimGrpLoad",function(deg)
   fi;
 end);
 
-BindGlobal("PrimGrpArtifactFilename",function(deg,nr)
-  local filename;
-  if deg <= 4095 then
-    Error("This method is only for primitive groups of degree greater than 4095!");
-  fi;
-  filename:=Concatenation("PrimitiveGroups_", String(deg),"_", String(nr), ".g.gz");
-  filename:=Filename(DirectoriesPackageLibrary("primgrp", "data/ExtendedPrimitiveGroupsData"), filename);
-  return filename;
-end);
-
 BindGlobal("PRIMGrp",function(deg,nr)
-  local filename,strm,r,l;
+  local l;
   if nr>PRIMLENGTHS[deg] then
     Error("There are only ",PRIMLENGTHS[deg]," groups of degree ",deg,"\n");
-  fi;
-  if deg > 4095 then
-    filename:=PrimGrpArtifactFilename(deg,nr);
-    if filename = fail then
-      Error("Primitive group of degree ", deg, " with id ", nr, " not found! Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
-    fi;
-    strm:=InputTextFile(filename);;
-    r:=EvalString(ReadAll(strm));;
-    CloseStream(strm);;
-    if not "name" in RecNames(r) then
-      r.name:="";
-    fi;
-    l:=[r.id, r.size, r.SimpleSolvable, r.ONanScottType, r.suborbits, r.transitivity, r.name, r.SocleType, r.generators];
-    return l;
   fi;
   PrimGrpLoad(deg);
   l:=PRIMGRP[deg][nr];
@@ -697,18 +670,7 @@ InstallGlobalFunction(NrPrimitiveGroups, function(deg)
 end);
 
 InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
-  if deg <= 4095 then
-    return true;
-  elif deg <= 8191 then
-    if PrimGrpArtifactFilename(deg,1) <> fail then
-      return true;
-    else
-      Info(InfoWarning,1,"Note that primitive groups of degree 4096 to 8191 must be downloaded separately. They can be obtained from https://doi.org/10.5281/zenodo.10411366");
-      return false;
-    fi;
-  else
-    return false;
-  fi;
+  return deg in PRIMRANGE;
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
@@ -745,7 +707,7 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     # its k-th root gives m
     k:=l[8][3];
     g:= PGProductAction4c(RootInt(deg,k), k, l[9][2]);
-  elif l[4] = "1" and deg <= 4095 then
+  elif l[4] = "1" then
     # affine type groups described by matrices
     if Length(l[9]) > 0 then
       fac:= Factors(deg);
