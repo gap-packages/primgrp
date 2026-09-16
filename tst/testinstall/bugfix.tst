@@ -218,8 +218,8 @@ Error, PGOnSetsGroup: PSL is not 3-homogeneous on 14 points
 
 # The groups on the points of PG(dim-1,q) between PSL and PGammaL.  One of the
 # four named ones is that description and takes the constructor's name; any
-# other is ["PSL",dim,q,<words>,<name>], PSL extended by diag(Z(q)^i,1,...,1)
-# followed by the j-th power of the Frobenius for each word [i,j], and carries
+# other is ["PSL",dim,q,<auts>,<name>], PSL extended by the automorphisms
+# [i,j] = delta^i phi^j with delta diagonal and phi the Frobenius, and carries
 # its name.  13/7 is PSL(3,3) on points, which on lines is the same group.
 gap> PRIMGrp(13,7){[6,7,9]};
 [ 2, "PSL(3,3)", "psl" ]

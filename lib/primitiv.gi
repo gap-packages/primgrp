@@ -115,21 +115,22 @@ end);
 
 #############################################################################
 ##
-#F  PGOnPointsGroup( <inner> ) . . . . PSL extended by words, on the points
+#F  PGOnPointsGroup( <inner> ) . . PSL extended by automorphisms, on points
 ##
-##  <inner> is ["PSL",dim,q,<words>,<name>]: PSL(dim,q) on the points of
-##  PG(dim-1,q), extended by one element for each word [i,j] in <words>,
-##  diag(Z(q)^i,1,...,1) followed by the j-th power of the Frobenius.  That
-##  reaches every group between PSL and PGammaL, including those the four named
-##  ones miss, such as PSL(2,25).2_3 = PSL(2,25).<delta phi>.  The points are
-##  the sorted normed vectors.
+##  <inner> is ["PSL",dim,q,<auts>,<name>]: PSL(dim,q) on the points of
+##  PG(dim-1,q), extended by the automorphisms in <auts>.  Each is written as
+##  a pair [i,j] standing for delta^i phi^j, where delta = diag(Z(q),1,...,1)
+##  is the diagonal automorphism and phi the Frobenius.  That reaches every
+##  group between PSL and PGammaL, including those the four named ones miss,
+##  such as PSL(2,25).2_3 = PSL(2,25).<delta phi>.  The points are the sorted
+##  normed vectors.
 ##
-##  Modulo PSL, delta = diag(Z(q),1,...,1) has order g = gcd(dim,q-1) and the
-##  Frobenius phi order f, where q = p^f.  First delta^i1 phi^j1 then
-##  delta^i2 phi^j2 is delta^(i1 + i2*p^(f-j1)) phi^(j1+j2), and
-##  PRIMGRP_ProjectiveExtension closes the words under that.
+##  Modulo PSL, delta has order g = gcd(dim,q-1) and phi order f, where
+##  q = p^f.  First delta^i1 phi^j1 then delta^i2 phi^j2 is
+##  delta^(i1 + i2*p^(f-j1)) phi^(j1+j2), and PRIMGRP_ProjectiveExtension
+##  closes <auts> under that, so the subgroup they generate comes out.
 ##
-BindGlobal("PRIMGRP_ProjectiveExtension",function(dim,q,words)
+BindGlobal("PRIMGRP_ProjectiveExtension",function(dim,q,auts)
   local p,f,g,mul,H,new,x,y,z;
   p:=Characteristic(GF(q));
   f:=Length(Factors(q));
@@ -142,7 +143,7 @@ BindGlobal("PRIMGRP_ProjectiveExtension",function(dim,q,words)
   new:=[[0,0]];
   while new <> [] do
     x:=Remove(new);
-    for y in words do
+    for y in auts do
       z:=mul(x,[y[1] mod g,y[2] mod f]);
       if not z in H then
         Add(H,z);
@@ -154,16 +155,16 @@ BindGlobal("PRIMGRP_ProjectiveExtension",function(dim,q,words)
 end);
 
 BindGlobal("PGOnPointsGroup",function(inner)
-  local dim,q,p,vecs,gens,w;
+  local dim,q,p,vecs,gens,a;
   dim:=inner[2];
   q:=inner[3];
   p:=Characteristic(GF(q));
   vecs:=Set(NormedRowVectors(GF(q)^dim));
   gens:=List(GeneratorsOfGroup(SL(dim,q)),m->Permutation(m,vecs,OnLines));
-  for w in inner[4] do
+  for a in inner[4] do
     Add(gens,Permutation(
-      DiagonalMat(Concatenation([Z(q)^w[1]],List([2..dim],i->One(GF(q))))),
-      vecs,function(v,m) return List(OnLines(v,m),c->c^(p^w[2])); end));
+      DiagonalMat(Concatenation([Z(q)^a[1]],List([2..dim],i->One(GF(q))))),
+      vecs,function(v,m) return List(OnLines(v,m),c->c^(p^a[2])); end));
   od;
   return GroupWithGenerators(gens);
 end);
@@ -471,16 +472,16 @@ end);
 
 #############################################################################
 ##
-#F  PGPslExtended( <dim>, <q>, <words>, <name> ) . . between PSL and PGammaL
+#F  PGPslExtended( <dim>, <q>, <auts>, <name> ) . .  between PSL and PGammaL
 ##
-##  The entry for PGOnPointsGroup(["PSL",dim,q,<words>,<name>]).  A data file
+##  The entry for PGOnPointsGroup(["PSL",dim,q,<auts>,<name>]).  A data file
 ##  names it by that list, which is also the entry's field 9.  Every field but
-##  the name follows from the words; no rule gives a name like PSL(2,25).2_3,
-##  so the description carries it.
+##  the name follows from <auts>; no rule gives a name like PSL(2,25).2_3, so
+##  the description carries it.
 ##
-BindGlobal("PGPslExtended",function(dim,q,words,name)
+BindGlobal("PGPslExtended",function(dim,q,auts,name)
   local H,t;
-  H:=PRIMGRP_ProjectiveExtension(dim,q,words);
+  H:=PRIMGRP_ProjectiveExtension(dim,q,auts);
   t:=2;
   if dim = 2 and (q mod 2 = 0 or ForAny(H,x->x[1] mod 2 = 1)) then
     # PSL(2,q) for odd q has two orbits on triples, which an element of odd
@@ -490,7 +491,7 @@ BindGlobal("PGPslExtended",function(dim,q,words,name)
   return function(deg,nr)
     Assert(0, deg = (q^dim-1)/(q-1));
     return [ nr, PGPslOrder(dim,q)*Length(H), 0, "2", [[deg-1,1]], t, name,
-             ["L",[dim,q],1], ["PSL",dim,q,words,name] ];
+             ["L",[dim,q],1], ["PSL",dim,q,auts,name] ];
   end;
 end);
 
