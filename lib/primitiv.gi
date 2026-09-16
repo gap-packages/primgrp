@@ -81,9 +81,9 @@ BindGlobal("PGPrime",function(d)
     if d = 1 then
       name:=Concatenation("C(",String(deg),")");
       gens:=[];
-      flag := 3;  # simple and solvable
+      flags := 3;  # simple and solvable
     else
-      flag := 2;  # solvable
+      flags := 2;  # solvable
       gens:=[ [ [ Z(deg)^((deg-1)/d) ] ] ];
       if d = 2 then
         name:=Concatenation("D(2*",String(deg),")");
