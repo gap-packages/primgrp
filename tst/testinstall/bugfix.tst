@@ -188,6 +188,20 @@ gap> List([1..4], nr -> [ Name(PrimitiveGroup(11,nr)),
 gap> PGPrime(2)(3,2);
 Error, PGPrime: AGL(1,3) is Sym(3), which PGAlt and PGSym describe
 
+# The L series on its k-spaces, 2 <= k <= dim/2: every field but the name
+# follows from the description, and the name is the inner group's.  A larger k
+# is the same permutation group as dim-k, and k = 1 is the action on points.
+gap> PRIMGrp(130,1){[5,6,7]};
+[ [ [ 48, 1 ], [ 81, 1 ] ], 1, "PSL(4,3)" ]
+gap> PRIMGrp(130,1)[9];
+[ "subspaces", [ "PSL", 4, 3 ], 2 ]
+gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(130,1))));
+6065280
+gap> PGOnSubspacesGroup(["PSL",3,3],2);
+Error, Assertion failure
+gap> PGOnSubspacesGroup(["Sp",4,3],2);
+Error, PGOnSubspacesGroup: unknown group Sp
+
 # An entry may be a description of itself: a list naming a construction, with
 # its arguments.  A real entry begins with its number, so the two are told
 # apart by whether the first element is a string, and PRIMGrp puts the built
