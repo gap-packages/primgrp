@@ -68,14 +68,9 @@ end);
 ##  the translations alone, D(2*p) when d = 2, AGL(1, p) when d = p-1, and p:d
 ##  otherwise.
 ##
-##  This starts at p = 5.  AGL(1,2) and AGL(1,3) are Sym(2) and Sym(3), which
-##  the library names S(2), A(3) and S(3) and PGAlt and PGSym describe; and
-##  Sym(3) is 3-transitive where AGL(1,p) is 2-transitive, so the rules below
-##  would get those entries wrong rather than merely name them differently.
-##
 BindGlobal("PGPrime",function(d)
   return function(deg,nr)
-    local a,name,gens,flags,trans;
+    local name,gens,flags,trans;
     if deg < 5 then
       Error("PGPrime: AGL(1,",deg,") is Sym(",deg,
             "), which PGAlt and PGSym describe");
@@ -86,9 +81,10 @@ BindGlobal("PGPrime",function(d)
     if d = 1 then
       name:=Concatenation("C(",String(deg),")");
       gens:=[];
+      flag := 3;  # simple and solvable
     else
-      a:=PowerModInt(PrimitiveRootMod(deg),(deg-1)/d,deg);
-      gens:=[ [ [ a*Z(deg)^0 ] ] ];
+      flag := 2;  # solvable
+      gens:=[ [ [ Z(deg)^((deg-1)/d) ] ] ];
       if d = 2 then
         name:=Concatenation("D(2*",String(deg),")");
       elif d = deg-1 then
@@ -97,7 +93,6 @@ BindGlobal("PGPrime",function(d)
         name:=Concatenation(String(deg),":",String(d));
       fi;
     fi;
-    if d = 1 then flags:=3; else flags:=2; fi;      # simple and solvable
     if d = deg-1 then trans:=2; else trans:=1; fi;  # AGL(1,p) is 2-transitive
     return [ nr, deg*d, flags, "1", [[d,(deg-1)/d]],
              trans, name, ["Z",deg,1], gens ];
