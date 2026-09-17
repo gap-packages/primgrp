@@ -216,11 +216,12 @@ gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(4005,1))));
 gap> PGOnSetsGroup(["PSL",2,13],3);
 Error, PGOnSetsGroup: PSL is not 3-homogeneous on 14 points
 
-# The groups on the points of PG(dim-1,q) between PSL and PGammaL.  One of the
-# four named ones is that description and takes the constructor's name; any
-# other is ["PSL",dim,q,<auts>,<name>], PSL extended by the automorphisms
-# [i,j] = delta^i phi^j with delta diagonal and phi the Frobenius, and carries
-# its name.  13/7 is PSL(3,3) on points, which on lines is the same group.
+# A group G on the points of PG(dim-1,q), where PSL(dim,q) <= G <= PGammaL.
+# If G is PSL, PGL, PSigmaL or PGammaL, its entry is ["PSL",dim,q] or the like
+# and the constructor gives the name.  Any other G is ["PSL",dim,q,<auts>,
+# <name>]: PSL extended by the automorphisms delta^i phi^j for the pairs [i,j]
+# in <auts>, carrying its name, since no rule gives one.  13/7 is PSL(3,3) on
+# points, which on lines is the same group.
 gap> PRIMGrp(13,7){[6,7,9]};
 [ 2, "PSL(3,3)", "psl" ]
 gap> PRIMGrp(170,4){[6,7]};
