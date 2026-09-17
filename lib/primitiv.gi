@@ -115,6 +115,90 @@ end);
 
 #############################################################################
 ##
+#F  PRIMGRP_ProjectiveExtension( <dim>, <q>, <auts> ) . . . their closure
+##
+##  Write q = p^f, and g = gcd(dim,q-1).  In PGammaL(dim,q) the diagonal
+##  matrix delta = diag(Z(q),1,...,1) and the Frobenius phi give coset
+##  representatives of PSL(dim,q): every coset is the one of delta^i phi^j for
+##  integers 0 <= i < g and 0 <= j < f, and the pair [i,j] names that coset.
+##  Nothing outside those ranges is needed, delta^g and phi^f lying in
+##  PSL(dim,q).
+##
+##  Composing representatives, first delta^i1 phi^j1 and then delta^i2 phi^j2,
+##  lands in the coset named by [i1 + i2*p^(f-j1) mod g, j1 + j2 mod f].  A
+##  group G with PSL(dim,q) <= G <= PGammaL(dim,q) is a union of cosets closed
+##  under that, and <auts> is a list of pairs naming some of them.
+##
+##  Return the list of pairs naming the cosets of the smallest such G, that is
+##  of the group the pairs in <auts> generate.  Their number is the index of
+##  PSL(dim,q) in G, so G has that many times the order of PSL(dim,q).
+##
+BindGlobal("PRIMGRP_ProjectiveExtension",function(dim,q,auts)
+  local p,f,g,mul,H,queue,x,y,z;
+  p:=Characteristic(GF(q));
+  f:=Length(Factors(q));
+  g:=Gcd(dim,q-1);
+  mul:=function(a,b)
+    return [ (a[1]+b[1]*PowerModInt(p,(f-a[2]) mod f,g)) mod g,
+             (a[2]+b[2]) mod f ];
+  end;
+  H:=[[0,0]];
+  queue:=[[0,0]];
+  while queue <> [] do
+    x:=Remove(queue);
+    for y in auts do
+      z:=mul(x,[y[1] mod g,y[2] mod f]);
+      if not z in H then
+        Add(H,z);
+        Add(queue,z);
+      fi;
+    od;
+  od;
+  return Set(H);
+end);
+
+#############################################################################
+##
+#F  PGPslExtendedGroup( <inner> ) . PSL extended by automorphisms, on points
+##
+##  <inner> is ["PSL",dim,q,<auts>,<name>]: PSL(dim,q) on the points of
+##  PG(dim-1,q), extended by one element for each automorphism in <auts>,
+##  diag(Z(q)^i,1,...,1) followed by the j-th power of the Frobenius for the
+##  pair [i,j].  Every group with PSL(dim,q) <= G <= PGammaL(dim,q) arises
+##  this way, those that are none of the four named ones included.  The points
+##  are the sorted normed vectors.
+##
+BindGlobal("PGPslExtendedGroup",function(inner)
+  local dim,q,p,vecs,gens,a,e,u,one;
+  dim:=inner[2];
+  q:=inner[3];
+  p:=Characteristic(GF(q));
+  vecs:=Set(NormedRowVectors(GF(q)^dim));
+  gens:=List(GeneratorsOfGroup(SL(dim,q)),m->Permutation(m,vecs,OnLines));
+  one:=One(GF(q));
+  for a in inner[4] do
+    # delta^i phi^j raises every coordinate to the power e = p^j and multiplies
+    # the first by Z(q)^(i*e).  A normed vector stays normed while its first
+    # coordinate is zero; otherwise that coordinate becomes Z(q)^(i*e), and
+    # dividing the vector by it norms the vector again.
+    e:=p^a[2];
+    u:=Z(q)^(a[1]*e);
+    Add(gens,Permutation((),vecs,function(v,x)
+      local w;
+      w:=List(v,c->c^e);
+      if IsZero(w[1]) then
+        return w;
+      fi;
+      w:=w/u;
+      w[1]:=one;
+      return w;
+    end));
+  od;
+  return GroupWithGenerators(gens);
+end);
+
+#############################################################################
+##
 #F  PGOnSetsGroup( <inner>, <k> ) . . . . . . an inner group on the k-subsets
 ##
 ##  Build the group an entry's field 9 asks for: PRIMGRP_InnerGroup turns the
@@ -131,6 +215,8 @@ BindGlobal("PRIMGRP_InnerGroup",function(inner)
     return AlternatingGroup(inner[2]);
   elif inner[1] = "Sym" then
     return SymmetricGroup(inner[2]);
+  elif inner[1] = "PSL" and Length(inner) = 5 then
+    return PGPslExtendedGroup(inner);
   elif inner[1] = "PSL" then
     return PSL(inner[2],inner[3]);
   elif inner[1] = "PGL" then
@@ -308,6 +394,13 @@ BindGlobal("PRIMGRP_InnerFields",function(inner)
     n:=inner[2];
     return rec(degree:=n, order:=Factorial(n), flags:=0,
                name:=Concatenation("S(",String(n),")"), socle:=["A",n,1]);
+  elif inner[1] = "PSL" and Length(inner) = 5 then
+    dim:=inner[2];
+    q:=inner[3];
+    return rec(degree:=(q^dim-1)/(q-1),
+               order:=PGPslOrder(dim,q)
+                      *Length(PRIMGRP_ProjectiveExtension(dim,q,inner[4])),
+               flags:=0, name:=inner[5], socle:=["L",[dim,q],1]);
   elif inner[1] in ["PSL","PGL","PSigmaL","PGammaL"] then
     dim:=inner[2];
     q:=inner[3];
@@ -407,6 +500,31 @@ end);
 
 #############################################################################
 ##
+#F  PGPslExtended( <dim>, <q>, <auts>, <name> ) . .  between PSL and PGammaL
+##
+##  The entry for PGPslExtendedGroup(["PSL",dim,q,<auts>,<name>]).  A data
+##  file names it by that list, which is also the entry's field 9.  Every
+##  field but the name follows from <auts>; no rule gives a name like
+##  PSL(2,25).2_3, so the description carries it.
+##
+BindGlobal("PGPslExtended",function(dim,q,auts,name)
+  local H,t;
+  H:=PRIMGRP_ProjectiveExtension(dim,q,auts);
+  t:=2;
+  if dim = 2 and (q mod 2 = 0 or ForAny(H,x->x[1] mod 2 = 1)) then
+    # PSL(2,q) for odd q has two orbits on triples, which an element of odd
+    # diagonal exponent joins
+    t:=3;
+  fi;
+  return function(deg,nr)
+    Assert(0, deg = (q^dim-1)/(q-1));
+    return [ nr, PGPslOrder(dim,q)*Length(H), 0, "2", [[deg-1,1]], t, name,
+             ["L",[dim,q],1], ["PSL",dim,q,auts,name] ];
+  end;
+end);
+
+#############################################################################
+##
 #F  PGProductAction4c( <m>, <k>, <els> ) . . . . . . . . .  the product action
 ##
 ##  Return a group of O'Nan-Scott type 4c, that is, a subgroup of the full
@@ -484,6 +602,8 @@ BindGlobal("PRIMGRP_EntryFromDescription",function(desc,deg,nr)
     return PGSym(deg,nr);
   elif desc[1] = "Prime" then
     return PGPrime(desc[2])(deg,nr);
+  elif desc[1] = "PSL" and Length(desc) = 5 then
+    return PGPslExtended(desc[2],desc[3],desc[4],desc[5])(deg,nr);
   elif desc[1] = "PSL" then
     return PGPsl(desc[2],desc[3])(deg,nr);
   elif desc[1] = "PGL" then
@@ -613,6 +733,8 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
     g:= PGOnSetsGroup(l[9][2], l[9][3]);
   elif IsList(l[9]) and Length(l[9]) = 3 and l[9][1] = "subspaces" then
     g:= PGOnSubspacesGroup(l[9][2], l[9][3]);
+  elif IsList(l[9]) and Length(l[9]) = 5 and l[9][1] = "PSL" then
+    g:= PGPslExtendedGroup(l[9]);
   elif Length(l[9]) = 2 and l[9][1] = "4c" then
     # product action: the socle width in field 8 gives k, and the degree
     # its k-th root gives m
