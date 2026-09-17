@@ -2,6 +2,36 @@
 
 ## unreleased
 
+  - **Breaking:** remove the irreducible solvable matrix groups, i.e. the
+    functions `IrreducibleSolvableGroup`, `IrreducibleSolvableGroupMS`,
+    `NumberIrreducibleSolvableGroups` (and its synonym
+    `NrIrreducibleSolvableGroups`), `AllIrreducibleSolvableGroups`,
+    `OneIrreducibleSolvableGroup`, the variable
+    `PrimitiveIndexIrreducibleSolvableGroup`, and the declarations of
+    `MinimalBlockDimension`, `IsPrimitiveMatrixGroup`,
+    `IsLinearlyPrimitive` and `DegreeOfMatrixGroup`.
+    The `irredsol` package covers the same groups over a wider range of
+    dimensions and fields; use it instead:
+
+    | removed | replacement in `irredsol` |
+    | --- | --- |
+    | `IrreducibleSolvableGroupMS(n,p,k)` | `IrreducibleSolubleMatrixGroup(n,q,d,k)` |
+    | `NumberIrreducibleSolvableGroups(n,p)` | `Sum(DivisorsInt(n), d -> Length(IndicesIrreducibleSolubleMatrixGroups(n,p,d)))` |
+    | `AllIrreducibleSolvableGroups(...)` | `AllIrreducibleSolubleMatrixGroups(...)` |
+    | `OneIrreducibleSolvableGroup(...)` | `OneIrreducibleSolubleMatrixGroup(...)` |
+    | `PrimitiveIndexIrreducibleSolvableGroup[d][i]` | `PrimitivePermGroupIrreducibleMatrixGroup(G)` |
+    | `Characteristic, p` as a condition | `Field, GF(p)` |
+    | `IsLinearlyPrimitive` | `IsPrimitiveMatrixGroup` |
+
+    `Dimension`, `DimensionOfMatrixGroup`, `DegreeOfMatrixGroup`, `Size`,
+    `Order`, `MinimalBlockDimension` and `IsPrimitiveMatrixGroup` keep
+    their meaning as conditions, and `irredsol` declares the latter two
+    itself.  But `irredsol` needs the field of the groups to be given, so
+    `Characteristic` no longer suffices to delimit a search.
+
+    Access by index does **not** carry over: `irredsol` numbers the groups
+    in `GL(n,q)` by trace field and splitting field degree `d`, so a given
+    `k` denotes a different group there and raises no error.
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
     argument, not just the first one
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree

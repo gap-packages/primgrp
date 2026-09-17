@@ -269,32 +269,6 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 
 #############################################################################
 ##
-#V  PrimitiveIndexIrreducibleSolvableGroup
-##
-##  <#GAPDoc Label="PrimitiveIndexIrreducibleSolvableGroup">
-##  <ManSection>
-##  <Var Name="PrimitiveIndexIrreducibleSolvableGroup"/>
-##
-##  <Description>
-##  This variable provides a way to get from irreducible solvable groups to
-##  primitive groups and vice versa. For the group
-##  <M>G</M> = <C>IrreducibleSolvableGroup( <A>n</A>, <A>p</A>, <A>k</A> )</C>
-##  and <M>d = p^n</M>, the entry
-##  <C>PrimitiveIndexIrreducibleSolvableGroup[d][i]</C> gives the index
-##  number of the semidirect product <M>p^n:G</M> in the library of primitive
-##  groups.
-##  <P/>
-##  Searching for an index in this list with
-##  <Ref BookName="ref" Func="Position"/> gives the
-##  translation in the other direction.
-##  </Description>
-##  </ManSection>
-##  <#/GAPDoc>
-##
-#DeclareGlobalVariable("PrimitiveIndexIrreducibleSolvableGroup");
-
-#############################################################################
-##
 #A  PrimitiveIdentification( <G> )
 ##
 ##  <#GAPDoc Label="PrimitiveIdentification">

@@ -31,7 +31,7 @@ gap> COHORTS_PRIMITIVE_GROUPS[49];
   [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
   [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
 
-# doc/../lib/primitiv.gd:318-321
+# doc/../lib/primitiv.gd:292-295
 gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
 2
 
