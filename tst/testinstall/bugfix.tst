@@ -155,5 +155,100 @@ gap> List([[25,23],[1000,23]],
 >                            [1..p[1]]) ]);
 [ [ 7200, true ], [ 559872000, true ] ]
 
+# Alt(n) and Sym(n) on the k-subsets are ["sets",["Alt",n],k] or
+# ["sets",["Sym",n],k]: the order, the transitivity, the socle and the Johnson
+# suborbits Binomial(k,i)*Binomial(n-k,i) all follow from n and k, so the entry
+# stores none of them.  The order is recomputed here rather than read off the
+# entry, and the name is checked because it comes from the constructor now
+# rather than from the file.
+gap> List([[10,1],[35,3],[126,12]],
+>         p -> [ Name(PrimitiveGroup(p[1],p[2])),
+>                Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))),
+>                Collected(OrbitLengthsDomain(
+>                  Stabilizer(PrimitiveGroup(p[1],p[2]),1), [1..p[1]])) ]);
+[ [ "A(5)", 60, [ [ 1, 1 ], [ 3, 1 ], [ 6, 1 ] ] ], 
+  [ "A(7)", 2520, [ [ 1, 1 ], [ 4, 1 ], [ 12, 1 ], [ 18, 1 ] ] ], 
+  [ "A(9)", 181440, [ [ 1, 1 ], [ 5, 1 ], [ 20, 1 ], [ 40, 1 ], [ 60, 1 ] ] ] 
+ ]
+
+# For prime degree p the affine primitive groups are the subgroups of AGL(1,p)
+# containing the translations, one for each divisor d of p-1, so the entry is
+# ["Prime",d] and nothing else.  Degree 11 has the four divisors of 10, and
+# only the largest is 2-transitive.
+gap> List([1..4], nr -> [ Name(PrimitiveGroup(11,nr)),
+>                         Size(Group(GeneratorsOfGroup(PrimitiveGroup(11,nr)))),
+>                         Transitivity(PrimitiveGroup(11,nr),[1..11]) ]);
+[ [ "C(11)", 11, 1 ], [ "D(2*11)", 22, 1 ], [ "11:5", 55, 1 ], 
+  [ "AGL(1, 11)", 110, 2 ] ]
+
+# PGPrime stops short of degrees 2 and 3, where AGL(1,p) is all of Sym(p): the
+# library names those S(2), A(3) and S(3), and PGPrime would call them C(2),
+# C(3) and D(2*3).  It would also make S(3) 2-transitive, which is the rule for
+# AGL(1,p) and wrong at p = 3.
+gap> PGPrime(2)(3,2);
+Error, PGPrime: AGL(1,3) is Sym(3), which PGAlt and PGSym describe
+
+# The L series on its k-spaces, 2 <= k <= dim/2: every field but the name
+# follows from the description, and the name is the inner group's.  A larger k
+# is the same permutation group as dim-k, and k = 1 is the action on points.
+gap> PRIMGrp(130,1){[5,6,7]};
+[ [ [ 48, 1 ], [ 81, 1 ] ], 1, "PSL(4,3)" ]
+gap> PRIMGrp(130,1)[9];
+[ "subspaces", [ "PSL", 4, 3 ], 2 ]
+gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(130,1))));
+6065280
+gap> PGOnSubspacesGroup(["PSL",3,3],2);
+Error, Assertion failure
+gap> PGOnSubspacesGroup(["Sp",4,3],2);
+Error, PGOnSubspacesGroup: unknown group Sp
+
+# PSL(2,q) and its companions on the pairs of points of the projective line.
+# Every field but the name and the suborbits follows from the description; the
+# suborbits come from the group on the points.  The order is recomputed from
+# the generators rather than read from the entry, and a group that is not
+# k-homogeneous is refused.
+gap> PRIMGrp(28,1){[5,6,7]};
+[ [ [ 3, 1 ], [ 6, 2 ], [ 12, 1 ] ], 1, "PGL(2,7)" ]
+gap> PRIMGrp(28,1)[9];
+[ "sets", [ "PGL", 2, 7 ], 2 ]
+gap> Size(Group(GeneratorsOfGroup(PrimitiveGroup(4005,1))));
+352440
+gap> PGOnSetsGroup(["PSL",2,13],3);
+Error, PGOnSetsGroup: PSL is not 3-homogeneous on 14 points
+
+# A group G on the points of PG(dim-1,q), where PSL(dim,q) <= G <= PGammaL.
+# If G is PSL, PGL, PSigmaL or PGammaL, its entry is ["PSL",dim,q] or the like
+# and the constructor gives the name.  Any other G is ["PSL",dim,q,<auts>,
+# <name>]: PSL extended by the automorphisms delta^i phi^j for the pairs [i,j]
+# in <auts>, carrying its name, since no rule gives one.  13/7 is PSL(3,3) on
+# points, which on lines is the same group.
+gap> PRIMGrp(13,7){[6,7,9]};
+[ 2, "PSL(3,3)", "psl" ]
+gap> PRIMGrp(170,4){[6,7]};
+[ 3, "PSL(2, 13^2).2_3" ]
+gap> PRIMGrp(170,4)[9];
+[ "PSL", 2, 169, [ [ 1, 1 ] ], "PSL(2, 13^2).2_3" ]
+gap> List([[13,7],[170,4]],
+>         p -> Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))));
+[ 5616, 4826640 ]
+
+# An entry may be a description of itself: a list naming a construction, with
+# its arguments.  A real entry begins with its number, so the two are told
+# apart by whether the first element is a string, and PRIMGrp puts the built
+# entry back in place of the description.
+gap> List([[6,1],[6,3],[10,1]], p -> PRIMGrp(p[1],p[2])[7]);
+[ "PSL(2,5)", "A(6)", "A(5)" ]
+gap> PRIMGRP_EntryFromDescription(["PSL",2,5], 6, 1) = PRIMGrp(6,1);
+true
+gap> PRIMGRP_EntryFromDescription(["Alt"], 6, 3) = PRIMGrp(6,3);
+true
+gap> PRIMGRP_EntryFromDescription(["sets",["Alt",5],2], 10, 1) = PRIMGrp(10,1);
+true
+
+# A description naming something the library does not offer is refused rather
+# than looked up as a global.
+gap> PRIMGRP_EntryFromDescription(["NoSuchThing"], 6, 1);
+Error, unknown construction "NoSuchThing" for entry 1 of degree 6
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
