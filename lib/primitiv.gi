@@ -169,16 +169,30 @@ end);
 ##  are the sorted normed vectors.
 ##
 BindGlobal("PGPslExtendedGroup",function(inner)
-  local dim,q,p,vecs,gens,a;
+  local dim,q,p,vecs,gens,a,e,u,one;
   dim:=inner[2];
   q:=inner[3];
   p:=Characteristic(GF(q));
   vecs:=Set(NormedRowVectors(GF(q)^dim));
   gens:=List(GeneratorsOfGroup(SL(dim,q)),m->Permutation(m,vecs,OnLines));
+  one:=One(GF(q));
   for a in inner[4] do
-    Add(gens,Permutation(
-      DiagonalMat(Concatenation([Z(q)^a[1]],List([2..dim],i->One(GF(q))))),
-      vecs,function(v,m) return List(OnLines(v,m),c->c^(p^a[2])); end));
+    # delta^i phi^j raises every coordinate to the power e = p^j and multiplies
+    # the first by Z(q)^(i*e).  A normed vector stays normed while its first
+    # coordinate is zero; otherwise that coordinate becomes Z(q)^(i*e), and
+    # dividing the vector by it norms the vector again.
+    e:=p^a[2];
+    u:=Z(q)^(a[1]*e);
+    Add(gens,Permutation((),vecs,function(v,x)
+      local w;
+      w:=List(v,c->c^e);
+      if IsZero(w[1]) then
+        return w;
+      fi;
+      w:=w/u;
+      w[1]:=one;
+      return w;
+    end));
   od;
   return GroupWithGenerators(gens);
 end);
