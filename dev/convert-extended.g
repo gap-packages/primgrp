@@ -9,11 +9,12 @@
 ##          -c 'conv_dir:="data";; conv_first:=40;; conv_4c:="<file>";;' \
 ##          dev/convert-extended.g
 ##
-##  The product action entries take the wreath elements computed on the branch
-##  claude/import from the same archive, where each was proven by rebuilding it
-##  and checking it equals the original after relabelling the points.  Field 9
-##  is taken only if fields 1 to 8 are identical, and the group rebuilt from it
-##  must have the entry's order, transitivity and suborbits and be primitive.
+##  The product action entries take their wreath elements from a file holding
+##  the entries dev/product4c.g wrote for this data, each proven there by
+##  rebuilding it and checking it equals the original after relabelling the
+##  points.  Field 9 is taken only if fields 1 to 8 are identical, and the
+##  group rebuilt from it must have the entry's order, transitivity and
+##  suborbits and be primitive.
 ##
 ##  The actions of the L series on points, pairs and k-spaces, and of Alt and
 ##  Sym on k-sets, become descriptions as below degree 4096, but with a proof
