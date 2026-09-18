@@ -1,6 +1,5 @@
 #!/bin/sh
-# This file is executed by the `release` script from
-# https://github.com/gap-system/ReleaseTools
+# This file is executed by the `release.yml` workflow
 echo "Current data file disk space:"
 du -h data
 echo "Compressing data files..."
