@@ -6,15 +6,13 @@
 ##  left as generators.
 ##
 ##      gap -q -b -A --quitonbreak -l "ROOT;" \
-##          -c 'conv_dir:="data";; conv_first:=40;; conv_4c:="<file>";;' \
+##          -c 'conv_dir:="data";; conv_first:=40;;' \
 ##          dev/convert-extended.g
 ##
-##  The product action entries take their wreath elements from a file holding
-##  the entries dev/product4c.g wrote for this data, each proven there by
-##  rebuilding it and checking it equals the original after relabelling the
-##  points.  Field 9 is taken only if fields 1 to 8 are identical, and the
-##  group rebuilt from it must have the entry's order, transitivity and
-##  suborbits and be primitive.
+##  It is the last of three passes: dev/import-extended.g writes the data,
+##  dev/product4c.g describes the product actions in it, and this describes
+##  what is left.  An entry whose field 9 already names a construction is
+##  passed over, so the order of the last two does not matter.
 ##
 ##  The actions of the L series on points, pairs and k-spaces, and of Alt and
 ##  Sym on k-sets, become descriptions as below degree 4096, but with a proof
@@ -30,8 +28,7 @@
 ##  Only invariants computed from the group built enter the fingerprint.  Its
 ##  order is proven before a stabiliser chain in the large degree is asked for:
 ##  an action on k-sets or k-spaces is faithful, so its order is the inner
-##  group's; a product action has the order of the same generators acting on
-##  m*k points.
+##  group's.
 ##
 LoadPackage("primgrp");
 SetInfoLevel(InfoWarning, 0);
@@ -55,9 +52,8 @@ PRIMGRP_Ctor := rec(PSL := PGPsl, PGL := PGPgl, PGammaL := PGPgammaL,
 PRIMGRP_GapGroup := rec(PSL := PSL, PGL := PGL, PGammaL := PGammaL,
                         PSigmaL := PSigmaL);
 
-PRIMGRP_Log := rec(fourc := 0, points := 0, words := 0, sets := 0,
-                   subspaces := 0, fourcbad := [], refused := [], pending := [],
-                   renamed := [], report := []);
+PRIMGRP_Log := rec(points := 0, words := 0, sets := 0, subspaces := 0,
+                   refused := [], pending := [], renamed := [], report := []);
 
 ##  A constructor's entry agrees with the stored one in all but name and field 9.
 PRIMGRP_Agrees := function(c, e)
@@ -188,56 +184,9 @@ PRIMGRP_DescribeSubspaces := function(e, deg, dim, q, k)
   return fail;
 end;
 
-PRIMGRP_Transplant := rec();
-
-##  The order of the group PGProductAction4c(m, k, els) builds, from its
-##  action on k copies of [1..m]: coordinate i holding c goes to coordinate
-##  i^sigma holding c^p_i.  The action on tuples is induced from it and both
-##  are faithful for m >= 2.
-PRIMGRP_WreathOrder := function(m, k, els)
-  return Size(Group(List(els, e -> PermList(Concatenation(List([1..k],
-           i -> List([1..m], c -> (i^e[k+1] - 1)*m + c^e[i]))))), ()));
-end;
-
-PRIMGRP_Describe4c := function(e, deg)
-  local key, old, k, H;
-  key := Concatenation(String(deg), "_", String(e[1]));
-  if not IsBound(PRIMGRP_Transplant.(key)) then
-    return fail;
-  fi;
-  old := PRIMGRP_Transplant.(key);
-  if not (PRIMGRP_Agrees(old, e) and old[7] = e[7]) then
-    Add(PRIMGRP_Log.fourcbad, [deg, e[1], "fields differ"]);
-    return fail;
-  fi;
-  k := e[8][3];
-  H := PGProductAction4c(RootInt(deg, k), k, old[9][2]);
-  if RootInt(deg, k) < 2
-     or PRIMGRP_WreathOrder(RootInt(deg, k), k, old[9][2]) <> e[2] then
-    Add(PRIMGRP_Log.fourcbad, [deg, e[1], "order differs"]);
-    return fail;
-  fi;
-  SetSize(H, e[2]);
-  if NrMovedPoints(H) <> deg
-     or Transitivity(H, [1..deg]) <> e[6]
-     or Set(Collected(OrbitLengthsDomain(Stabilizer(H, 1), [2..deg])))
-        <> Set(e[5])
-     or not IsPrimitive(H, [1..deg]) then
-    Add(PRIMGRP_Log.fourcbad, [deg, e[1], "rebuilt group differs"]);
-    return fail;
-  fi;
-  e := ShallowCopy(e);
-  e[9] := old[9];
-  PRIMGRP_Log.fourc := PRIMGRP_Log.fourc + 1;
-  return PRIMGRP_Compact(e);
-end;
-
 ##  The text for an entry still holding generators, or fail.
 PRIMGRP_Describe := function(e, deg)
   local dim, q, n, k, m, t;
-  if e[4] = "4c" then
-    return PRIMGRP_Describe4c(e, deg);
-  fi;
   if e[4] <> "2" or not (IsList(e[8]) and Length(e[8]) = 3 and e[8][3] = 1) then
     return fail;
   fi;
@@ -314,15 +263,7 @@ PRIMGRP_ConvertFile := function(path)
 end;
 
 PRIMGRP_ConvertAll := function()
-  local line, parts, f, n, i, r;
-  for line in SplitString(StringFile(conv_4c), "\n") do
-    if Length(line) = 0 then
-      continue;
-    fi;
-    parts := SplitString(line, "\t");
-    PRIMGRP_Transplant.(Concatenation(parts[1], "_", parts[2])) :=
-      EvalString(parts[3]);
-  od;
+  local f, n, i, r;
   n := 0;
   i := conv_first;
   f := Concatenation(conv_dir, "/gps", String(i), ".g");
@@ -347,14 +288,11 @@ PRIMGRP_ConvertAll := function()
     Print("REFUSED ", r[1], "/", r[2], "  shares its fingerprint with ",
           r[3], "\n");
   od;
-  for r in PRIMGRP_Log.fourcbad do
-    Print("4C NOT TAKEN ", r[1], "/", r[2], "  ", r[3], "\n");
-  od;
-  Print("CONVERTED ", n, " entries: 4c ", PRIMGRP_Log.fourc, ", points ",
-        PRIMGRP_Log.points, ", extended ", PRIMGRP_Log.words, ", sets ",
-        PRIMGRP_Log.sets, ", subspaces ", PRIMGRP_Log.subspaces, "; renamed ",
-        Length(PRIMGRP_Log.renamed), ", refused ", Length(PRIMGRP_Log.refused),
-        ", 4c not taken ", Length(PRIMGRP_Log.fourcbad), "\n");
+  Print("CONVERTED ", n, " entries: points ", PRIMGRP_Log.points,
+        ", extended ", PRIMGRP_Log.words, ", sets ", PRIMGRP_Log.sets,
+        ", subspaces ", PRIMGRP_Log.subspaces, "; renamed ",
+        Length(PRIMGRP_Log.renamed), ", refused ",
+        Length(PRIMGRP_Log.refused), "\n");
 end;
 
 PRIMGRP_ConvertAll();
