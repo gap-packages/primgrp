@@ -52,7 +52,7 @@ PRIMGRP_Ctor := rec(PSL := PGPsl, PGL := PGPgl, PGammaL := PGPgammaL,
 PRIMGRP_GapGroup := rec(PSL := PSL, PGL := PGL, PGammaL := PGammaL,
                         PSigmaL := PSigmaL);
 
-PRIMGRP_Log := rec(points := 0, words := 0, sets := 0, subspaces := 0,
+PRIMGRP_Log := rec(points := 0, auts := 0, sets := 0, subspaces := 0,
                    refused := [], pending := [], renamed := [], report := []);
 
 ##  A constructor's entry agrees with the stored one in all but name and field 9.
@@ -102,9 +102,9 @@ PRIMGRP_Renamed := function(deg, e, c)
   fi;
 end;
 
-##  The lists of words generating the subgroups of PGammaL/PSL other than the
-##  four named ones, the first list for each subgroup.
-PRIMGRP_ExtensionWords := function(dim, q)
+##  The lists of automorphism pairs generating the subgroups of PGammaL/PSL
+##  other than the four named ones, the first list for each subgroup.
+PRIMGRP_ExtensionAuts := function(dim, q)
   local f, g, els, named, seen, out, gens, H;
   f := Length(Factors(q));
   g := Gcd(dim, q-1);
@@ -124,7 +124,7 @@ PRIMGRP_ExtensionWords := function(dim, q)
 end;
 
 PRIMGRP_DescribePoints := function(e, deg, dim, q)
-  local name, c, words;
+  local name, c, auts;
   for name in PRIMGRP_Names do
     c := PRIMGRP_Ctor.(name)(dim, q)(deg, e[1]);
     if PRIMGRP_Agrees(c, e)
@@ -134,13 +134,13 @@ PRIMGRP_DescribePoints := function(e, deg, dim, q)
       return PRIMGRP_Compact([name, dim, q]);
     fi;
   od;
-  for words in PRIMGRP_ExtensionWords(dim, q) do
-    c := PGPslExtended(dim, q, words, e[7])(deg, e[1]);
+  for auts in PRIMGRP_ExtensionAuts(dim, q) do
+    c := PGPslExtended(dim, q, auts, e[7])(deg, e[1]);
     if PRIMGRP_Agrees(c, e)
-       and PRIMGRP_Proves(PGPslExtendedGroup(["PSL", dim, q, words, e[7]]),
+       and PRIMGRP_Proves(PGPslExtendedGroup(["PSL", dim, q, auts, e[7]]),
                           deg, e[1]) then
-      PRIMGRP_Log.words := PRIMGRP_Log.words + 1;
-      return PRIMGRP_Compact(["PSL", dim, q, words, e[7]]);
+      PRIMGRP_Log.auts := PRIMGRP_Log.auts + 1;
+      return PRIMGRP_Compact(["PSL", dim, q, auts, e[7]]);
     fi;
   od;
   return fail;
@@ -148,14 +148,18 @@ end;
 
 ##  PSL(2,q) and its companions on pairs of points, and Alt and Sym on k-sets.
 PRIMGRP_DescribeSets := function(e, deg, inners, k)
-  local inner, c, g;
+  local inner, c, g, inn;
   for inner in inners do
     c := PGOnSets(inner, k)(deg, e[1]);
     if not PRIMGRP_Agrees(c, e) then
       continue;
     fi;
     g := PGOnSetsGroup(inner, k);
-    SetSize(g, Size(PRIMGRP_InnerGroup(inner)));
+    # an element fixing every k-subset of [1..n] fixes every point as long as
+    # 0 < k < n, so the action is faithful and its order is the inner group's
+    inn := PRIMGRP_InnerGroup(inner);
+    Assert(0, 0 < k and k < LargestMovedPoint(inn));
+    SetSize(g, Size(inn));
     if PRIMGRP_Proves(g, deg, e[1]) then
       PRIMGRP_Renamed(deg, e, c);
       PRIMGRP_Log.sets := PRIMGRP_Log.sets + 1;
@@ -174,6 +178,9 @@ PRIMGRP_DescribeSubspaces := function(e, deg, dim, q, k)
       continue;
     fi;
     g := PGOnSubspacesGroup(inner, k);
+    # an element fixing every k-space fixes every point as long as
+    # 0 < k < dim, so this action is faithful too
+    Assert(0, 0 < k and k < dim);
     SetSize(g, Size(PRIMGRP_InnerGroup(inner)));
     if PRIMGRP_Proves(g, deg, e[1]) then
       PRIMGRP_Renamed(deg, e, c);
@@ -232,8 +239,8 @@ PRIMGRP_ConvertFile := function(path)
     if PositionSublist(line, "PRIMGRP[") = 1 then
       deg := Int(line{[9..PositionSublist(line, "]") - 1]});
       Add(out, line);
-    elif line{[1..2]} = "];" or line{[1..2]} = "[\""
-         or line[Length(line)] <> ','
+    elif Length(line) < 2 or line[Length(line)] <> ','
+         or line{[1..2]} = "];" or line{[1..2]} = "[\""
          or (PositionSublist(line, ",\"2\",") = fail
              and PositionSublist(line, ",\"4c\",") = fail) then
       Add(out, line);
@@ -289,7 +296,7 @@ PRIMGRP_ConvertAll := function()
           r[3], "\n");
   od;
   Print("CONVERTED ", n, " entries: points ", PRIMGRP_Log.points,
-        ", extended ", PRIMGRP_Log.words, ", sets ", PRIMGRP_Log.sets,
+        ", extended ", PRIMGRP_Log.auts, ", sets ", PRIMGRP_Log.sets,
         ", subspaces ", PRIMGRP_Log.subspaces, "; renamed ",
         Length(PRIMGRP_Log.renamed), ", refused ",
         Length(PRIMGRP_Log.refused), "\n");
