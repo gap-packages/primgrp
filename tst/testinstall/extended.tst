@@ -9,9 +9,11 @@ gap> Sum([4096..8191], NrPrimitiveGroups);
 # Affine by matrices and diagonal type by generators, their orders computed
 # from the generators rather than set from the entry.  Not so for prime degree:
 # the translation is one 8191-cycle, and the stabiliser chain takes minutes.
-gap> List([[4096,1],[5616,1]],
+# 4913 = 17^3 is read in the archive's numbering of GF(17)^3 and built in
+# GAP's, so the group is a conjugate of the archive's, of the same order.
+gap> List([[4096,1],[4913,1],[5616,1]],
 >         p -> Size(Group(GeneratorsOfGroup(PrimitiveGroup(p[1],p[2])))));
-[ 53248, 31539456 ]
+[ 53248, 58956, 31539456 ]
 gap> PRIMGrp(8191,48){[2,7]};
 [ 67084290, "AGL(1, 8191)" ]
 
