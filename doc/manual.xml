@@ -55,7 +55,7 @@
 The &GAP; package &primgrp; provides the library of primitive
 permutation groups which includes, up to permutation isomorphism
 (i.e., up to conjugacy in the corresponding symmetric group),
-all primitive permutation groups of degree &lt; 4096.
+all primitive permutation groups of degree &lt; 8192.
 
 </Abstract>
 

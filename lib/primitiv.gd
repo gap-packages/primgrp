@@ -13,7 +13,7 @@
 ##  &GAP; contains a library of primitive permutation groups which includes,
 ##  up to permutation isomorphism (i.e., up to conjugacy in the corresponding
 ##  symmetric group),
-##  all  primitive  permutation groups of  degree <M>&lt;&nbsp;4096</M>,
+##  all  primitive  permutation groups of  degree <M>&lt;&nbsp;8192</M>,
 ##  calculated in <Cite Key="RoneyDougal05"/> and <Cite Key="CRDQ11"/>,
 ##  in particular,
 ##  <List>
