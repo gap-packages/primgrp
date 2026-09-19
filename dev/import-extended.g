@@ -5,8 +5,12 @@
 ##  Bring the primitive groups of degree 4096 to 8191 into data/.
 ##
 ##      gap -q -b -A --quitonbreak -l "ROOT;" -c 'imp_archive:="<dir>";;
-##          imp_dir:="data";; imp_first:=40;; imp_indx:="<file>";;' \
+##          imp_dir:="data";; imp_first:=40;;' \
 ##          dev/import-extended.g
+##
+##  It writes the data files and extends PRIMINDX in imp_grp, by default
+##  lib/primitiv.grp, to say which file each new degree is in.  Without that
+##  the reader refuses the degree, PRIMRANGE or no PRIMRANGE.
 ##
 ##  The source is ExtendedPrimitiveGroupsData,
 ##  https://doi.org/10.5281/zenodo.10411366, one gzipped record per group.  The
@@ -32,6 +36,9 @@ SizeScreen([4096,]);
 
 if not IsBound(imp_perfile) then
   imp_perfile := 800;
+fi;
+if not IsBound(imp_grp) then
+  imp_grp := "lib/primitiv.grp";
 fi;
 
 PRIMGRP_Compact := function(o)
@@ -223,11 +230,54 @@ PRIMGRP_ImportFile := function(path, degs)
   return n;
 end;
 
+##  Append to PRIMINDX in <path> the file number of each degree in <indx>,
+##  which the reader looks up before anything else: PrimGrpLoad refuses a
+##  degree PRIMINDX does not bind, even one inside PRIMRANGE.  Re-running the
+##  import over a file already extended is refused rather than doubling it.
+PRIMGRP_ExtendIndex := function(path, indx)
+  local s, i, j, k, old, rows, row, v;
+  s := StringFile(path);
+  if s = fail then
+    Error("cannot read ", path);
+  fi;
+  i := PositionSublist(s, "BindGlobal(\"PRIMINDX\",");
+  if i = fail then
+    Error(path, " does not bind PRIMINDX");
+  fi;
+  j := Position(s, '[', i);
+  k := PositionSublist(s, "]\n);", j);
+  if k = fail then
+    Error("the PRIMINDX list in ", path, " does not end as expected");
+  fi;
+  old := Filtered(SplitString(s{[j+1..k-1]}, ",\n"), x -> x <> "");
+  if Length(old) <> 4095 then
+    Error("PRIMINDX holds ", Length(old), " degrees, not the 4095 below the ",
+          "import; extend it from the state before an earlier import");
+  fi;
+
+  # rows no wider than the ones already there
+  rows := [];
+  row := "";
+  for v in indx do
+    if Length(row) + Length(String(v)) >= 72 then
+      Add(rows, row);
+      row := "";
+    fi;
+    Append(row, String(v));
+    Add(row, ',');
+  od;
+  Add(rows, row{[1..Length(row)-1]});
+  FileString(path, Concatenation(s{[1..k-1]}, ",\n",
+             JoinStringsWithSeparator(rows, "\n"), s{[k..Length(s)]}));
+  Print("PRIMINDX: ", Length(old), " -> ", Length(old) + Length(indx),
+        " degrees, in ", path, "\n");
+end;
+
 ##  Split the degrees across files of about imp_perfile entries each -- a
 ##  degree is never split, since PRIMINDX maps it to one file -- write them,
-##  and write the PRIMINDX values for the new degrees to imp_indx.
+##  and extend PRIMINDX with the file each degree went to.
 PRIMGRP_ImportAll := function()
-  local blocks, cur, size, deg, k, n, i, out;
+  local blocks, cur, size, deg, k, n, i, indx;
   blocks := [];
   cur := [];
   size := 0;
@@ -244,19 +294,18 @@ PRIMGRP_ImportAll := function()
   Add(blocks, cur);
 
   n := 0;
-  out := OutputTextFile(imp_indx, false);
-  SetPrintFormattingStatus(out, false);
+  indx := [];
   for i in [1..Length(blocks)] do
     n := n + PRIMGRP_ImportFile(
                Concatenation(imp_dir, "/gps", String(imp_first + i - 1), ".g"),
                blocks[i]);
     for deg in blocks[i] do
-      PrintTo(out, deg, " ", imp_first + i - 1, "\n");
+      indx[deg] := imp_first + i - 1;
     od;
     Print("FILE gps", imp_first + i - 1, " degrees ", blocks[i][1], " to ",
           blocks[i][Length(blocks[i])], ", ", n, " entries so far\n");
   od;
-  CloseStream(out);
+  PRIMGRP_ExtendIndex(imp_grp, indx{[4096..8191]});
   Print("IMPORTED ", n, " entries into ", Length(blocks), " files: ",
         PRIMGRP_Count, "\n");
 end;
