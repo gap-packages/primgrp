@@ -141,7 +141,7 @@ PRIMGRP_DescribePoints := function(e, deg, dim, q)
   for words in PRIMGRP_ExtensionWords(dim, q) do
     c := PGPslExtended(dim, q, words, e[7])(deg, e[1]);
     if PRIMGRP_Agrees(c, e)
-       and PRIMGRP_Proves(PGOnPointsGroup(["PSL", dim, q, words, e[7]]),
+       and PRIMGRP_Proves(PGPslExtendedGroup(["PSL", dim, q, words, e[7]]),
                           deg, e[1]) then
       PRIMGRP_Log.words := PRIMGRP_Log.words + 1;
       return PRIMGRP_Compact(["PSL", dim, q, words, e[7]]);
