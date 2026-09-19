@@ -4,8 +4,8 @@
 ##
 ##  Write the type 4c entries as elements of Sym(m) wreath Sym(k).
 ##
-##      gap -q -b -A --quitonbreak -l "ROOT;" -c 'conv_dir:="data";;' \
-##          dev/product4c.g
+##      gap -q -b -A --quitonbreak -l "ROOT;" \
+##          -c 'conv_dir:="data";; conv_first:=40;;' dev/product4c.g
 ##
 ##  It runs on what dev/import-extended.g wrote, and what it leaves is what
 ##  dev/convert-extended.g describes.
@@ -55,6 +55,9 @@ SizeScreen([4096,]);
 
 if not IsBound(conv_skip) then
   conv_skip := [];
+fi;
+if not IsBound(conv_first) then
+  conv_first := 1;
 fi;
 
 ##  Print without the whitespace that String puts in lists.
@@ -125,7 +128,7 @@ PRIMGRP_ConvertFile := function(path)
     all := Concatenation(out, lines{[i+1..Length(lines)]});
     FileString(Concatenation(path, ".new"),
                Concatenation(JoinStringsWithSeparator(all, "\n"), "\n"));
-    Exec(Concatenation("mv ", path, ".new ", path));
+    Exec(Concatenation("mv \"", path, ".new\" \"", path, "\""));
   end;
 
   for i in [1..Length(lines)] do
@@ -163,7 +166,8 @@ PRIMGRP_ConvertAll := function(dir)
   local files, f, n;
   files := Filtered(SortedList(DirectoryContents(dir)),
                     f -> Length(f) > 5 and f{[1..3]} = "gps"
-                         and f{[Length(f)-1..Length(f)]} = ".g");
+                         and f{[Length(f)-1..Length(f)]} = ".g"
+                         and Int(f{[4..Length(f)-2]}) >= conv_first);
   n := 0;
   for f in files do
     n := n + PRIMGRP_ConvertFile(Concatenation(dir, "/", f));
