@@ -2,7 +2,8 @@
 ##
 ##  dev/import-extended.g
 ##
-##  Bring the primitive groups of degree 4096 to 8191 into data/.
+##  Bring into data/ the primitive groups of every degree in PRIMRANGE that
+##  PRIMINDX does not name yet -- degrees 4096 to 8191 as things stand.
 ##
 ##      gap -q -b -A --quitonbreak -l "ROOT;" -c 'imp_archive:="<dir>";;
 ##          imp_dir:="data";; imp_first:=40;;' \
@@ -136,7 +137,7 @@ PRIMGRP_Count := rec(alt := 0, sym := 0, prime := 0, matrices := 0,
 
 ##  One entry, as the line that stands in data/.
 PRIMGRP_ImportEntry := function(deg, nr, vecs, pw)
-  local l, c, ord, d, mats, p;
+  local l, c, ord, d, mats, p, head;
   l := PRIMGRP_ReadRecord(deg, nr);
 
   # The archive gives the order of the natural groups as a string such as
@@ -199,8 +200,8 @@ PRIMGRP_ImportEntry := function(deg, nr, vecs, pw)
   fi;
   p := Factors(deg)[1];
   PRIMGRP_Count.matrices := PRIMGRP_Count.matrices + 1;
-  return Concatenation(PRIMGRP_Compact(l{[1..8]}){[1..Length(PRIMGRP_Compact(l{[1..8]}))-1]},
-           ",Z(", String(p), ")^0*",
+  head := PRIMGRP_Compact(l{[1..8]});
+  return Concatenation(head{[1..Length(head)-1]}, ",Z(", String(p), ")^0*",
            PRIMGRP_Compact(List(mats, m -> List(m, r -> List(r, IntFFE)))), "]");
 end;
 
@@ -234,7 +235,7 @@ end;
 ##  which the reader looks up before anything else: PrimGrpLoad refuses a
 ##  degree PRIMINDX does not bind, even one inside PRIMRANGE.  Re-running the
 ##  import over a file already extended is refused rather than doubling it.
-PRIMGRP_ExtendIndex := function(path, indx)
+PRIMGRP_ExtendIndex := function(path, indx, from)
   local s, i, j, k, old, rows, row, v;
   s := StringFile(path);
   if s = fail then
@@ -250,9 +251,9 @@ PRIMGRP_ExtendIndex := function(path, indx)
     Error("the PRIMINDX list in ", path, " does not end as expected");
   fi;
   old := Filtered(SplitString(s{[j+1..k-1]}, ",\n"), x -> x <> "");
-  if Length(old) <> 4095 then
-    Error("PRIMINDX holds ", Length(old), " degrees, not the 4095 below the ",
-          "import; extend it from the state before an earlier import");
+  if Length(old) <> from - 1 then
+    Error("PRIMINDX holds ", Length(old), " degrees, not the ", from - 1,
+          " below the import; extend it from the state before an earlier one");
   fi;
 
   # rows no wider than the ones already there
@@ -277,11 +278,15 @@ end;
 ##  degree is never split, since PRIMINDX maps it to one file -- write them,
 ##  and extend PRIMINDX with the file each degree went to.
 PRIMGRP_ImportAll := function()
-  local blocks, cur, size, deg, k, n, i, indx;
+  local degs, blocks, cur, size, deg, k, n, i, indx;
+  degs := Filtered(PRIMRANGE, d -> not IsBound(PRIMINDX[d]));
+  if degs = [] then
+    Error("PRIMINDX names every degree in PRIMRANGE already");
+  fi;
   blocks := [];
   cur := [];
   size := 0;
-  for deg in [4096..8191] do
+  for deg in degs do
     k := NrPrimitiveGroups(deg);
     if size > 0 and size + k > imp_perfile then
       Add(blocks, cur);
@@ -305,7 +310,7 @@ PRIMGRP_ImportAll := function()
     Print("FILE gps", imp_first + i - 1, " degrees ", blocks[i][1], " to ",
           blocks[i][Length(blocks[i])], ", ", n, " entries so far\n");
   od;
-  PRIMGRP_ExtendIndex(imp_grp, indx{[4096..8191]});
+  PRIMGRP_ExtendIndex(imp_grp, indx{degs}, degs[1]);
   Print("IMPORTED ", n, " entries into ", Length(blocks), " files: ",
         PRIMGRP_Count, "\n");
 end;
