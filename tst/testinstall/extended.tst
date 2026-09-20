@@ -35,5 +35,12 @@ gap> ForAll([[4096,1392],[4097,6],[4753,2],[4745,1]], p ->
 >      = PRIMGrp(p[1],p[2])[2]);
 true
 
+# Every entry is a primitive group of its degree, whichever way it is built:
+# from matrices, from a prime degree, from a description, from a product
+# action, and from stored permutations.
+gap> ForAll([[4913,1],[8191,48],[4097,5],[4096,1392],[5616,1]],
+>           p -> IsPrimitive(PrimitiveGroup(p[1],p[2]), [1..p[1]]));
+true
+
 #
 gap> STOP_TEST("extended.tst", 1);
