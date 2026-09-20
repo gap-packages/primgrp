@@ -163,11 +163,16 @@ PRIMGRP_ConvertFile := function(path)
 end;
 
 PRIMGRP_ConvertAll := function(dir)
-  local files, f, n;
+  local number, files, f, n;
+  number := function(name)
+    if Length(name) < 6 or name{[1..3]} <> "gps"
+       or name{[Length(name)-1..Length(name)]} <> ".g" then
+      return fail;
+    fi;
+    return Int(name{[4..Length(name)-2]});
+  end;
   files := Filtered(SortedList(DirectoryContents(dir)),
-                    f -> Length(f) > 5 and f{[1..3]} = "gps"
-                         and f{[Length(f)-1..Length(f)]} = ".g"
-                         and Int(f{[4..Length(f)-2]}) >= conv_first);
+                    f -> number(f) <> fail and number(f) >= conv_first);
   n := 0;
   for f in files do
     n := n + PRIMGRP_ConvertFile(Concatenation(dir, "/", f));
