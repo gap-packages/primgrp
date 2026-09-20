@@ -231,16 +231,9 @@ PRIMGRP_ImportFile := function(path, degs)
   return n;
 end;
 
-##  Append to PRIMINDX in <path> the file number of each degree in <indx>,
-##  which the reader looks up before anything else: PrimGrpLoad refuses a
-##  degree PRIMINDX does not bind, even one inside PRIMRANGE.  Re-running the
-##  import over a file already extended is refused rather than doubling it.
-PRIMGRP_ExtendIndex := function(path, indx, from)
-  local s, i, j, k, old, rows, row, v;
-  s := StringFile(path);
-  if s = fail then
-    Error("cannot read ", path);
-  fi;
+##  The PRIMINDX list in <s>: where it starts and ends, and what it holds.
+PRIMGRP_IndexList := function(s, path)
+  local i, j, k;
   i := PositionSublist(s, "BindGlobal(\"PRIMINDX\",");
   if i = fail then
     Error(path, " does not bind PRIMINDX");
@@ -250,9 +243,20 @@ PRIMGRP_ExtendIndex := function(path, indx, from)
   if k = fail then
     Error("the PRIMINDX list in ", path, " does not end as expected");
   fi;
-  old := Filtered(SplitString(s{[j+1..k-1]}, ",\n"), x -> x <> "");
-  if Length(old) <> from - 1 then
-    Error("PRIMINDX holds ", Length(old), " degrees, not the ", from - 1,
+  return rec(open := j, close := k,
+             values := List(Filtered(SplitString(s{[j+1..k-1]}, ",\n"),
+                                     x -> x <> ""), Int));
+end;
+
+PRIMGRP_ExtendIndex := function(path, indx, from)
+  local s, old, rows, row, v, tmp;
+  s := StringFile(path);
+  if s = fail then
+    Error("cannot read ", path);
+  fi;
+  old := PRIMGRP_IndexList(s, path);
+  if Length(old.values) <> from - 1 then
+    Error("PRIMINDX holds ", Length(old.values), " degrees, not the ", from - 1,
           " below the import; extend it from the state before an earlier one");
   fi;
 
@@ -268,10 +272,22 @@ PRIMGRP_ExtendIndex := function(path, indx, from)
     Add(row, ',');
   od;
   Add(rows, row{[1..Length(row)-1]});
-  FileString(path, Concatenation(s{[1..k-1]}, ",\n",
-             JoinStringsWithSeparator(rows, "\n"), s{[k..Length(s)]}));
-  Print("PRIMINDX: ", Length(old), " -> ", Length(old) + Length(indx),
-        " degrees, in ", path, "\n");
+
+  # through a temporary file: a kill here would otherwise leave the library
+  # without the list that says where any degree at all is kept
+  tmp := Concatenation(path, ".new");
+  FileString(tmp, Concatenation(s{[1..old.close-1]}, ",\n",
+             JoinStringsWithSeparator(rows, "\n"),
+             s{[old.close..Length(s)]}));
+  Exec(Concatenation("mv \"", tmp, "\" \"", path, "\""));
+
+  s := StringFile(path);
+  if s = fail or PRIMGRP_IndexList(s, path).values
+                 <> Concatenation(old.values, indx) then
+    Error("the PRIMINDX list in ", path, " did not come back as written");
+  fi;
+  Print("PRIMINDX: ", Length(old.values), " -> ",
+        Length(old.values) + Length(indx), " degrees, in ", path, "\n");
 end;
 
 ##  Split the degrees across files of about imp_perfile entries each -- a
