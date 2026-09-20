@@ -35,11 +35,31 @@ LoadPackage("primgrp");
 SetInfoLevel(InfoWarning, 0);
 SizeScreen([4096,]);
 
+if not IsBound(imp_dir) then
+  imp_dir := "data";
+fi;
 if not IsBound(imp_perfile) then
   imp_perfile := 800;
 fi;
 if not IsBound(imp_grp) then
   imp_grp := "lib/primitiv.grp";
+fi;
+
+##  The number in a name of the form gps<n>.g, or fail.
+PRIMGRP_FileNumber := function(name)
+  if Length(name) < 6 or name{[1..3]} <> "gps"
+     or name{[Length(name)-1..Length(name)]} <> ".g" then
+    return fail;
+  fi;
+  return Int(name{[4..Length(name)-2]});
+end;
+
+##  Writing starts after the data files already there, so a run adds files
+##  rather than writing over the library's.
+if not IsBound(imp_first) then
+  imp_first := 1 + Maximum(Concatenation([0],
+    Filtered(List(DirectoryContents(imp_dir), PRIMGRP_FileNumber),
+             n -> n <> fail)));
 fi;
 
 PRIMGRP_Compact := function(o)
@@ -231,6 +251,10 @@ PRIMGRP_ImportFile := function(path, degs)
   return n;
 end;
 
+##  Append to PRIMINDX in <path> the file number of each degree in <indx>,
+##  which the reader looks up before anything else: PrimGrpLoad refuses a
+##  degree PRIMINDX does not bind, even one inside PRIMRANGE.  Re-running the
+##  import over a file already extended is refused rather than doubling it.
 ##  The PRIMINDX list in <s>: where it starts and ends, and what it holds.
 PRIMGRP_IndexList := function(s, path)
   local i, j, k;
