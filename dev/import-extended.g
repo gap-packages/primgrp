@@ -299,6 +299,15 @@ PRIMGRP_ImportAll := function()
   if degs = [] then
     Error("PRIMINDX names every degree in PRIMRANGE already");
   fi;
+  if degs <> [degs[1]..degs[Length(degs)]] then
+    Error("PRIMINDX leaves holes below ", degs[Length(degs)],
+          "; the archive holds one run of degrees, not a scattering");
+  fi;
+  if not IsReadableFile(Concatenation(imp_archive, "/PrimitiveGroups_",
+                                      String(degs[1]), "_1.g.gz")) then
+    Error("the archive in ", imp_archive, " has no record for degree ",
+          degs[1]);
+  fi;
   blocks := [];
   cur := [];
   size := 0;
