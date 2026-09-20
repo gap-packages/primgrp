@@ -10,7 +10,11 @@
 
 
 ##  <#GAPDoc Label="[1]{primitiv}">
-##  &GAP; contains a library of primitive permutation groups which includes,
+##
+##  <Section Label="Overview">
+##  <Heading>Overview</Heading>
+##
+##  This &GAP; package provides a library of primitive permutation groups which includes,
 ##  up to permutation isomorphism (i.e., up to conjugacy in the corresponding
 ##  symmetric group),
 ##  all  primitive  permutation groups of  degree <M>&lt;&nbsp;8192</M>,
@@ -43,6 +47,15 @@
 ##    calculated in <Cite Key="RoneyDougal02"/>.
 ##  </Item>
 ##  <Item>
+##    The primitive groups of degree <M>&lt;&nbsp;2500</M> as calculated in
+##    <Cite Key="RoneyDougal05"/>, correcting various omissions in
+##    <Cite Key="DixonMortimer88"/>, <Cite Key="Sho92"/> and <Cite Key="Theissen97"/>.
+##  </Item>
+##  <Item>
+##    The primitive groups of degree <M>2500</M> to <M>4095</M> as
+##    calculated in <Cite Key="CRDQ11"/>.
+##  </Item>
+##  <Item>
 ##    The primitive groups of degree <M>4096</M> to <M>8191</M> as
 ##    calculated in <Cite Key="Stratford22"/> and prepared for &GAP; by
 ##    J.&nbsp;Lansdown <Cite Key="Lansdown23"/>.
@@ -51,11 +64,12 @@
 ##  <P/>
 ##  Not all groups are named, those which do have names use ATLAS notation.
 ##  Not all names are necessarily unique!
-##  <P/>
-##  The list given in <Cite Key="RoneyDougal05"/> is believed to be complete,
-##  correcting various omissions in <Cite Key="DixonMortimer88"/>,
-##  <Cite Key="Sho92"/> and <Cite Key="Theissen97"/>.
-##  <P/>
+##
+##  </Section>
+##
+##  <Section Label="Some guarantees">
+##  <Heading>Some guarantees</Heading>
+##
 ##  In detail, we guarantee the following properties for this and further
 ##  versions (but <E>not</E> versions which came before &GAP;&nbsp;4.2)
 ##  of the library:
@@ -87,6 +101,8 @@
 ##  <P/>
 ##  (Note that the arrangement of groups is not guaranteed to be in
 ##  increasing size, though it holds for many degrees.)
+##
+##  </Section>
 ##  <#/GAPDoc>
 
 #############################################################################
@@ -172,18 +188,32 @@ DeclareGlobalFunction( "NrPrimitiveGroups" );
 ##  <Ref Func="OnePrimitiveGroup"/>.
 ##  They obtain the following properties from the database without having to
 ##  compute them anew:
-##  <P/>
-##  <Ref BookName="ref" Attr="NrMovedPoints" Label="for a list or collection of permutations"/>,
-##  <Ref BookName="ref" Attr="Size"/>,
-##  <Ref BookName="ref" Attr="Transitivity" Label="for a group and an action domain"/>,
-##  <Ref BookName="ref" Attr="ONanScottType"/>,
-##  <Ref BookName="ref" Prop="IsSimpleGroup"/>,
-##  <Ref BookName="ref" Prop="IsAlmostSimpleGroup"/>,
-##  <Ref BookName="ref" Prop="IsSolvableGroup"/>,
-##  and <Ref BookName="ref" Attr="SocleTypePrimitiveGroup"/>.
-##  <P/>
-##  (Note, that for groups of degree up to 2499, O'Nan-Scott types 4a, 4b and
-##  5 cannot occur.)
+##  <List>
+##  <Item>
+##    <Ref BookName="ref" Attr="NrMovedPoints" Label="for a list or collection of permutations"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Attr="Size"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Attr="Transitivity" Label="for a group and an action domain"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Attr="ONanScottType"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Prop="IsSimpleGroup"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Prop="IsAlmostSimpleGroup"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Prop="IsSolvableGroup"/>
+##  </Item>
+##  <Item>
+##    <Ref BookName="ref" Attr="SocleTypePrimitiveGroup"/>
+##  </Item>
+##  </List>
 ##  <#/GAPDoc>
 
 
@@ -314,7 +344,7 @@ DeclareAttribute( "SimsNo", IsPermGroup );
 ##  <Description>
 ##  For a primitive permutation group for which an <M>S_n</M>-conjugate exists in
 ##  the library of primitive permutation groups
-##  (see&nbsp;<Ref Sect="Primitive Permutation Groups"/>),
+##  (see&nbsp;<Ref Sect="Overview"/>),
 ##  this attribute returns the index position. That is <A>G</A> is
 ##  conjugate to
 ##  <C>PrimitiveGroup(NrMovedPoints(<A>G</A>),PrimitiveIdentification(<A>G</A>))</C>.
