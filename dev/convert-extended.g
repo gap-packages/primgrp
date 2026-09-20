@@ -241,8 +241,7 @@ PRIMGRP_ConvertFile := function(path)
       Add(out, line);
     elif Length(line) < 2 or line[Length(line)] <> ','
          or line{[1..2]} = "];" or line{[1..2]} = "[\""
-         or (PositionSublist(line, ",\"2\",") = fail
-             and PositionSublist(line, ",\"4c\",") = fail) then
+         or PositionSublist(line, ",\"2\",") = fail then
       Add(out, line);
     else
       e := EvalString(line{[1..Length(line)-1]});
