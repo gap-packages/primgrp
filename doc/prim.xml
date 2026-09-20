@@ -1,48 +1,18 @@
 <Chapter Label="prim">
 <Heading>Primitive Permutation Groups</Heading>
 
-<Section Label="Primitive Permutation Groups">
-<Heading>Primitive Permutation Groups</Heading>
-
 <#Include Label="[1]{primitiv}">
-<P/>
+
+<Section Label="Function Reference">
+<Heading>Function Reference</Heading>
+
 <#Include Label="[2]{primitiv}">
 <#Include Label="PrimitiveGroupsAvailable">
-<#Include Label="PrimitiveGroup">
 <#Include Label="NrPrimitiveGroups">
+<#Include Label="PrimitiveGroup">
 <#Include Label="AllPrimitiveGroups">
 <#Include Label="OnePrimitiveGroup">
 <#Include Label="PrimitiveGroupsIterator">
-
-<ManSection>
-<Var Name="COHORTS_PRIMITIVE_GROUPS"/>
-
-<Description>
-In <Cite Key="DixonMortimer88"/> the primitive groups are sorted in
-<Q>cohorts</Q> according to their socle. For each degree less than 2500, the variable
-<Ref Var="COHORTS_PRIMITIVE_GROUPS"/> contains a list of the cohorts
-for the primitive groups of this degree. Each cohort is represented by a
-list of length 2, the first entry specifies the socle type (see
-<Ref BookName="ref" Func="SocleTypePrimitiveGroup"/>), the second
-entry listing the index numbers of the groups in this degree.
-<P/>
-For example in degree 49, we have four cohorts with socles <M>(&ZZ; / 7 &ZZ;)^2</M>,
-<M>L_2(7)^2</M>, <M>A_7^2</M> and <M>A_{49}</M> respectively. the group
-<C>PrimitiveGroup(49,36)</C>,
-which is isomorphic to <M>(A_7 \times A_7):2^2</M>, lies
-in the third cohort with socle <M>(A_7 \times A_7)</M>.
-<P/>
-<Example><![CDATA[
-gap> COHORTS_PRIMITIVE_GROUPS[49];
-[ [ rec( parameter := 7, series := "Z", width := 2 ), 
-      [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
-          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ] ], 
-  [ rec( parameter := [ 2, 7 ], series := "L", width := 2 ), [ 34 ] ], 
-  [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
-  [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
-]]></Example>
-</Description>
-</ManSection>
 
 </Section>
 
@@ -75,6 +45,37 @@ index number <A>nr</A> has the &GAP; index
 it can be obtained by the &GAP; command
 <P/>
 <C>PrimitiveGroup(<A>deg</A>,Position(PRIMITIVE_INDICES_MAGMA[<A>deg</A>],<A>nr</A>));</C>
+</Description>
+</ManSection>
+
+
+<ManSection>
+<Var Name="COHORTS_PRIMITIVE_GROUPS"/>
+
+<Description>
+In <Cite Key="DixonMortimer88"/> the primitive groups are sorted in
+<Q>cohorts</Q> according to their socle. For each degree less than 2500, the variable
+<Ref Var="COHORTS_PRIMITIVE_GROUPS"/> contains a list of the cohorts
+for the primitive groups of this degree. Each cohort is represented by a
+list of length 2, the first entry specifies the socle type (see
+<Ref BookName="ref" Func="SocleTypePrimitiveGroup"/>), the second
+entry listing the index numbers of the groups in this degree.
+<P/>
+For example in degree 49, we have four cohorts with socles <M>(&ZZ; / 7 &ZZ;)^2</M>,
+<M>L_2(7)^2</M>, <M>A_7^2</M> and <M>A_{49}</M> respectively. the group
+<C>PrimitiveGroup(49,36)</C>,
+which is isomorphic to <M>(A_7 \times A_7):2^2</M>, lies
+in the third cohort with socle <M>(A_7 \times A_7)</M>.
+<P/>
+<Example><![CDATA[
+gap> COHORTS_PRIMITIVE_GROUPS[49];
+[ [ rec( parameter := 7, series := "Z", width := 2 ), 
+      [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 ] ], 
+  [ rec( parameter := [ 2, 7 ], series := "L", width := 2 ), [ 34 ] ], 
+  [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
+  [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
+]]></Example>
 </Description>
 </ManSection>
 
