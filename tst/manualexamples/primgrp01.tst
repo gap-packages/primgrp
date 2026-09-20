@@ -22,7 +22,7 @@ AGL(2, 5)
 gap> PrimitiveGroup(25,23);
 (A(5) x A(5)):2
 
-# doc/../lib/primitiv.gd:358-361
+# doc/../lib/primitiv.gd:332-335
 gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
 2
 
