@@ -9,7 +9,7 @@ gap> SetInfoLevel(InfoWarning,0);
 #
 # Define a function to check the primitive groups of degree n
 #
-gap> ReadPackage("primgrp", "tst/testutils.g");
+gap> ReadPackage("primgrp", "lib/testutils.g");
 true
 gap> Perform([2..Length(COHORTS_PRIMITIVE_GROUPS)], CheckCohortConsistency);
 
