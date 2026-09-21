@@ -37,6 +37,10 @@ Persons := [
     IsMaintainer := true,
     Email        := "hulpke@math.colostate.edu",
     WWWHome      := "https://www.math.colostate.edu/~hulpke/",
+    PostalAddress := Concatenation( [
+                     "Department of Mathematics\n",
+                     "Colorado State University\n",
+                     "Fort Collins, CO, 80523-1874, USA" ] ),
     Place        := "Fort Collins, CO",
     Institution  := Concatenation( [
       "Department of Mathematics, ",
@@ -85,7 +89,6 @@ Persons := [
     WWWHome := "https://www.jesselansdown.com",
     Email := "jesse.lansdown@canterbury.ac.nz",
     PostalAddress := Concatenation(
-               "Jesse Lansdown\n",
                "School of Mathematics and Statistics\n",
                "University of Canterbury\n",
                "Christchurch 8140\n",
@@ -159,18 +162,41 @@ TestFile := "tst/testall.g",
 Keywords := ["primitive permutation group"],
 
 AutoDoc := rec(
+    TitlePage := rec(
+        Abstract := """
+            <Index Key="PrimGrp package">&primgrp; package</Index>
+            The &GAP; package &primgrp; provides the library of primitive
+            permutation groups which includes, up to permutation isomorphism
+            (i.e., up to conjugacy in the corresponding symmetric group),
+            all primitive permutation groups of degree &lt; 8192.""",
+        Copyright := """
+            &primgrp; is free software; you can redistribute it and/or modify it
+            under the terms of the GNU General Public License as published by
+            the Free Software Foundation; either version 2 of the License, or
+            (at your option) any later version. For details, see the FSF's own site
+            <URL>https://www.gnu.org/licenses/gpl.html</URL>.
+            <P/>
+
+            If you publish a result which was partially obtained with the usage of
+            &primgrp;, please cite it in the following form:
+            <P/>
+
+            A. Hulpke, J. Lansdown, C. Roney-Dougal, C. Russell.
+            <E>PrimGrp --- GAP Primitive Permutation Groups Library,
+            Version &VERSION;;</E> &RELEASEYEAR;
+            (<URL>https://gap-packages.github.io/primgrp/</URL>).
+            <P/>
+
+            For where the data itself comes from, and who computed which part
+            of it, see Section <Ref Sect="Overview"/>.""",
+        Acknowledgements := """
+            The conversion of the &GAP; database of primitive permutation groups to
+            a separate &GAP; package has been supported by the EPSRC Collaborative
+            Computational Project EP/M022641/1 CoDiMa (CCP in the area of Computational
+            Discrete Mathematics), <URL>https://www.codima.ac.uk/</URL>.""",
+    ),
     entities := rec(
-        VERSION := ~.Version,
-        RELEASEDATE := function(date)
-          local day, month, year, allMonths;
-          day := Int(date{[1,2]});
-          month := Int(date{[4,5]});
-          year := Int(date{[7..10]});
-          allMonths := [ "January", "February", "March", "April", "May", "June", "July",
-                         "August", "September", "October", "November", "December"];
-          return Concatenation(String(day)," ", allMonths[month], " ", String(year));
-        end(~.Date),
-        RELEASEYEAR := ~.Date{[7..10]},
+        primgrp := "<Package>PrimGrp</Package>",
     ),
 ),
 

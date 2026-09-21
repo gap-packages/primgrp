@@ -57,13 +57,38 @@
 ##  </Item>
 ##  <Item>
 ##    The primitive groups of degree <M>4096</M> to <M>8191</M> as
-##    calculated in <Cite Key="Stratford22"/> and prepared for &GAP; by
-##    J.&nbsp;Lansdown <Cite Key="Lansdown23"/>.
+##    calculated in <Cite Key="Stratford22"/>.
 ##  </Item>
 ##  </List>
 ##  <P/>
-##  Not all groups are named, those which do have names use ATLAS notation.
-##  Not all names are necessarily unique!
+##  The data reached &GAP; along several routes.
+##  C.&nbsp;Roney-Dougal converted the groups of degree <M>&lt;&nbsp;2500</M>
+##  from <Package>Magma</Package>, and A.&nbsp;Hulpke corrected errors in
+##  degree <M>&lt;&nbsp;256</M>.
+##  H.&nbsp;Coutts computed the groups of degree <M>2500</M> to <M>4095</M>
+##  for her PhD thesis and entered them into <Package>Magma</Package>
+##  <Cite Key="CRDQ11"/>; C.&nbsp;Russell brought them to &GAP; in 2016 for
+##  his master's thesis <Cite Key="Russell16"/>, supervised by
+##  C.&nbsp;Roney-Dougal, extending her conversion code and computing the
+##  socle types, which <Package>Magma</Package> does not store.
+##  B.&nbsp;M.&nbsp;Stratford computed the groups of degree <M>4096</M> to
+##  <M>8191</M> in his PhD thesis <Cite Key="Stratford22"/>, and
+##  J.&nbsp;Lansdown prepared the first &GAP; version of them
+##  <Cite Key="Lansdown23"/>, a separate download of 1.1&nbsp;GB.
+##  M.&nbsp;Horn reworked how the library stores its groups, so that those
+##  degrees could be bundled with the package: its data files now cover twice
+##  the range in less space than degree <M>&lt;&nbsp;4096</M> alone took
+##  before.
+##  O.&nbsp;Konovalov turned the library, until then part of the &GAP; core
+##  system, into this package in 2017.
+##  <P/>
+##  Not all groups are named, and the names follow no single convention.
+##  Many are ATLAS notation, such as <C>L(2, 7)</C> or <C>M(11)</C>, but
+##  others name a classical group directly, such as <C>PSL(2, 7)</C>,
+##  <C>PGL(2, 5)</C> or <C>AGL(1, 5)</C>, and the alternating and symmetric
+##  groups appear both as <C>A(5)</C>, <C>S(5)</C> and as <C>Alt(5)</C>,
+##  <C>Sym(5)</C>.
+##  Names need not be unique.
 ##
 ##  </Section>
 ##

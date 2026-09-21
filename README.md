@@ -8,19 +8,13 @@ groups which includes, up to permutation isomorphism (i.e., up to
 conjugacy in the corresponding symmetric group), all primitive 
 permutation groups of degree < 8192.
 
-The groups of degree 4096 to 8191 were computed by Benjamin Stratford
-([PhD thesis, University of Warwick, 2022](http://wrap.warwick.ac.uk/169404/))
-and prepared for PrimGrp by Jesse Lansdown
-(<https://doi.org/10.5281/zenodo.10411366>). Versions of PrimGrp before
-this one needed that data set to be downloaded separately.
-
 The library fixes each group only up to conjugacy in the symmetric group.
 The permutations `PrimitiveGroup` returns need not be those other sources
-give for the same group, such as that data set, earlier versions of
-PrimGrp, or Magma.
+give for the same group, such as earlier versions of PrimGrp, or Magma.
 
-It has been formerly a part of the core GAP system, and has been
-converted to a separate GAP package in 2017 for the GAP 4.9 release.
+For where the data comes from, and who computed which part of it, see the
+manual.
+
 
 ## Documentation
 
