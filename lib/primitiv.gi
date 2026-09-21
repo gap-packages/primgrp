@@ -762,7 +762,7 @@ BindGlobal("PGIdCache", rec( deg := 0, data := [] ));
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,b,f,cs,n,i,ag,bg,q,gl,hom;
+local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   dom:=MovedPoints(grp);
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
@@ -842,7 +842,7 @@ local dom,deg,PD,s,cand,a,p,b,f,cs,n,i,ag,bg,q,gl,hom;
   #
   if Length(cand) > 1 then
     # sylow orbits
-    gl := PrimeDivisors(Size(grp));
+    gl := ShallowCopy(PrimeDivisors(Size(grp)));
     f := function(g)
       local s;
       s := SylowSubgroup(g, p);
@@ -884,7 +884,7 @@ local dom,deg,PD,s,cand,a,p,b,f,cs,n,i,ag,bg,q,gl,hom;
         cand := Filtered(cand, g -> f(g) = a);
       fi;
 
-      if Length(cand) > 1 and Size(ag)<512 then
+      if Length(cand) > 1 and Size(SylowSubgroup(grp,q)) < 512 then
         # Isomorphism type of Sylow subgroup
         f := function(g)
           local ag;
