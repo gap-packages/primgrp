@@ -40,6 +40,28 @@ gap> roundtrip := function(n)
 gap> Filtered([2..100], n -> not roundtrip(n));
 [  ]
 
+# Product action.  The first seven agree in order, suborbits and transitivity
+# and have socle Alt(6)^3 on 10^3 points; the next two have socle Alt(8)^4, and
+# telling them apart by conjugacy classes took a quarter of an hour each.
+gap> ident := function(n, i)
+>   local x;
+>   x := PermList(Reversed([1..n]));
+>   return PrimitiveIdentification(
+>     Group(List(GeneratorsOfGroup(PrimitiveGroup(n, i)), y -> y^x)));
+> end;;
+gap> List([88..94], i -> ident(1000, i));
+[ 88, 89, 90, 91, 92, 93, 94 ]
+gap> List([1448, 1454], i -> ident(4096, i));
+[ 1448, 1454 ]
+
+# PSL(3,5) on points and on lines: the socle factors of the group and of the
+# library's copy need a conjugating permutation in Sym(31)
+gap> PD := [ PRIMGrp(961, 1) ];;
+gap> x := PermList(Reversed([1..961]));;
+gap> G := Group(List(GeneratorsOfGroup(PrimitiveGroup(961, 1)), y -> y^x));;
+gap> PRIMGRP_IdentifyProductAction(G, PD) = PD;
+true
+
 # data/primid.g holds what PRIMGRP_IdClassData computes
 gap> ForAll([9, 10, 16, 64, 81], deg -> PRIMGRP_IdData(deg) =
 >      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));

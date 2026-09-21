@@ -12,6 +12,377 @@
 
 #############################################################################
 ##
+##  Groups of type 4c, that is, in product action on the m^k tuples over a set
+##  of size m, with socle T^k for a non-abelian simple T that acts on each
+##  coordinate.  Such a group lies in W = Sym(m) wr Sym(k), and two of them are
+##  conjugate in Sym(m^k) if and only if they are conjugate in W: a conjugating
+##  permutation maps socle factors to socle factors, hence the fibres of the
+##  coordinates to each other, and that makes it an element of W.
+##
+##  W also acts on the m*k pairs (i,c) of a coordinate and a value, and there
+##  a group of order 10^100 is no harder than its degree suggests.  All of the
+##  following happens on the pairs; the library stores these groups by their
+##  elements (p_1,...,p_k; sigma) of W in the first place.
+##
+
+#############################################################################
+##
+#F  PRIMGRP_WreathToPerm( <m>, <k>, <e> )
+#F  PRIMGRP_PermToWreath( <m>, <k>, <w> )
+##
+##  Turn the element <e> = [ p_1, ..., p_k, sigma ] of Sym(m) wr Sym(k) into
+##  the permutation of the pairs it induces, the pair (i,c) being the point
+##  (i-1)*m+c; and back.  As in PGProductAction4c, <e> sends (i,c) to
+##  (i^sigma, c^p_i).
+##
+BindGlobal("PRIMGRP_WreathToPerm", function(m, k, e)
+  local img, i, c;
+  img := [];
+  for i in [1..k] do
+    for c in [1..m] do
+      img[(i-1)*m+c] := (i^e[k+1]-1)*m + c^e[i];
+    od;
+  od;
+  return PermList(img);
+end);
+
+BindGlobal("PRIMGRP_PermToWreath", function(m, k, w)
+  local e, sigma, i, j;
+  e := [];
+  sigma := [];
+  for i in [1..k] do
+    j := QuoInt(((i-1)*m+1)^w - 1, m) + 1;
+    sigma[i] := j;
+    e[i] := PermList(List([1..m], c -> ((i-1)*m+c)^w - (j-1)*m));
+  od;
+  e[k+1] := PermList(sigma);
+  return e;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_CoordinateFibres( <G>, <m>, <k>, <e> )
+##
+##  For <G> of type 4c on m^k points, return for each coordinate the partition
+##  of the points by their value there, or fail.  <e> must be a multiple of the
+##  index of the socle.
+##
+##  Only orbits of groups given by a few generators are computed, never a
+##  stabiliser chain, which for a socle like Alt(69)^2 is the difference
+##  between milliseconds and minutes.  The price is that the answer may be
+##  wrong: the generators taken need not generate what they are meant to.
+##  PRIMGRP_WreathElements checks it.
+##
+BindGlobal("PRIMGRP_CoordinateFibres", function(G, m, k, e)
+  local deg, x, S, y, o, U, lines, comps, parts, tries, g, V, q, fib, i,
+        others;
+  deg := m^k;
+
+  # G/Soc(G) has order dividing e, so an e-th power lies in the socle; and
+  # the socle is the normal closure of any of its non-trivial elements
+  repeat
+    x := PseudoRandom(G)^e;
+  until not IsOne(x);
+  S := Group(List([1..12], i -> x^PseudoRandom(G)));
+
+  # an element of prime order has a fair chance to lie in a single factor
+  # T_i.  Its conjugates under the socle then span a subgroup of T_i, whose
+  # orbits are the lines in direction i.
+  y := PseudoRandom(S);
+  o := Order(y);
+  if o = 1 then
+    return fail;
+  fi;
+  y := y^(o/Random(PrimeDivisors(o)));
+  U := Group(List([1..10], i -> y^PseudoRandom(S)));
+  lines := Orbits(U, [1..deg]);
+  if Length(lines) <> m^(k-1) or ForAny(lines, l -> Length(l) <> m) then
+    return fail;
+  fi;
+
+  # G permutes the factors transitively; conjugates of U are told apart by
+  # their lines
+  comps := [U];
+  parts := [Set(lines, Set)];
+  tries := 0;
+  while Length(comps) < k and tries < 100 do
+    tries := tries + 1;
+    g := PseudoRandom(G);
+    V := Group(List(GeneratorsOfGroup(U), u -> u^g));
+    q := Set(Orbits(V, [1..deg]), Set);
+    if not q in parts then
+      Add(comps, V);
+      Add(parts, q);
+    fi;
+  od;
+  if Length(comps) < k then
+    return fail;
+  fi;
+
+  # the fibres of coordinate i are the orbits of all factors but the i-th
+  fib := [];
+  for i in [1..k] do
+    others := Group(Concatenation(List(Filtered([1..k], j -> j <> i),
+                                       j -> GeneratorsOfGroup(comps[j]))));
+    fib[i] := Set(Orbits(others, [1..deg]), Set);
+    if Length(fib[i]) <> m or ForAny(fib[i], f -> Length(f) <> m^(k-1)) then
+      return fail;
+    fi;
+  od;
+  return fib;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_WreathElements( <G>, <m>, <k>, <e> )
+##
+##  For <G> of type 4c on m^k points, return its generators as elements
+##  [ p_1, ..., p_k, sigma ] of Sym(m) wr Sym(k), or fail if the random choices
+##  in PRIMGRP_CoordinateFibres went wrong; then ask again.  <e> is as there.
+##
+##  What is returned has been verified: PGProductAction4c turns it back into
+##  the generators of <G>, relabelled.
+##
+BindGlobal("PRIMGRP_WreathElements", function(G, m, k, e)
+  local deg, fib, coord, i, a, x, pw, rel, els, g, sigma, ps, img, j;
+  deg := m^k;
+  fib := PRIMGRP_CoordinateFibres(G, m, k, e);
+  if fib = fail then
+    return fail;
+  fi;
+
+  # the coordinates of each point, and the relabelling that numbers the
+  # points as PGProductAction4c does
+  coord := List([1..deg], x -> []);
+  for i in [1..k] do
+    for a in [1..m] do
+      for x in fib[i][a] do
+        coord[x][i] := a;
+      od;
+    od;
+  od;
+  pw := List([1..k], i -> m^(k-i));
+  rel := List(coord, c -> 1 + Sum([1..k], i -> (c[i]-1)*pw[i]));
+  if Length(Set(rel)) <> deg then
+    return fail;
+  fi;
+  rel := PermList(rel);
+
+  # a generator sends the fibres of coordinate i to those of coordinate
+  # j = i^sigma, and what it does to them is p_i
+  els := [];
+  for g in GeneratorsOfGroup(G) do
+    sigma := [];
+    ps := [];
+    for i in [1..k] do
+      img := OnTuples(fib[i][1], g);
+      j := First([1..k], j -> ForAll(img, x -> coord[x][j] = coord[img[1]][j]));
+      if j = fail then
+        return fail;
+      fi;
+      sigma[i] := j;
+      ps[i] := List([1..m], a -> coord[fib[i][a][1]^g][j]);
+    od;
+    if Length(Set(sigma)) <> k or ForAny(ps, p -> Length(Set(p)) <> m) then
+      return fail;
+    fi;
+    Add(els, Concatenation(List(ps, PermList), [PermList(sigma)]));
+  od;
+
+  if GeneratorsOfGroup(PGProductAction4c(m, k, els))
+     <> List(GeneratorsOfGroup(G), x -> x^rel) then
+    return fail;
+  fi;
+  return els;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_AlignSocleFactors( <m>, <k>, <G> )
+##
+##  <G> is a group of type 4c acting on the m*k pairs.  Its socle is
+##  T_1 x ... x T_k with T_i acting on the values of coordinate i.  The T_i are
+##  conjugate in Sym(m), but not equal, since how the values of each
+##  coordinate are numbered is arbitrary.
+##
+##  Return a record with a conjugate `G' of <G> under the base group Sym(m)^k
+##  of the wreath product in which all T_i are equal to T_1, and with that
+##  group as `T'.
+##
+BindGlobal("PRIMGRP_AlignSocleFactors", function(m, k, G)
+  local H, T, cs, blocks, i, g;
+
+  # what the stabiliser of the first coordinate does to its values
+  H := Action(Stabilizer(G, [1..m], OnSets), [1..m]);
+  T := Socle(H);
+
+  # if g sends coordinate 1 to coordinate i, acting as p on its values, then
+  # T_i = T_1^p
+  cs := [()];
+  blocks := ActionHomomorphism(G, List([1..k], i -> [(i-1)*m+1..i*m]), OnSets);
+  for i in [2..k] do
+    g := PreImagesRepresentative(blocks,
+           RepresentativeAction(Image(blocks), 1, i));
+    cs[i] := PRIMGRP_PermToWreath(m, k, g)[1]^-1;
+  od;
+
+  g := PRIMGRP_WreathToPerm(m, k, Concatenation(cs, [()]));
+  return rec( G := Group(List(GeneratorsOfGroup(G), x -> x^g)), T := T );
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_ConjugatingPermutation( <T1>, <T2> )
+##
+##  For transitive groups <T1> and <T2> on [ 1 .. m ], return a permutation c
+##  with T1^c = T2, or fail if there is none.
+##
+##  Conjugation by c is an isomorphism that maps point stabilisers to point
+##  stabilisers, and any isomorphism that does so comes from a permutation.
+##  So take one isomorphism and vary it by outer automorphisms; inner ones map
+##  a point stabiliser to another.  RepresentativeAction in Sym(m) finds the
+##  same, but for two copies of PSL(3,5) on 31 points not within minutes.
+##
+BindGlobal("PRIMGRP_ConjugatingPermutation", function(T1, T2)
+  local iso, stab, gens1, gens2, aut, alpha, U, b, c, queue, j, i, x;
+  iso := IsomorphismGroups(T1, T2);
+  if iso = fail then
+    return fail;
+  fi;
+  stab := Image(iso, Stabilizer(T1, 1));
+  gens1 := GeneratorsOfGroup(T1);
+  aut := AutomorphismGroup(T2);
+  for alpha in RightTransversal(aut, InnerAutomorphismsAutomorphismGroup(aut)) do
+    # a subgroup of the order of a point stabiliser that fixes a point is one
+    U := Image(alpha, stab);
+    b := First(MovedPoints(T2),
+               b -> ForAll(GeneratorsOfGroup(U), u -> b^u = b));
+    if b <> fail then
+      # c maps 1^g to b^(image of g)
+      gens2 := List(gens1, g -> Image(alpha, Image(iso, g)));
+      c := [];
+      c[1] := b;
+      queue := [1];
+      for j in queue do
+        for i in [1..Length(gens1)] do
+          x := j^gens1[i];
+          if not IsBound(c[x]) then
+            c[x] := c[j]^gens2[i];
+            Add(queue, x);
+          fi;
+        od;
+      od;
+      return PermList(c);
+    fi;
+  od;
+  return fail;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IdentifyProductAction( <G>, <PD> )
+##
+##  <G> is a primitive group of type 4c and <PD> a list of library entries of
+##  that type and the degree and order of <G>.  Return those to which <G> is
+##  conjugate in the symmetric group.
+##
+##  Once the socle factors of two such groups are aligned, both contain the
+##  same T^k and lie in its normaliser N wr Sym(k) in W, where N is the
+##  normaliser of T in Sym(m).  So they are conjugate in W if and only if their
+##  images are conjugate in the quotient (N/T) wr Sym(k).  N/T embeds into
+##  Out(T), so that group is tiny.
+##
+BindGlobal("PRIMGRP_IdentifyProductAction", function(G, PD)
+  local deg, k, m, natural, align, libs, e, tries, els, inp, N, hom, nu, O,
+        mq, Q, quotient, a;
+  deg := NrMovedPoints(G);
+  k := PD[1][8][3];
+  m := RootInt(deg, k);
+
+  # Alt(m) on m points is normal in Sym(m), so there is nothing to align, and
+  # nothing to compute to know T.  With Alt(69) that saves seconds per group.
+  natural := ForAll(PD, primdata -> primdata[8][1] = "A"
+                                    and primdata[8][2] = m);
+  align := function(els)
+    local H;
+    H := Group(List(els, x -> PRIMGRP_WreathToPerm(m, k, x)));
+    if natural then
+      return rec( G := H, T := AlternatingGroup(m) );
+    fi;
+    return PRIMGRP_AlignSocleFactors(m, k, H);
+  end;
+  libs := List(PD, primdata -> align(primdata[9][2]));
+
+  # a multiple of the index of the socle.  The candidates need not agree on
+  # their socle.
+  e := Lcm(List(libs, r -> Size(G) / Size(r.T)^k));
+
+  tries := 0;
+  repeat
+    tries := tries + 1;
+    if tries > 100 then
+      Error("cannot write <G> as a group in product action");
+    fi;
+    els := PRIMGRP_WreathElements(G, m, k, e);
+  until els <> fail;
+  inp := align(els);
+
+  # the map from N wr Sym(k) onto (N/T) wr Sym(k), both acting on pairs
+  if natural then
+    O := Group((1,2));
+    nu := function(p)
+      if SignPerm(p) = 1 then
+        return ();
+      fi;
+      return (1,2);
+    end;
+  else
+    N := Normalizer(SymmetricGroup(m), inp.T);
+    hom := NaturalHomomorphismByNormalSubgroup(N, inp.T);
+    hom := hom * IsomorphismPermGroup(Image(hom));
+    O := Image(hom);
+    nu := p -> Image(hom, p);
+  fi;
+  mq := Maximum(1, LargestMovedPoint(O));
+  Q := Group(Concatenation(
+         List(GeneratorsOfGroup(O), o -> PRIMGRP_WreathToPerm(mq, k,
+              Concatenation([o], List([2..k], i -> ()), [()]))),
+         List(GeneratorsOfGroup(SymmetricGroup(k)), s ->
+              PRIMGRP_WreathToPerm(mq, k,
+              Concatenation(List([1..k], i -> ()), [s])))), ());
+  quotient := function(gens)
+    return Group(List(gens, function(w)
+      w := PRIMGRP_PermToWreath(m, k, w);
+      return PRIMGRP_WreathToPerm(mq, k,
+               Concatenation(List([1..k], i -> nu(w[i])), [w[k+1]]));
+    end), ());
+  end;
+
+  # the kernel of G -> Q is the intersection of G with T^k, so this checks
+  # that the socle of <G> is what the above took it to be
+  a := quotient(GeneratorsOfGroup(inp.G));
+  if Size(a) * Size(inp.T)^k <> Size(G) then
+    Error("the socle of <G> is not T^k");
+  fi;
+
+  return PD{Filtered([1..Length(PD)], function(i)
+    local c;
+    if libs[i].T = inp.T then
+      c := ();
+    else
+      c := PRIMGRP_ConjugatingPermutation(libs[i].T, inp.T);
+      if c = fail then
+        return false;
+      fi;
+    fi;
+    c := PRIMGRP_WreathToPerm(m, k, Concatenation(List([1..k], j -> c), [()]));
+    return RepresentativeAction(Q, a,
+             quotient(List(GeneratorsOfGroup(libs[i].G), x -> x^c))) <> fail;
+  end)};
+end);
+
+#############################################################################
+##
 #F  PRIMGRP_CycleTypeHash( <cs> )
 ##
 ##  An integer standing for the cycle type <cs>, as CycleStructurePerm returns
@@ -252,17 +623,19 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   PD := PRIMGRP_FilterByCycleTypes(grp, PD);
   if Length(PD)=1 then return PD[1][1]; fi;
 
+  #
+  # product action: decided outright, on m*k points instead of m^k
+  #
+  if PD[1][4] = "4c" then
+    PD := PRIMGRP_IdentifyProductAction(grp, PD);
+    if Length(PD) <> 1 then
+      Error("Uh-Oh, this should never happen ", List(PD, primdata -> primdata[1]));
+    fi;
+    return PD[1][1];
+  fi;
+
   # now we need to create the groups
   cand := List(PD, primdata -> PrimitiveGroup(deg, primdata[1]));
-
-  # in product action case, some tests on the socle quotient.
-  if ONanScottType(grp) = "4c" then
-    # first we just identify its isomorphism type
-    f := g -> IdGroup(FactorGroup(g, Socle(g)));
-    a := f(grp);
-    cand := Filtered(cand, g -> f(g) = a);
-  fi;
-  if Length(cand) = 1 then return PrimitiveIdentification(cand[1]); fi;
 
   #
   # AbelianInvariants
@@ -330,24 +703,6 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
         cand := Filtered(cand, g -> f(g) = a);
       fi;
     od;
-  fi;
-
-  # back for a closer look at the product action groups.
-  if Length(cand) > 1 and ONanScottType(grp) = "4c" then
-    # construct the action of the socle quotient as a (necessarily transitive)
-    # action on the socle factors.
-    f := function(g)
-      local s, cs, n, beta, alpha;
-      s := Socle(g);
-      cs := CompositionSeries(s);
-      cs := cs[Length(cs)-1];
-      n := Normalizer(g, cs);
-      beta := FactorCosetAction(g, n);
-      alpha := FactorCosetAction(n, ClosureGroup(Centralizer(n, cs), s));
-      return TransitiveIdentification(Group(KuKGenerators(g, beta, alpha)));
-    end;
-    a := f(grp);
-    cand := Filtered(cand, g -> f(g) = a);
   fi;
 
   #
