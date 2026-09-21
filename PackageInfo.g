@@ -59,6 +59,24 @@ Persons := [
     Institution   := "University of St Andrews"
      ),  
 
+  rec(  # reworked how the groups are stored
+    LastName       := "Horn",
+    FirstNames     := "Max",
+    IsAuthor       := false,
+    IsMaintainer   := true,
+    Email          := "mhorn@rptu.de",
+    WWWHome        := "https://www.quendi.de/math",
+    GitHubUsername := "fingolfin",
+    PostalAddress  := Concatenation( [
+                      "Fachbereich Mathematik\n",
+                      "RPTU Kaiserslautern-Landau\n",
+                      "Gottlieb-Daimler-Straße 48\n",
+                      "67663 Kaiserslautern\n",
+                      "Germany" ] ),
+    Place          := "Kaiserslautern, Germany",
+    Institution    := "RPTU Kaiserslautern-Landau"
+     ),
+
   rec(  # contributed groups of order 4096-8191
     IsAuthor := true,
     IsMaintainer := true,

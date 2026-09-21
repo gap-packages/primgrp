@@ -9,6 +9,7 @@
     in the symmetric group of the group with that number in the separately
     distributed data set; the numbering is unchanged, and 8869 groups that
     had no name now have one
+  - Add Max Horn as a maintainer
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
     argument, not just the first one
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
