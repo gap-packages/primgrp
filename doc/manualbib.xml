@@ -4431,6 +4431,16 @@
   <other type="fjournal">Journal of Algebra</other>
 </article></entry>
 
+<entry id="Russell16"><mastersthesis>
+  <author>
+    <name><first>Christopher</first><last>Russell</last></name>
+  </author>
+  <title><C>C</C>onstructing a database of primitive permutation groups</title>
+  <school>University of <C>S</C>t <C>A</C>ndrews</school>
+  <year>2016</year>
+  <url>https://github.com/ChristopherRussell/Masters-Thesis</url>
+</mastersthesis></entry>
+
 <entry id="Roy87"><article>
   <author>
     <name><first>Gordon F.</first><last>Royle</last></name>

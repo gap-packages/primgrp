@@ -10,7 +10,7 @@
 #
 gap> START_TEST("primgrp01.tst");
 
-# doc/../lib/primitiv.gd:166-177
+# doc/../lib/primitiv.gd:191-202
 gap> NrPrimitiveGroups(25);
 28
 gap> PrimitiveGroup(25,19);
@@ -22,11 +22,11 @@ AGL(2, 5)
 gap> PrimitiveGroup(25,23);
 (A(5) x A(5)):2
 
-# doc/../lib/primitiv.gd:358-361
+# doc/../lib/primitiv.gd:383-386
 gap> PrimitiveIdentification(Group((1,2),(1,2,3)));
 2
 
-# doc/../lib/primitiv.gd:292-297
+# doc/../lib/primitiv.gd:317-322
 gap> g:=PrimitiveGroup(25,2);
 5^2:S(3)
 gap> SimsNo(g);

@@ -10,6 +10,7 @@
     distributed data set; the numbering is unchanged, and 8869 groups that
     had no name now have one
   - Add Max Horn as a maintainer
+  - Many improvements made in the manual
   - Add `IsAlmostSimpleGroup` to the properties for which
     `AllPrimitiveGroups` and `OnePrimitiveGroup` need not compute the values
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
