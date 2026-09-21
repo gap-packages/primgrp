@@ -10,17 +10,16 @@
     distributed data set; the numbering is unchanged, and 8869 groups that
     had no name now have one
   - Add Max Horn as a maintainer
-  - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
-    argument, not just the first one
+  - Add `IsAlmostSimpleGroup` to the properties for which
+    `AllPrimitiveGroups` and `OnePrimitiveGroup` need not compute the values
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
     restriction from every `Size` and `Order` argument
+  - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
+    argument, not just the first one
   - Fix the dimension in the names of PrimitiveGroup(1057,1) and (1057,2)
   - Fix 29 socle types recorded with a rank one too high
   - Fix the corrupted name of PrimitiveGroup(625,657)
-  - Actually run the cohort consistency check
   - Fix socle type series for unitary groups
-  - Add `IsAlmostSimpleGroup` to the properties for which
-    `AllPrimitiveGroups` and `OnePrimitiveGroup` need not compute the values
 
 ## 4.0.3 (2026-07-28)
 
