@@ -40,6 +40,13 @@ gap> roundtrip := function(n)
 gap> Filtered([2..100], n -> not roundtrip(n));
 [  ]
 
+# Affine groups that agree in every invariant tried: the point stabilisers
+# are two embeddings of SmallGroup(208,3) into GL(4,5), not conjugate there.
+gap> x := PermList(Reversed([1..625]));;
+gap> List([528, 529], i -> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(625, i)), y -> y^x))));
+[ 528, 529 ]
+
 # Product action.  The first seven agree in order, suborbits and transitivity
 # and have socle Alt(6)^3 on 10^3 points; the next two have socle Alt(8)^4, and
 # telling them apart by conjugacy classes took a quarter of an hour each.

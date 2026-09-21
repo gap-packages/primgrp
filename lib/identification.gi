@@ -12,6 +12,77 @@
 
 #############################################################################
 ##
+#F  PRIMGRP_AffinePointStabilizer( <G> )
+##
+##  For a primitive group <G> of affine type, a record describing a point
+##  stabiliser: a faithful permutation representation of small degree, and
+##  what is needed to write its elements as matrices over the socle.
+##
+BindGlobal("PRIMGRP_AffinePointStabilizer", function(G)
+  local dom, stab, orbs, hom;
+  dom := MovedPoints(G);
+  stab := Stabilizer(G, dom[1]);
+
+  # the stabiliser acts irreducibly on the socle, so an orbit of non-zero
+  # vectors spans it, and the action on any such orbit is faithful
+  orbs := Orbits(stab, dom{[2..Length(dom)]});
+  hom := ActionHomomorphism(stab, orbs[PositionMinimum(orbs, Length)],
+                            "surjective");
+
+  return rec( stab := stab, hom := hom, perm := Image(hom),
+              pcgs := Pcgs(Socle(G)),
+              field := GF(Factors(Length(dom))[1]) );
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IsConjugateAffine( <a>, <b> )
+##
+##  Two primitive groups of affine type and equal degree are conjugate in the
+##  symmetric group if and only if their point stabilisers are conjugate in
+##  GL(d,p): that is, if some isomorphism between the stabilisers carries the
+##  natural module of one to that of the other.  An inner automorphism does not
+##  change a module up to isomorphism, so one isomorphism for each class of
+##  outer automorphisms is tried.
+##
+##  Searching GL(d,p) for a conjugating element instead can run for hours
+##  when there is none.
+##
+##  <a> and <b> are the records PRIMGRP_AffinePointStabilizer returns for the
+##  two groups.  They are arguments so that a caller comparing one group with
+##  many computes its record, and the automorphism group stored in a.perm,
+##  once.
+##
+BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
+  local iso, gens, module, m, aut, inn;
+
+  # cyclic groups of prime order
+  if IsTrivial(a.perm) then
+    return IsTrivial(b.perm);
+  fi;
+
+  iso := IsomorphismGroups(a.perm, b.perm);
+  if iso = fail then
+    return false;
+  fi;
+
+  # the natural module of the stabiliser in <r>, with the generators in <elms>
+  module := function(r, elms)
+    elms := List(elms, x -> PreImagesRepresentative(r.hom, x));
+    return GModuleByMats(LinearActionLayer(r.stab, elms, r.pcgs), r.field);
+  end;
+
+  gens := GeneratorsOfGroup(a.perm);
+  m := module(a, gens);
+  aut := AutomorphismGroup(a.perm);
+  inn := InnerAutomorphismsAutomorphismGroup(aut);
+  return ForAny(RightTransversal(aut, inn), alpha ->
+    MTX.IsomorphismModules(m,
+      module(b, List(gens, x -> Image(iso, Image(alpha, x))))) <> fail);
+end);
+
+#############################################################################
+##
 ##  Groups of type 4c, that is, in product action on the m^k tuples over a set
 ##  of size m, with socle T^k for a non-abelian simple T that acts on each
 ##  coordinate.  Such a group lies in W = Sym(m) wr Sym(k), and two of them are
@@ -676,7 +747,7 @@ end);
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
+local dom,deg,PD,s,cand,a,p,f,q,gl;
   dom:=MovedPoints(grp);
   if Length(dom) < 2 then
     Error("PrimitiveIdentification: <G> must move at least two points");
@@ -910,17 +981,9 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   #
   if Length(cand) > 1 and ONanScottType(grp) = "1" then
     Assert(0, ForAll(cand, g -> ONanScottType(g) = "1"));
-
-    # degree must be a prime power
-    gl := Factors(deg);
-    gl := GL(Length(gl), gl[1]);
-    hom := IsomorphismPermGroup(gl);  # nasty
-
-    # map group by its linear action into GL, and then further via hom
-    f := g -> Image(hom, Subgroup(gl, LinearActionLayer(g, Pcgs(Socle(g)))));
-    a := f(grp);
-    b := Image(hom, gl);
-    cand := Filtered(cand, g -> RepresentativeAction(b, f(g), a) <> fail);
+    a := PRIMGRP_AffinePointStabilizer(grp);
+    cand := Filtered(cand, g ->
+      PRIMGRP_IsConjugateAffine(a, PRIMGRP_AffinePointStabilizer(g)));
   fi;
 
   if Length(cand) > 1 then
