@@ -758,221 +758,219 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
 end );
 
 # local cache for `PrimitiveIdentification':
-PRILD:=0;
-PGICS:=[];
+BindGlobal("PGIdCache", rec( deg := 0, data := [] ));
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,s_quot,b,cs,n,beta,alpha,i,ag,bg,q,gl,hom,nr,c,x,conj;
+local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   dom:=MovedPoints(grp);
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
   fi;
   deg:=Length(dom);
-  # through PRIMGrp, not PRIMGRP[deg]: an entry may be the call that produces
-  # it, and PD[i][2] below would be indexing a function.  The upper range has
-  # always come this way; the lower one now does too.
-  PD:=List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
 
-  if IsNaturalAlternatingGroup(grp) then
-    SetSize(grp, Factorial(deg)/2);
-  elif IsNaturalSymmetricGroup(grp) then
-    SetSize(grp, Factorial(deg));
-  fi;
-
-  # size
-  s:=Size(grp);
-  cand:=Filtered([1..PRIMLENGTHS[deg]],i->PD[i][2]=s);
-
-  #ons
-  if Length(cand)>1 and Length(Set(PD{cand},i->i[4]))>1 then
-    a:=ONanScottType(grp);
-    cand:=Filtered(cand,i->PD[i][4]=a);
-  fi;
-
-  # suborbits
-  if Length(cand)>1 and Length(Set(PD{cand},i->i[5]))>1 then
-    s:=Stabilizer(grp,dom[1]);
-    a:=Collected(OrbitLengths(s,dom{[2..Length(dom)]}));
-    cand:=Filtered(cand,i->Set(PD[i][5])=Set(a));
-  fi;
-
-  # Transitivity
-  if Length(cand)>1 and Length(Set(PD{cand},i->i[6]))>1 then
-    a:=Transitivity(grp,dom);
-    cand:=Filtered(cand,i->PD[i][6]=a);
-  fi;
-
-  if Length(cand)>1 then
-    # now we need to create the groups
-    p:=List(cand,i->PrimitiveGroup(deg,i));
-
-    # in product action case, some tests on the socle quotient.
-    if ONanScottType(grp) = "4c" then
-     #first we just identify its isomorphism type
-      s:= Socle(grp);
-      s_quot:= FactorGroup(grp, s);
-      a:= IdGroup(s_quot);
-      b:= [];
-      for i in [1..Length(cand)] do
-        b[i]:= IdGroup(FactorGroup(p[i], Socle(p[i])));
-      od;
-      s:= Filtered([1..Length(cand)], i->b[i] =a);
-      cand:= cand{s};
-      p:= p{s};
+  # treat alternating and symmetric group: these are uniquely determined by
+  # their size, so it is worth it to ensure we have it already
+  if not HasSize(grp) then
+    if IsNaturalAlternatingGroup(grp) then
+      SetSize(grp, Factorial(deg)/2);
+    elif IsNaturalSymmetricGroup(grp) then
+      SetSize(grp, Factorial(deg));
     fi;
   fi;
 
+  # get information of all primitive groups of the given degree
+  PD := List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
+
+  #
+  # filter by size
+  #
+  s := Size(grp);
+  PD := Filtered(PD, primdata -> primdata[2] = s);
+  if Length(PD)=1 then return PD[1][1]; fi;
+
+  #
+  # filter by ONanScottType if it is not unique
+  #
+  if Length(Set(PD, primdata -> primdata[4])) > 1 then
+    a := ONanScottType(grp);
+    PD := Filtered(PD, primdata -> primdata[4] = a);
+  fi;
+  if Length(PD)=1 then return PD[1][1]; fi;
+
+  #
+  # filter by suborbit lengths
+  #
+  if Length(Set(PD, primdata -> primdata[5])) > 1 then
+    s := Stabilizer(grp, dom[1]);
+    a := Set(Collected(OrbitLengths(s, dom{[2..Length(dom)]})));
+    PD := Filtered(PD, primdata -> Set(primdata[5]) = a);
+  fi;
+  if Length(PD)=1 then return PD[1][1]; fi;
+
+  #
+  # filter by transitivity if it is not unique
+  #
+  if Length(Set(PD, primdata -> primdata[6])) > 1 then
+    a := Transitivity(grp, dom);
+    PD := Filtered(PD, primdata -> primdata[6] = a);
+  fi;
+  if Length(PD)=1 then return PD[1][1]; fi;
+
+  # now we need to create the groups
+  cand := List(PD, primdata -> PrimitiveGroup(deg, primdata[1]));
+
+  # in product action case, some tests on the socle quotient.
+  if ONanScottType(grp) = "4c" then
+    # first we just identify its isomorphism type
+    f := g -> IdGroup(FactorGroup(g, Socle(g)));
+    a := f(grp);
+    cand := Filtered(cand, g -> f(g) = a);
+  fi;
+  if Length(cand) = 1 then return PrimitiveIdentification(cand[1]); fi;
+
+  #
   # AbelianInvariants
-  if Length(cand)>1 then
-    a:= AbelianInvariants(grp);
-    b:= [];
-    for i in [1..Length(cand)] do
-      b[i]:= AbelianInvariants(p[i]);
-    od;
-    s:= Filtered([1..Length(cand)], i->b[i] =a);
-    cand:= cand{s};
-    p:= p{s};
-  fi;
-
-  if Length(cand)>1 then
-    # sylow orbits
-    gl:=Reversed(PrimeDivisors(Size(grp)));
-    while Length(cand)>1 and Length(gl)>0 do
-      s:=SylowSubgroup(grp,gl[1]);
-      a:=Collected(OrbitLengths(s,MovedPoints(grp)));
-      b:=[];
-      for i in [1..Length(cand)] do
-        s:=SylowSubgroup(p[i],gl[1]);
-        b[i]:=Collected(OrbitLengths(s,MovedPoints(p[i])));
-      od;
-      s:=Filtered([1..Length(cand)],i->b[i]=a);
-      cand:=cand{s};
-      p:=p{s};
-      gl:=gl{[2..Length(gl)]};
-    od;
-  fi;
-
+  #
   if Length(cand) > 1 then
-    # Some further tests for the sylow subgroups
+    a := AbelianInvariants(grp);
+    cand := Filtered(cand, g -> AbelianInvariants(g) = a);
+  fi;
+
+  #
+  # sylow orbits
+  #
+  if Length(cand) > 1 then
+    # sylow orbits
+    gl := ShallowCopy(PrimeDivisors(Size(grp)));
+    f := function(g)
+      local s;
+      s := SylowSubgroup(g, p);
+      return Collected(OrbitLengths(s, MovedPoints(g)));
+    end;
+    while Length(cand) > 1 and Length(gl) > 0 do
+      p := Remove(gl);   # largest remaining prime divisor
+      a := f(grp);
+      cand := Filtered(cand, g -> f(g) = a);
+    od;
+  fi;
+
+  #
+  # Some further tests for the sylow subgroups
+  #
+  if Length(cand) > 1 then
     for q in PrimeDivisors(Size(grp)/Size(Socle(grp))) do
       if q=1 then
         q:=2;
       fi;
 
-      ag:=Image(IsomorphismPcGroup(SylowSubgroup(grp,q)));
       # central series
-      a:=List(LowerCentralSeries(ag),Size);
-      b:=[];
-      for i in [1..Length(cand)] do
-        bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-        b[i]:=List(LowerCentralSeries(bg),Size);
-      od;
-      s:=Filtered([1..Length(cand)],i->b[i]=a);
-      cand:=cand{s};
-      p:=p{s};
+      f := function(g)
+        local ag;
+        ag:=Image(IsomorphismPcGroup(SylowSubgroup(g,q)));
+        return List(LowerCentralSeries(ag), Size);
+      end;
+      a := f(grp);
+      cand := Filtered(cand, g -> f(g) = a);
 
-      if Length(cand)>1 then
+      if Length(cand) > 1 then
         # Frattini subgroup
-        a:=Size(FrattiniSubgroup(ag));
-        b:=[];
-        for i in [1..Length(cand)] do
-          bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-          b[i]:=Size(FrattiniSubgroup(bg));
-        od;
-        s:=Filtered([1..Length(cand)],i->b[i]=a);
-        cand:=cand{s};
-        p:=p{s};
+        f := function(g)
+          local ag;
+          ag:=Image(IsomorphismPcGroup(SylowSubgroup(g,q)));
+          return Size(FrattiniSubgroup(ag));
+        end;
+        a := f(grp);
+        cand := Filtered(cand, g -> f(g) = a);
       fi;
 
-      if Length(cand)>1 and Size(ag)<512 then
-        # Isomorphism type of 2-Sylow
-        a:=IdGroup(ag);
-        b:=[];
-        for i in [1..Length(cand)] do
-          bg:=Image(IsomorphismPcGroup(SylowSubgroup(p[i],q)));
-          b[i]:=IdGroup(bg);
-        od;
-        s:=Filtered([1..Length(cand)],i->b[i]=a);
-        cand:=cand{s};
-        p:=p{s};
+      if Length(cand) > 1 and Size(SylowSubgroup(grp,q)) < 512 then
+        # Isomorphism type of Sylow subgroup
+        f := function(g)
+          local ag;
+          ag:=Image(IsomorphismPcGroup(SylowSubgroup(g,q)));
+          return IdGroup(ag);
+        end;
+        a := f(grp);
+        cand := Filtered(cand, g -> f(g) = a);
       fi;
-
     od;
   fi;
 
-  #back for a closer look at the product action groups.
+  # back for a closer look at the product action groups.
   if Length(cand) > 1 and ONanScottType(grp) = "4c" then
-    #just here out of curiosity during testing.
-    #Print("cand =", cand, "\n");
-    #now we construct the action of the socle quotient as a
-    #(necessarily transitive) action on the socle factors.
-    s:= Socle(grp);
-    cs:= CompositionSeries(s);
-    cs:= cs[Length(cs)-1];
-    n:= Normalizer(grp, cs);
-    beta:= FactorCosetAction(grp, n);
-    alpha:= FactorCosetAction(n, ClosureGroup(Centralizer(n, cs), s));
-    a:= TransitiveIdentification(Group(KuKGenerators(grp, beta, alpha)));
-    b:= [];
-    for i in [1..Length(cand)] do
-      s:= Socle(p[i]);
-      cs:= CompositionSeries(s);
-      cs:= cs[Length(cs)-1];
-      n:= Normalizer(p[i], cs);
-      beta:= FactorCosetAction(p[i], n);
-      alpha:= FactorCosetAction(n, ClosureGroup(Centralizer(n, cs), s));
-      b[i]:= TransitiveIdentification(Group(KuKGenerators(p[i], beta, alpha)));
-    od;
-    s:= Filtered([1..Length(cand)], i->b[i]=a);
-    cand:= cand{s};
-    p:= p{s};
+    # construct the action of the socle quotient as a (necessarily transitive)
+    # action on the socle factors.
+    f := function(g)
+      local s, cs, n, beta, alpha;
+      s := Socle(g);
+      cs := CompositionSeries(s);
+      cs := cs[Length(cs)-1];
+      n := Normalizer(g, cs);
+      beta := FactorCosetAction(g, n);
+      alpha := FactorCosetAction(n, ClosureGroup(Centralizer(n, cs), s));
+      return TransitiveIdentification(Group(KuKGenerators(g, beta, alpha)));
+    end;
+    a := f(grp);
+    cand := Filtered(cand, g -> f(g) = a);
   fi;
 
-  if Length(cand)>1 then
-    # Klassen
-    a:=Collected(List(ConjugacyClasses(grp:onlysizes),
-                      i->[CycleStructurePerm(Representative(i)),Size(i)]));
+  #
+  # conjugacy classes
+  #
+  if Length(cand) > 1 then
 
     # use caching
-    if deg<>PRILD then
-      PRILD:=deg;
-      PGICS:=[];
+    if deg <> PGIdCache.deg then
+      PGIdCache.deg := deg;
+      PGIdCache.data := [];
     fi;
 
-    b:=[];
-    for i in [1..Length(cand)] do
-      if not IsBound(PGICS[cand[i]]) then
-        PGICS[cand[i]]:=Collected(List(ConjugacyClasses(p[i]:onlysizes),
-                  j->[CycleStructurePerm(Representative(j)),Size(j)]));
+    # compute the fingerprint, with cache lookup
+    f := function(g)
+      local i, dat;
+      if HasPrimitiveIdentification(g) then
+        # is it in the cache?
+        i := PrimitiveIdentification(g);
+        if IsBound(PGIdCache.data[i]) then
+          return PGIdCache.data[i];
+        fi;
       fi;
-      b[i]:=PGICS[cand[i]];
-    od;
+      dat := ConjugacyClasses(g : onlysizes);
+      dat := List(dat, i -> [CycleStructurePerm(Representative(i)), Size(i)]);
+      dat := Collected(dat);
+      if IsBound(i) then
+        PGIdCache.data[i] := dat;
+      fi;
+      return dat;
+    end;
 
-    s:=Filtered([1..Length(cand)],i->b[i]=a);
-    cand:=cand{s};
-    p:=p{s};
+    a := f(grp);
+    cand := Filtered(cand, g -> f(g) = a);
   fi;
 
-  if Length(cand)>1 and ForAll(p,i->ONanScottType(i)="1")
-     and ONanScottType(grp)="1" then
-    gl:=Factors(NrMovedPoints(grp));
-    gl:=GL(Length(gl),gl[1]);
-    hom:=IsomorphismPermGroup(gl);
-    s:=List(p,i->Subgroup(gl,LinearActionLayer(i,Pcgs(Socle(i)))));
-    b:=Subgroup(gl,LinearActionLayer(grp,Pcgs(Socle(grp))));
-    s:=Filtered([1..Length(cand)],
-        i->RepresentativeAction(Image(hom,gl),Image(hom,s[i]),Image(hom,b))<>fail);
-    cand:=cand{s};
-    p:=p{s};
+  #
+  # affine case
+  #
+  if Length(cand) > 1 and ONanScottType(grp) = "1" then
+    Assert(0, ForAll(cand, g -> ONanScottType(g) = "1"));
+
+    # degree must be a prime power
+    gl := Factors(deg);
+    gl := GL(Length(gl), gl[1]);
+    hom := IsomorphismPermGroup(gl);  # nasty
+
+    # map group by its linear action into GL, and then further via hom
+    f := g -> Image(hom, Subgroup(gl, LinearActionLayer(g, Pcgs(Socle(g)))));
+    a := f(grp);
+    b := Image(hom, gl);
+    cand := Filtered(cand, g -> RepresentativeAction(b, f(g), a) <> fail);
   fi;
 
-  if Length(cand)=1 then
-    return cand[1];
-  else
+  if Length(cand) > 1 then
     Error("Uh-Oh, this should never happen ",cand);
-    return cand[1];
   fi;
+  return PrimitiveIdentification(cand[1]);
 end);
 
 InstallMethod(SimsNo,"via `PrimitiveIdentification'",true,[IsPermGroup],0,
