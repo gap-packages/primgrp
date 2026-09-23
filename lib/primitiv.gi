@@ -1206,6 +1206,23 @@ local g;
   return g;
 end);
 
+# needed by List, which iterates over a copy; the components are either
+# immutable or replaced, never changed in place, so copying them suffices
+InstallMethod(ShallowCopy,"primitive groups iterator",true,
+  [IsPrimGrpIterRep and IsIterator],0,
+function(it)
+local new;
+  new:=Objectify(NewType(IteratorsFamily,
+                         IsIterator and IsPrimGrpIterRep and IsMutable),rec());
+  new!.deg:=it!.deg;
+  new!.degi:=it!.degi;
+  new!.nr:=it!.nr;
+  new!.prop:=it!.prop;
+  new!.gut:=it!.gut;
+  new!.next:=it!.next;
+  return new;
+end);
+
 #############################################################################
 ##
 #F  AllPrimitiveGroups( <fun>, <res>, ... ) . . . . . . . selection function

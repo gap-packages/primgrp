@@ -17,6 +17,7 @@
     restriction from every `Size` and `Order` argument
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
     argument, not just the first one
+  - Fix `ShallowCopy` and `List` for `PrimitiveGroupsIterator`
   - Fix the dimension in the names of PrimitiveGroup(1057,1) and (1057,2)
   - Fix 29 socle types recorded with a rank one too high
   - Fix the corrupted name of PrimitiveGroup(625,657)

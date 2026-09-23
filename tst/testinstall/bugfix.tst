@@ -250,5 +250,21 @@ true
 gap> PRIMGRP_EntryFromDescription(["NoSuchThing"], 6, 1);
 Error, unknown construction "NoSuchThing" for entry 1 of degree 6
 
+# List on an iterator works on a ShallowCopy of it, which must advance
+# independently of the original.
+# See <https://github.com/gap-packages/primgrp/issues/102>
+gap> it := PrimitiveGroupsIterator(NrMovedPoints, 5);;
+gap> NextIterator(it);
+C(5)
+gap> List(it);
+[ D(2*5), AGL(1, 5), A(5), S(5) ]
+gap> copy := ShallowCopy(it);;
+gap> [ NextIterator(copy), NextIterator(copy) ];
+[ D(2*5), AGL(1, 5) ]
+gap> NextIterator(it);
+D(2*5)
+gap> List(PrimitiveGroupsIterator(NrMovedPoints, 5, IsSolvable, false));
+[ A(5), S(5) ]
+
 #
 gap> STOP_TEST("bugfix.tst", 1);
