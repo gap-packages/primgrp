@@ -1,6 +1,6 @@
 # CHANGES to the 'primgrp' GAP package
 
-## unreleased
+## Unreleased
 
   - Ship the primitive groups of degree 4096 to 8191 with the package, so
     they need no separate download; `PrimitiveGroupsAvailable` now returns
