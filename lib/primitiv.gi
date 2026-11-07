@@ -989,7 +989,7 @@ end);
 ##
 #R  IsPrimGrpIterRep
 ##
-DeclareRepresentation("IsPrimGrpIterRep",IsComponentObjectRep,[]);
+DeclareRepresentation("IsPrimGrpIterRep",IsComponentObjectRep);
 
 # function used by the iterator to get the next group or to indicate that
 # finished
