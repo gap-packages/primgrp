@@ -30,6 +30,9 @@
     `PrimitiveIndexIrreducibleSolvableGroup`, and the declarations of
     `MinimalBlockDimension`, `IsPrimitiveMatrixGroup`,
     `IsLinearlyPrimitive` and `DegreeOfMatrixGroup`.
+    Hence require GAP 4.16.1: earlier releases ship `irredsol` 1.4.4 or
+    older, which relies on primgrp to declare `MinimalBlockDimension` and
+    `IsLinearlyPrimitive` and fails to load without them.
     The `irredsol` package covers the same groups over a wider range of
     dimensions and fields; use it instead:
 
