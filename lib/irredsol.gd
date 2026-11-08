@@ -1,10 +1,11 @@
 #############################################################################
 ##
-#W  irredsol.gd                 GAP group library                  Mark Short
-#W                                                           Burkhard Höfling
+##  This file is part of the PrimGrp package for GAP.
 ##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
 ##
-#Y  Copyright (C) 1993, Murdoch University, Perth, Australia
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 ##  This file contains the  functions and  data for the  irreducible solvable
 ##  matrix group library.  It  contains  exactly one member  for each of  the

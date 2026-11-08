@@ -1,14 +1,11 @@
 #############################################################################
 ##
-#A  cohorts.grp      GAP primitive groups library           Heiko Theißen
-#A                                                          John Dixon
-#A                                                          Brian Mortimer
-#A                                                          Charles Sims
-#A                                                          Alexander Hulpke
-#A                                                          Colva Roney-Dougal
+##  This file is part of the PrimGrp package for GAP.
 ##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
 ##
-#Y  Copyright (C)  2000, School Math.&Comp. Sci., University of St Andrews
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 ##  This file contains the routines for the primitive groups library
 ##
