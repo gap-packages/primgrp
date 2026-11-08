@@ -1,6 +1,11 @@
 #############################################################################
 ##
-##  dev/convert-extended.g
+##  This file is part of the PrimGrp package for GAP.
+##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
+##
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 ##  Describe the entries of degree 4096 to 8191 that dev/import-extended.g
 ##  left as generators.

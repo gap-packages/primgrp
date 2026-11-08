@@ -1,6 +1,11 @@
 #############################################################################
 ##
-#W    init.g                 The PrimGrp package
+##  This file is part of the PrimGrp package for GAP.
+##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
+##
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 
 #############################################################################
