@@ -80,9 +80,10 @@ BindGlobal("PRIMGRP_CoordinateFibres", function(G, m, k, e)
 
   # G/Soc(G) has order dividing e, so an e-th power lies in the socle; and
   # the socle is the normal closure of any of its non-trivial elements
-  repeat
-    x := PseudoRandom(G)^e;
-  until not IsOne(x);
+  x := PseudoRandom(G)^e;
+  if IsOne(x) then
+    return fail;
+  fi;
   S := Group(List([1..12], i -> x^PseudoRandom(G)));
 
   # an element of prime order has a fair chance to lie in a single factor
@@ -274,6 +275,41 @@ BindGlobal("PRIMGRP_ConjugatingPermutation", function(T1, T2)
       od;
       return PermList(c);
     fi;
+  od;
+  return fail;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_ProductActionSize( <G>, <PD> )
+##
+##  The order of <G>, computed in its action on the m*k pairs, if <G> is of
+##  type 4c on m^k points; otherwise, or if the random search in
+##  PRIMGRP_WreathElements misses, fail.  <PD> holds the library entries of the
+##  degree of <G>.  Only socles Alt(m)^k are tried, the case where Size on m^k
+##  points is slow.
+##
+##  The action on the pairs is faithful, and PRIMGRP_WreathElements verifies
+##  that it is the action of <G>, so the order is exact.
+##
+BindGlobal("PRIMGRP_ProductActionSize", function(G, PD)
+  local deg, k, m, e, i, els;
+  deg := NrMovedPoints(G);
+  PD := Filtered(PD, primdata -> primdata[4] = "4c" and primdata[8][1] = "A"
+                       and primdata[8][2]^primdata[8][3] = deg);
+  for k in Set(PD, primdata -> primdata[8][3]) do
+    m := RootInt(deg, k);
+
+    # a multiple of the index of the socle Alt(m)^k
+    e := Lcm(List(Filtered(PD, primdata -> primdata[8][3] = k),
+                  primdata -> primdata[2] / (Factorial(m)/2)^k));
+
+    for i in [1..5] do
+      els := PRIMGRP_WreathElements(G, m, k, e);
+      if els <> fail then
+        return Size(Group(List(els, x -> PRIMGRP_WreathToPerm(m, k, x))));
+      fi;
+    od;
   od;
   return fail;
 end);
@@ -581,6 +617,14 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
 
   # get information of all primitive groups of the given degree
   PD := List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
+
+  # a solvable group has its order from IsSolvableGroup above
+  if not HasSize(grp) and not IsSolvableGroup(grp) then
+    s := PRIMGRP_ProductActionSize(grp, PD);
+    if s <> fail then
+      SetSize(grp, s);
+    fi;
+  fi;
 
   #
   # filter by size
