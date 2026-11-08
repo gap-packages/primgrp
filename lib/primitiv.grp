@@ -1,12 +1,11 @@
 #############################################################################
 ##
-#A  primitiv.grp              GAP group library             Heiko Theißen
-#A                                                          John Dixon
-#A                                                          Brian Mortimer
-#A                                                          Charles Sims
+##  This file is part of the PrimGrp package for GAP.
 ##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
 ##
-#Y  Copyright (C) 2000, School of Math.&Comp. Sci. University of St Andrews
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 ##  This file contains part of the primitive groups library
 ##

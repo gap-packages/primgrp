@@ -1,9 +1,11 @@
 #############################################################################
 ##
-#W  constructions.gi  GAP primitive groups library          Alexander Hulpke
+##  This file is part of the PrimGrp package for GAP.
 ##
+##  Copyright of PrimGrp belongs to its developers; see the manual,
+##  PackageInfo.g and the git log for details.
 ##
-#Y  Copyright (C)  1999, School Math.&Comp. Sci., University of St Andrews
+##  SPDX-License-Identifier: GPL-2.0-or-later
 ##
 ##  The constructions a data file may name in place of an entry.
 ##
