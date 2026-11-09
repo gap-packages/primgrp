@@ -17,6 +17,9 @@ InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
 local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   dom:=MovedPoints(grp);
+  if Length(dom) < 2 then
+    Error("PrimitiveIdentification: <G> must move at least two points");
+  fi;
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
   fi;
@@ -233,7 +236,7 @@ local dom;
   if NrMovedPoints(grp) > 50 then
     Error("SimsNo is defined only for primitive groups of degree <= 50");
   fi;
-  if not IsTransitive(grp,dom) and IsPrimitive(grp,dom) then
+  if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
   fi;
   return SimsNo(PrimitiveGroup(Length(dom),PrimitiveIdentification(grp)));
