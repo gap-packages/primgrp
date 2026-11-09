@@ -982,8 +982,14 @@ local dom,deg,PD,s,cand,a,p,f,q,gl;
   if Length(cand) > 1 and ONanScottType(grp) = "1" then
     Assert(0, ForAll(cand, g -> ONanScottType(g) = "1"));
     a := PRIMGRP_AffinePointStabilizer(grp);
-    cand := Filtered(cand, g ->
+
+    # grp is conjugate to one of cand, so the last needs no test
+    p := PositionProperty(cand{[1..Length(cand)-1]}, g ->
       PRIMGRP_IsConjugateAffine(a, PRIMGRP_AffinePointStabilizer(g)));
+    if p = fail then
+      p := Length(cand);
+    fi;
+    cand := [ cand[p] ];
   fi;
 
   if Length(cand) > 1 then
