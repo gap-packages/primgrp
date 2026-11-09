@@ -50,8 +50,8 @@ end);
 ##
 ##  <a> and <b> are the records PRIMGRP_AffinePointStabilizer returns for the
 ##  two groups.  They are arguments so that a caller comparing one group with
-##  many computes its record, and the automorphism group stored in a.perm,
-##  once.
+##  many computes its record, and the automorphism group and character table
+##  stored in a.perm, once.
 ##
 BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   local iso, gens, module, m, aut, inn;
@@ -59,6 +59,14 @@ BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   # cyclic groups of prime order
   if IsTrivial(a.perm) then
     return IsTrivial(b.perm);
+  fi;
+
+  # IsomorphismGroups can exhaust memory on non-isomorphic solvable groups
+  # (64 GB in GAP 4.16 for two of order 2^13 in degree 6561); their
+  # character tables often tell them apart in a second
+  if IsSolvableGroup(a.perm) and TransformingPermutationsCharacterTables(
+       CharacterTable(a.perm), CharacterTable(b.perm)) = fail then
+    return false;
   fi;
 
   iso := IsomorphismGroups(a.perm, b.perm);

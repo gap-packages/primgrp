@@ -6,6 +6,14 @@ gap> Filtered([2..512], deg -> PRIMGRP_IdData(deg) <>
 >      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
 [  ]
 
+# Affine groups whose point stabilisers have order 2^13 and agree in every
+# invariant tried short of the character table; IsomorphismGroups on them
+# exhausted 64 GB in GAP 4.16
+gap> x := PermList(Reversed([1..6561]));;
+gap> List([6048, 6131], i -> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(6561, i)), y -> y^x))));
+[ 6048, 6131 ]
+
 # Size of D(2*8191) by Schreier-Sims takes minutes
 gap> x := PermList(Reversed([1..8191]));;
 gap> PrimitiveIdentification(
