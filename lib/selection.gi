@@ -54,8 +54,21 @@ local arglis,l,deg,pos,mayBeIncomplete,pp,p,requestedDegrees,requestedSizes,
   fi;
   l:=Length(arglis)/2;
   if not IsInt(l) then
-    Error("wrong arguments");
+    Error("the arguments must be pairs of a function and a value");
   fi;
+  for i in [1..l] do
+    a:=arglis[2*i-1];
+    b:=arglis[2*i];
+    if not IsFunction(a) then
+      Error("argument ",2*i-1," must be a function");
+    fi;
+    # degree and order values are used as integers below
+    if a in [NrMovedPoints,Size,Order]
+       and not (IsInt(b) or IsFunction(b)
+                or (IsList(b) and (IsRange(b) or ForAll(b,IsInt)))) then
+      Error("the value for ",NameFunction(a)," must be integers or a function");
+    fi;
+  od;
   deg:=PRIMRANGE;
   # do we ask for the degree?
   pos:=Filtered([1..l],i->arglis[2*i-1]=NrMovedPoints);

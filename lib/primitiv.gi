@@ -61,10 +61,18 @@ BindGlobal("PRIMGrp",function(deg,nr)
   return l;
 end);
 
-InstallGlobalFunction(NrPrimitiveGroups, function(deg)
-  if deg > 8191 then
-    Error("Only groups of degree at most 8191 are known!");
+# Refuse a degree outside the library, naming the function the user called.
+BindGlobal("PRIMGRP_CheckDegree", function(fname, deg)
+  if not IsPosInt(deg) then
+    Error(fname, ": <deg> must be a positive integer");
   fi;
+  if deg > Maximum(PRIMRANGE) then
+    Error(fname, ": <deg> must be at most ", Maximum(PRIMRANGE));
+  fi;
+end);
+
+InstallGlobalFunction(NrPrimitiveGroups, function(deg)
+  PRIMGRP_CheckDegree("NrPrimitiveGroups", deg);
   if not IsBound(PRIMLENGTHS[deg]) then
     PrimGrpLoad(deg);
   fi;
@@ -76,7 +84,17 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
 end);
 
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k;
+local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k,nr;
+
+  PRIMGRP_CheckDegree("PrimitiveGroup", deg);
+  if not IsPosInt(num) then
+    Error("PrimitiveGroup: <nr> must be a positive integer");
+  fi;
+  nr:=NrPrimitiveGroups(deg);
+  if num > nr then
+    Error("PrimitiveGroup: there are only ",nr,
+          " primitive groups of degree ",deg);
+  fi;
 
   l:=PRIMGrp(deg,num);
 
