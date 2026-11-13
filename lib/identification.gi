@@ -15,8 +15,13 @@
 #F  PRIMGRP_AffinePointStabilizer( <G> )
 ##
 ##  For a primitive group <G> of affine type, a record describing a point
-##  stabiliser: a faithful permutation representation of small degree, and
-##  what is needed to write its elements as matrices over the socle.
+##  stabiliser: a faithful representation `group', a pc group if it is
+##  solvable and a permutation group of small degree otherwise, and what is
+##  needed to write its elements as matrices over the socle.
+##
+##  The smallest orbit can be regular: for degree 13^3, the permutation
+##  representation of a stabiliser of order 2196 has degree 2196, and its
+##  character table took 227 s against 1.6 s for the pc group.
 ##
 BindGlobal("PRIMGRP_AffinePointStabilizer", function(G)
   local dom, stab, orbs, hom;
@@ -28,8 +33,15 @@ BindGlobal("PRIMGRP_AffinePointStabilizer", function(G)
   orbs := Orbits(stab, dom{[2..Length(dom)]});
   hom := ActionHomomorphism(stab, orbs[PositionMinimum(orbs, Length)],
                             "surjective");
+  if IsSolvableGroup(Image(hom)) then
+    hom := hom * IsomorphismPcGroup(Image(hom));
+  fi;
 
-  return rec( stab := stab, hom := hom, perm := Image(hom),
+  # Socle is faster once solvability is known: 90 ms against 460 ms in
+  # degree 6859
+  IsSolvableGroup(G);
+
+  return rec( stab := stab, hom := hom, group := Image(hom),
               pcgs := Pcgs(Socle(G)),
               field := GF(Factors(Length(dom))[1]) );
 end);
@@ -50,18 +62,18 @@ end);
 ##
 ##  <a> and <b> are the records PRIMGRP_AffinePointStabilizer returns for the
 ##  two groups.  They are arguments so that a caller comparing one group with
-##  many computes its record, and the automorphism group stored in a.perm,
+##  many computes its record, and the automorphism group stored in a.group,
 ##  once.
 ##
 BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   local iso, gens, module, m, aut, inn;
 
   # cyclic groups of prime order
-  if IsTrivial(a.perm) then
-    return IsTrivial(b.perm);
+  if IsTrivial(a.group) then
+    return IsTrivial(b.group);
   fi;
 
-  iso := IsomorphismGroups(a.perm, b.perm);
+  iso := IsomorphismGroups(a.group, b.group);
   if iso = fail then
     return false;
   fi;
@@ -72,9 +84,9 @@ BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
     return GModuleByMats(LinearActionLayer(r.stab, elms, r.pcgs), r.field);
   end;
 
-  gens := GeneratorsOfGroup(a.perm);
+  gens := GeneratorsOfGroup(a.group);
   m := module(a, gens);
-  aut := AutomorphismGroup(a.perm);
+  aut := AutomorphismGroup(a.group);
   inn := InnerAutomorphismsAutomorphismGroup(aut);
   return ForAny(RightTransversal(aut, inn), alpha ->
     MTX.IsomorphismModules(m,
@@ -89,9 +101,9 @@ end);
 ##  of that type and the degree and order of <G>.  Return the entry to which
 ##  <G> is conjugate in the symmetric group.
 ##
-##  Everything is computed on the point stabilisers, in their permutation
-##  representations of small degree.  SylowSubgroup of a non-solvable group of
-##  degree 6561 took 8 s or 488 s, depending on the random state.
+##  Everything is computed on the point stabilisers, in the representations
+##  PRIMGRP_AffinePointStabilizer gives.  SylowSubgroup of a non-solvable group
+##  of degree 6561 took 8 s or 488 s, depending on the random state.
 ##
 BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
   local deg, recs, f, a, p;
@@ -101,23 +113,37 @@ BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
 
   # invariants under conjugacy of the stabiliser in Sym(deg); for a
   # non-trivial one, the abelian invariants are those of the whole group.
-  # The last is one of the character table under permutations of rows and
-  # columns, for solvable stabilisers.
+  # The last is one of the character table of a solvable stabiliser under
+  # permutations of rows and columns: each class with its power classes and
+  # the values on it, each character with its values on these classes.
   for f in [
-    r -> AbelianInvariants(r.perm),
-    r -> Collected(List(ConjugacyClasses(r.perm), c -> [Size(c),
+    r -> AbelianInvariants(r.group),
+    r -> Collected(List(ConjugacyClasses(r.group), c -> [Size(c),
            CycleStructurePerm(PreImagesRepresentative(r.hom, Representative(c)))])),
     function(r)
-      local tbl, irr;
-      if not IsSolvableGroup(r.perm) then
+      local tbl, irr, vals, ord, cen, pow, cls, set;
+      if not IsPcGroup(r.group) then
         return fail;
       fi;
-      tbl := CharacterTable(r.perm);
+      tbl := CharacterTable(r.group);
       irr := List(Irr(tbl), ValuesOfClassFunction);
-      return [Collected(List([1..Length(irr)], j ->
-                [OrdersClassRepresentatives(tbl)[j], SizesCentralizers(tbl)[j],
-                 SortedList(List(irr, x -> x[j]))])),
-              Collected(List(irr, SortedList))];
+
+      # values replaced by their positions among all values, since sorting
+      # lists of cyclotomics took 80 s for a group of order 3429
+      vals := Set(Concatenation(irr));
+      irr := List(irr, x -> List(x, v -> PositionSorted(vals, v)));
+
+      ord := OrdersClassRepresentatives(tbl);
+      cen := SizesCentralizers(tbl);
+      pow := List(PrimeDivisors(Size(tbl)), q -> PowerMap(tbl, q));
+      cls := List([1..Length(irr)], j -> [ord[j], cen[j],
+               List(pow, m -> [ord[m[j]], cen[m[j]]]),
+               Collected(List(irr, x -> [x[1], x[j]]))]);
+      set := Set(cls);
+      cls := List(cls, c -> PositionSorted(set, c));
+      return [vals, set, Collected(cls),
+              Collected(List(irr, x -> Collected(List([1..Length(irr)],
+                                                      j -> [cls[j], x[j]]))))];
     end
   ] do
     if Length(PD) = 1 then
@@ -132,26 +158,9 @@ BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
     recs := recs{p};
   od;
 
-  # IsomorphismGroups can exhaust memory on non-isomorphic solvable groups
-  # (64 GB in GAP 4.16 for two of order 2^13 in degree 6561), and takes 91 s
-  # for isomorphic ones of order 2^11.  Comparing character tables rules out
-  # what it can in a second, but takes 54 s on equivalent tables of order
-  # 3200, so stop once one candidate is left.
-  if Length(PD) > 1 and IsSolvableGroup(a.perm) then
-    PD := ShallowCopy(PD);
-    p := 1;
-    while Length(PD) > 1 and p <= Length(PD) do
-      if TransformingPermutationsCharacterTables(CharacterTable(a.perm),
-           CharacterTable(recs[p].perm)) = fail then
-        Remove(PD, p);
-        Remove(recs, p);
-      else
-        p := p + 1;
-      fi;
-    od;
-  fi;
-
-  # G is conjugate to one of PD, so the last needs no test
+  # G is conjugate to one of PD, so the last needs no test.  IsomorphismGroups
+  # takes 40 s on the stabilisers of order 2^13 of 6561 #6048 and #6131,
+  # which the invariants above tell apart.
   p := PositionProperty(recs{[1..Length(recs)-1]}, r ->
     PRIMGRP_IsConjugateAffine(a, r));
   if p = fail then
