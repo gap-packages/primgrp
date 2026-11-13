@@ -50,8 +50,8 @@ end);
 ##
 ##  <a> and <b> are the records PRIMGRP_AffinePointStabilizer returns for the
 ##  two groups.  They are arguments so that a caller comparing one group with
-##  many computes its record, and the automorphism group and character table
-##  stored in a.perm, once.
+##  many computes its record, and the automorphism group stored in a.perm,
+##  once.
 ##
 BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   local iso, gens, module, m, aut, inn;
@@ -59,14 +59,6 @@ BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   # cyclic groups of prime order
   if IsTrivial(a.perm) then
     return IsTrivial(b.perm);
-  fi;
-
-  # IsomorphismGroups can exhaust memory on non-isomorphic solvable groups
-  # (64 GB in GAP 4.16 for two of order 2^13 in degree 6561); their
-  # character tables often tell them apart in a second
-  if IsSolvableGroup(a.perm) and TransformingPermutationsCharacterTables(
-       CharacterTable(a.perm), CharacterTable(b.perm)) = fail then
-    return false;
   fi;
 
   iso := IsomorphismGroups(a.perm, b.perm);
@@ -87,6 +79,85 @@ BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
   return ForAny(RightTransversal(aut, inn), alpha ->
     MTX.IsomorphismModules(m,
       module(b, List(gens, x -> Image(iso, Image(alpha, x))))) <> fail);
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IdentifyAffine( <G>, <PD> )
+##
+##  <G> is a primitive group of affine type and <PD> a list of library entries
+##  of that type and the degree and order of <G>.  Return the entry to which
+##  <G> is conjugate in the symmetric group.
+##
+##  Everything is computed on the point stabilisers, in their permutation
+##  representations of small degree.  SylowSubgroup of a non-solvable group of
+##  degree 6561 took 8 s or 488 s, depending on the random state.
+##
+BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
+  local deg, recs, f, a, p;
+  deg := NrMovedPoints(G);
+  recs := List(PD, primdata ->
+    PRIMGRP_AffinePointStabilizer(PrimitiveGroup(deg, primdata[1])));
+
+  # invariants under conjugacy of the stabiliser in Sym(deg); for a
+  # non-trivial one, the abelian invariants are those of the whole group.
+  # The last is one of the character table under permutations of rows and
+  # columns, for solvable stabilisers.
+  for f in [
+    r -> AbelianInvariants(r.perm),
+    r -> Collected(List(ConjugacyClasses(r.perm), c -> [Size(c),
+           CycleStructurePerm(PreImagesRepresentative(r.hom, Representative(c)))])),
+    function(r)
+      local tbl, irr;
+      if not IsSolvableGroup(r.perm) then
+        return fail;
+      fi;
+      tbl := CharacterTable(r.perm);
+      irr := List(Irr(tbl), ValuesOfClassFunction);
+      return [Collected(List([1..Length(irr)], j ->
+                [OrdersClassRepresentatives(tbl)[j], SizesCentralizers(tbl)[j],
+                 SortedList(List(irr, x -> x[j]))])),
+              Collected(List(irr, SortedList))];
+    end
+  ] do
+    if Length(PD) = 1 then
+      return PD[1];
+    fi;
+    if not IsBound(a) then
+      a := PRIMGRP_AffinePointStabilizer(G);
+    fi;
+    p := f(a);
+    p := Filtered([1..Length(PD)], i -> f(recs[i]) = p);
+    PD := PD{p};
+    recs := recs{p};
+  od;
+
+  # IsomorphismGroups can exhaust memory on non-isomorphic solvable groups
+  # (64 GB in GAP 4.16 for two of order 2^13 in degree 6561), and takes 91 s
+  # for isomorphic ones of order 2^11.  Comparing character tables rules out
+  # what it can in a second, but takes 54 s on equivalent tables of order
+  # 3200, so stop once one candidate is left.
+  if Length(PD) > 1 and IsSolvableGroup(a.perm) then
+    PD := ShallowCopy(PD);
+    p := 1;
+    while Length(PD) > 1 and p <= Length(PD) do
+      if TransformingPermutationsCharacterTables(CharacterTable(a.perm),
+           CharacterTable(recs[p].perm)) = fail then
+        Remove(PD, p);
+        Remove(recs, p);
+      else
+        p := p + 1;
+      fi;
+    od;
+  fi;
+
+  # G is conjugate to one of PD, so the last needs no test
+  p := PositionProperty(recs{[1..Length(recs)-1]}, r ->
+    PRIMGRP_IsConjugateAffine(a, r));
+  if p = fail then
+    p := Length(PD);
+  fi;
+  return PD[p];
 end);
 
 #############################################################################
@@ -869,6 +940,13 @@ local dom,deg,PD,s,cand,a,p,f,q,gl;
   if Length(PD)=1 then return PD[1][1]; fi;
 
   #
+  # affine: decided outright, by the point stabilisers
+  #
+  if PD[1][4] = "1" then
+    return PRIMGRP_IdentifyAffine(grp, PD)[1];
+  fi;
+
+  #
   # product action: decided outright, on m*k points instead of m^k
   #
   if PD[1][4] = "4c" then
@@ -982,22 +1060,6 @@ local dom,deg,PD,s,cand,a,p,f,q,gl;
 
     a := f(grp);
     cand := Filtered(cand, g -> f(g) = a);
-  fi;
-
-  #
-  # affine case
-  #
-  if Length(cand) > 1 and ONanScottType(grp) = "1" then
-    Assert(0, ForAll(cand, g -> ONanScottType(g) = "1"));
-    a := PRIMGRP_AffinePointStabilizer(grp);
-
-    # grp is conjugate to one of cand, so the last needs no test
-    p := PositionProperty(cand{[1..Length(cand)-1]}, g ->
-      PRIMGRP_IsConjugateAffine(a, PRIMGRP_AffinePointStabilizer(g)));
-    if p = fail then
-      p := Length(cand);
-    fi;
-    cand := [ cand[p] ];
   fi;
 
   if Length(cand) > 1 then

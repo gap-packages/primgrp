@@ -38,4 +38,10 @@ gap> x := PermList(Reversed([1..8128]));;
 gap> PrimitiveIdentification(
 >      Group(List(GeneratorsOfGroup(PrimitiveGroup(8128, 9)), y -> y^x)));
 9
+
+# solvable point stabilisers of order 3200 with equivalent character tables
+gap> x := PermList(Reversed([1..6561]));;
+gap> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(6561, 4656)), y -> y^x)));
+4656
 gap> STOP_TEST("primid.tst", 1);
