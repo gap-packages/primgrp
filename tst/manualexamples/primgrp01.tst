@@ -32,7 +32,7 @@ gap> g:=PrimitiveGroup(25,2);
 gap> SimsNo(g);
 3
 
-# doc/prim.xml:70-78
+# doc/prim.xml:72-80
 gap> COHORTS_PRIMITIVE_GROUPS[49];
 [ [ rec( parameter := 7, series := "Z", width := 2 ), 
       [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
@@ -40,6 +40,11 @@ gap> COHORTS_PRIMITIVE_GROUPS[49];
   [ rec( parameter := [ 2, 7 ], series := "L", width := 2 ), [ 34 ] ], 
   [ rec( parameter := 7, series := "A", width := 2 ), [ 35, 36, 37, 38 ] ], 
   [ rec( parameter := 49, series := "A", width := 1 ), [ 39, 40 ] ] ]
+
+# doc/prim.xml:87-91
+gap> COHORTS_PRIMITIVE_GROUPS[63]{[1,2]};
+[ [ rec( parameter := [ 2, 3 ], series := "2A", width := 1 ), [ 1, 2 ] ], 
+  [ rec( parameter := [ 2, 3 ], series := "2A", width := 1 ), [ 3, 4 ] ] ]
 
 #
 gap> STOP_TEST("primgrp01.tst", 1);
