@@ -318,6 +318,102 @@ end);
 
 #############################################################################
 ##
+#F  PRIMGRP_PairActionSize( <G>, <PD> )
+##
+##  The order of <G>, computed in its action on m stars, if <G> acts like a
+##  group with socle Alt(m) on the 2-subsets of [ 1 .. m ]; otherwise, or if
+##  the random search misses, fail.  <PD> holds the library entries of the
+##  degree of <G>.  Size on the 2-subsets takes 50 s for Sym(111).
+##
+##  The star of i is the set of the m-1 pairs containing i.  If <G> permutes m
+##  sets so that every point lies in exactly two and no two points in the same
+##  two, then a point is the intersection of its two sets, so the action on
+##  the sets is faithful and the order is exact.
+##
+BindGlobal("PRIMGRP_PairActionSize", function(G, PD)
+  local dom, deg, m, gens, a, sv, queue, j, i, x, rep, H, delta, star, O, in2,
+        try;
+  dom := MovedPoints(G);
+  deg := Length(dom);
+  PD := First(PD, primdata -> primdata[4] = "2" and primdata[8][1] = "A"
+                     and Binomial(primdata[8][2], 2) = deg);
+  if PD = fail then
+    return fail;
+  fi;
+  m := PD[8][2];
+
+  # Schreier vector of the orbit of a: sv[x] is the generator that reached x
+  gens := GeneratorsOfGroup(G);
+  a := dom[1];
+  sv := [];
+  sv[a] := 0;
+  queue := [a];
+  for j in queue do
+    for i in [1..Length(gens)] do
+      x := j^gens[i];
+      if not IsBound(sv[x]) then
+        sv[x] := i;
+        Add(queue, x);
+      fi;
+    od;
+  od;
+
+  # an element mapping a to x
+  rep := function(x)
+    local u;
+    u := ();
+    while x <> a do
+      u := gens[sv[x]] * u;
+      x := x / gens[sv[x]];
+    od;
+    return u;
+  end;
+
+  for try in [1..3] do
+    # random elements of the stabiliser of a = {i, j}, which has the orbit
+    # delta of pairs that meet {i, j} in one point; the pairs containing i
+    # form a block of size m-2 in it
+    H := Group(List([1..10], k -> PseudoRandom(G)), ());
+    H := Group(List(GeneratorsOfGroup(H), g -> g / rep(a^g)), ());
+    delta := First(Orbits(H, dom), o -> Length(o) = 2*(m-2));
+    if delta = fail then
+      continue;
+    fi;
+    star := First(List(delta{[2..Minimum(4, Length(delta))]},
+                       x -> Blocks(H, delta, [delta[1], x])[1]),
+                  b -> Length(b) = m-2);
+    if star = fail then
+      continue;
+    fi;
+
+    O := Orbit(G, Set(Concatenation([a], star)), OnSets);
+    if Length(O) <> m then
+      continue;
+    fi;
+    in2 := [];
+    for x in dom do
+      in2[x] := [];
+    od;
+    for i in [1..m] do
+      for x in O[i] do
+        Add(in2[x], i);
+      od;
+    od;
+    in2 := in2{dom};
+    if ForAll(in2, l -> Length(l) = 2) and Length(Set(in2)) = deg then
+      # Size alone takes 11 s for Alt(128); the giant tests set it
+      H := Action(G, O, OnSets);
+      if not IsNaturalAlternatingGroup(H) then
+        IsNaturalSymmetricGroup(H);
+      fi;
+      return Size(H);
+    fi;
+  od;
+  return fail;
+end);
+
+#############################################################################
+##
 #F  PRIMGRP_IdentifyProductAction( <G>, <PD> )
 ##
 ##  <G> is a primitive group of type 4c and <PD> a list of library entries of
@@ -609,9 +705,13 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   # for D(2*8191), inside the tests for Alt(n) and Sym(n) below, and 60 to
   # 120 s for conjugates of 5329 #280, with socle Alt(73)^2.  A solvable group
   # gets its order from the pcgs IsSolvableGroup finds, which costs at most
-  # 55 ms on the others, and a product action from its action on m*k points.
+  # 55 ms on the others, a product action from its action on m*k points, and
+  # a 2-subset action from that on m points.
   if not HasSize(grp) and not IsSolvableGroup(grp) then
     s := PRIMGRP_ProductActionSize(grp, PD);
+    if s = fail then
+      s := PRIMGRP_PairActionSize(grp, PD);
+    fi;
     if s <> fail then
       SetSize(grp, s);
     fi;
