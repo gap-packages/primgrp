@@ -83,8 +83,24 @@ InstallGlobalFunction(PrimitiveGroupsAvailable,function(deg)
   return deg in PRIMRANGE;
 end);
 
+#############################################################################
+##
+#V  PRIMGRP_GENCACHE . . . . . . . the generators PrimitiveGroup has built
+##
+##  A constructor is dear next to reading permutations, and PrimitiveGroup is
+##  called once per group per question asked about it.  So what it built is
+##  remembered here, by degree and number, and a second call rebuilds the group
+##  from bare generators instead of running the construction again.
+##
+##  The natural alternating and symmetric groups are left out.  They cost
+##  microseconds to build, and a group rebuilt from bare generators has lost
+##  IsNaturalAlternatingGroup, which then costs milliseconds to recompute -- a
+##  bad trade on a third of the library.
+##
+BindGlobal("PRIMGRP_GENCACHE", []);
+
 InstallGlobalFunction( PrimitiveGroup, function(deg,num)
-local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k,nr;
+local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k,nr,gens;
 
   PRIMGRP_CheckDegree("PrimitiveGroup", deg);
   if not IsPosInt(num) then
@@ -98,8 +114,15 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k,nr;
 
   l:=PRIMGrp(deg,num);
 
+  gens:=fail;
+  if IsBound(PRIMGRP_GENCACHE[deg]) and IsBound(PRIMGRP_GENCACHE[deg][num]) then
+    gens:=PRIMGRP_GENCACHE[deg][num];
+  fi;
+
+  if gens <> fail then
+    g:=GroupByGenerators(gens, ());
   # special case: Symmetric and Alternating Group
-  if l[9]="Alt" then
+  elif l[9]="Alt" then
     g:=AlternatingGroup(deg);
   elif l[9]="Sym" then
     g:=SymmetricGroup(deg);
@@ -145,6 +168,16 @@ local l,g,fac,mats,perms,v,t,filename,strm,r,dim,q,k,nr;
   else
     # general case: generators given as permutations
     g:= GroupByGenerators( l[9], () );
+  fi;
+
+  # Remember what was built, unless it was cheap to build and dear to rebuild.
+  # The name is not kept with it: it comes from field 7 below, whatever built
+  # the group.
+  if gens = fail and not l[9] in ["Alt","Sym"] then
+    if not IsBound(PRIMGRP_GENCACHE[deg]) then
+      PRIMGRP_GENCACHE[deg]:=[];
+    fi;
+    PRIMGRP_GENCACHE[deg][num]:=GeneratorsOfGroup(g);
   fi;
 
   # now use information from the PRIMGRP entry to prop up the group
