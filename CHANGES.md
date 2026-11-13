@@ -9,6 +9,14 @@
     in the symmetric group of the group with that number in the separately
     distributed data set; the numbering is unchanged, and 8869 groups that
     had no name now have one
+  - For 1444 groups of degree below 4096, `PrimitiveGroup(n, nr)` returns
+    other generators than in 4.0.3; the numbering is unchanged.  729 of
+    them generate the same group as before, the other 715 a conjugate of
+    it in the symmetric group.  Affected are the groups now stored in
+    compact form: product actions, actions on k-subsets and k-subspaces,
+    and projective groups on points.  Code and tests that rely on
+    particular generators or points, as for PrimitiveGroup(36,16), need
+    adjusting
   - Add Max Horn as a maintainer
   - Many improvements made in the manual
   - Add `IsAlmostSimpleGroup` to the properties for which
