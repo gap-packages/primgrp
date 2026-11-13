@@ -304,7 +304,9 @@ BindGlobal("PRIMGRP_ProductActionSize", function(G, PD)
     e := Lcm(List(Filtered(PD, primdata -> primdata[8][3] = k),
                   primdata -> primdata[2] / (Factorial(m)/2)^k));
 
-    for i in [1..5] do
+    # a try costs 10 ms and succeeds in a quarter to a half of the cases for
+    # Alt(m)^2, m = 68..89; Size on the m^k points takes minutes
+    for i in [1..50] do
       els := PRIMGRP_WreathElements(G, m, k, e);
       if els <> fail then
         return Size(Group(List(els, x -> PRIMGRP_WreathToPerm(m, k, x))));
@@ -600,10 +602,22 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
     return First([1..NrPrimitiveGroups(deg)], i -> PRIMGrp(deg, i)[2] = s);
   fi;
 
-  # For other groups the test below ends in Size, whose Schreier-Sims
-  # verification takes 143 s for D(2*8191); a solvable group gets it from a
-  # pcgs in 0.1 s instead, and IsSolvableGroup costs at most 55 ms otherwise.
+  # get information of all primitive groups of the given degree
+  PD := List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
+
+  # Size by Schreier-Sims takes minutes for some groups of large degree: 143 s
+  # for D(2*8191), inside the tests for Alt(n) and Sym(n) below, and 60 to
+  # 120 s for conjugates of 5329 #280, with socle Alt(73)^2.  A solvable group
+  # gets its order from the pcgs IsSolvableGroup finds, which costs at most
+  # 55 ms on the others, and a product action from its action on m*k points.
   if not HasSize(grp) and not IsSolvableGroup(grp) then
+    s := PRIMGRP_ProductActionSize(grp, PD);
+    if s <> fail then
+      SetSize(grp, s);
+    fi;
+  fi;
+
+  if not HasSize(grp) then
     if IsNaturalAlternatingGroup(grp) then
       SetSize(grp, Factorial(deg)/2);
     elif IsNaturalSymmetricGroup(grp) then
@@ -613,17 +627,6 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
 
   if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
     Error("Group must operate primitively");
-  fi;
-
-  # get information of all primitive groups of the given degree
-  PD := List([1 .. NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
-
-  # a solvable group has its order from IsSolvableGroup above
-  if not HasSize(grp) and not IsSolvableGroup(grp) then
-    s := PRIMGRP_ProductActionSize(grp, PD);
-    if s <> fail then
-      SetSize(grp, s);
-    fi;
   fi;
 
   #

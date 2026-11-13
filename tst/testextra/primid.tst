@@ -18,4 +18,10 @@ gap> x := PermList(Reversed([1..7526]));;
 gap> PrimitiveIdentification(
 >      Group(List(GeneratorsOfGroup(SymmetricGroup(7526)), y -> y^x)));
 2
+
+# with socle Alt(73)^2: Size on the 5329 points takes minutes
+gap> x := PermList(Reversed([1..5329]));;
+gap> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(5329, 280)), y -> y^x)));
+280
 gap> STOP_TEST("primid.tst", 1);
