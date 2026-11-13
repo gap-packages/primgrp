@@ -369,19 +369,25 @@ BindGlobal("PRIMGRP_PairActionSize", function(G, PD)
     return u;
   end;
 
-  for try in [1..3] do
+  for try in [1..10] do
     # random elements of the stabiliser of a = {i, j}, which has the orbit
     # delta of pairs that meet {i, j} in one point; the pairs containing i
-    # form a block of size m-2 in it
+    # form a block of size m-2 in it, found from delta[1] and any other point
+    # of it, one in two
     H := Group(List([1..10], k -> PseudoRandom(G)), ());
     H := Group(List(GeneratorsOfGroup(H), g -> g / rep(a^g)), ());
     delta := First(Orbits(H, dom), o -> Length(o) = 2*(m-2));
     if delta = fail then
       continue;
     fi;
-    star := First(List(delta{[2..Minimum(4, Length(delta))]},
-                       x -> Blocks(H, delta, [delta[1], x])[1]),
-                  b -> Length(b) = m-2);
+    star := fail;
+    for x in delta{[2..Length(delta)]} do
+      star := Blocks(H, delta, [delta[1], x])[1];
+      if Length(star) = m-2 then
+        break;
+      fi;
+      star := fail;
+    od;
     if star = fail then
       continue;
     fi;
