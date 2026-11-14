@@ -318,19 +318,19 @@ end);
 
 #############################################################################
 ##
-#F  PRIMGRP_PairActionSize( <G>, <PD> )
+#F  PRIMGRP_StarAction( <G>, <PD> )
 ##
-##  The order of <G>, computed in its action on m stars, if <G> acts like a
-##  group with socle Alt(m) on the 2-subsets of [ 1 .. m ]; otherwise, or if
-##  the random search misses, fail.  <PD> holds the library entries of the
-##  degree of <G>.  Size on the 2-subsets takes 50 s for Sym(111).
+##  The action of <G> on m stars, if <G> acts like a group with socle Alt(m)
+##  on the 2-subsets of [ 1 .. m ]; otherwise, or if the random search misses,
+##  fail.  <PD> holds the library entries of the degree of <G>.  Size on the
+##  2-subsets takes 50 s for Sym(111), against 15 ms on the stars.
 ##
 ##  The star of i is the set of the m-1 pairs containing i.  If <G> permutes m
 ##  sets so that every point lies in exactly two and no two points in the same
-##  two, then a point is the intersection of its two sets, so the action on
-##  the sets is faithful and the order is exact.
+##  two, then a point is the intersection of its two sets, so <G> is its
+##  action on the sets, acting on their 2-subsets.
 ##
-BindGlobal("PRIMGRP_PairActionSize", function(G, PD)
+BindGlobal("PRIMGRP_StarAction", function(G, PD)
   local dom, deg, m, gens, a, sv, queue, j, i, x, rep, H, delta, star, O, in2,
         try;
   dom := MovedPoints(G);
@@ -412,7 +412,7 @@ BindGlobal("PRIMGRP_PairActionSize", function(G, PD)
       if not IsNaturalAlternatingGroup(H) then
         IsNaturalSymmetricGroup(H);
       fi;
-      return Size(H);
+      return H;
     fi;
   od;
   return fail;
@@ -716,7 +716,20 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   if not HasSize(grp) and not IsSolvableGroup(grp) then
     s := PRIMGRP_ProductActionSize(grp, PD);
     if s = fail then
-      s := PRIMGRP_PairActionSize(grp, PD);
+      a := PRIMGRP_StarAction(grp, PD);
+      if a <> fail then
+        s := Size(a);
+
+        # grp is Alt(m) or Sym(m) on 2-subsets, which is primitive for m >= 5
+        # and determined by its order; IsPrimitive takes up to 11 s for
+        # Alt(114) on 6441 points
+        if IsNaturalAlternatingGroup(a) or IsNaturalSymmetricGroup(a) then
+          return First(PD, primdata -> primdata[4] = "2"
+                       and primdata[8][1] = "A"
+                       and primdata[8][2] = NrMovedPoints(a)
+                       and primdata[2] = s)[1];
+        fi;
+      fi;
     fi;
     if s <> fail then
       SetSize(grp, s);
