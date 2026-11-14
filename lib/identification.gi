@@ -116,13 +116,18 @@ BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
   # The last is one of the character table of a solvable stabiliser under
   # permutations of rows and columns: each class with its power classes and
   # the values on it, each character with its values on these classes.
+  #
+  # Irr costs about the square of the class number: 0.2 s for 95 classes,
+  # 10 s for 810.  It spares IsomorphismGroups 40 s on 6561 #6048 and #6131;
+  # above 300 classes, in degree 6859, it separates nothing and the
+  # conjugacy test takes 2 s.  The second invariant fixes the class number.
   for f in [
     r -> AbelianInvariants(r.group),
     r -> Collected(List(ConjugacyClasses(r.group), c -> [Size(c),
            CycleStructurePerm(PreImagesRepresentative(r.hom, Representative(c)))])),
     function(r)
       local tbl, irr, vals, ord, cen, pow, cls, set;
-      if not IsPcGroup(r.group) then
+      if not IsPcGroup(r.group) or NrConjugacyClasses(r.group) > 300 then
         return fail;
       fi;
       tbl := CharacterTable(r.group);
