@@ -39,4 +39,9 @@ gap> roundtrip := function(n)
 > end;;
 gap> Filtered([2..100], n -> not roundtrip(n));
 [  ]
+
+# data/primid.g holds what PRIMGRP_IdClassData computes
+gap> ForAll([9, 10, 16, 64, 81], deg -> PRIMGRP_IdData(deg) =
+>      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
+true
 gap> STOP_TEST( "primid.tst", 1);

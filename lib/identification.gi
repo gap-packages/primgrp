@@ -10,6 +10,128 @@
 ##  PrimitiveIdentification and SimsNo.
 ##
 
+#############################################################################
+##
+#F  PRIMGRP_CycleTypeHash( <cs> )
+##
+##  An integer standing for the cycle type <cs>, as CycleStructurePerm returns
+##  it: cs[i] is the number of cycles of length i+1.  The data in
+##  data/primid.g store cycle types this way; PRIMGRP_IdClassDataFromTypes
+##  checks that no two cycle types in one class get the same value.
+##
+BindGlobal("PRIMGRP_CycleTypeHash", function(cs)
+  local h, i;
+  h := 1;
+  for i in [1..Length(cs)] do
+    if IsBound(cs[i]) then
+      h := (h * 1000003 + i) mod 2147483647;
+      h := (h * 1000003 + cs[i]) mod 2147483647;
+    fi;
+  od;
+  return h;
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IdClasses( <deg> )
+#F  PRIMGRP_IdClassData( <deg>, <nrs> )
+#F  PRIMGRP_IdClassDataFromTypes( <nrs>, <signs>, <cts> )
+##
+##  The classes of degree <deg> that data/primid.g covers, as lists of group
+##  numbers in a fixed order, and the data of one of them; see
+##  dev/primid-invariants.g, which computes the file.  The data follow from
+##  the signs of the groups and the sets <cts> of their cycle types, which
+##  PRIMGRP_IdClassData takes from the conjugacy classes.
+##
+BindGlobal("PRIMGRP_IdClasses", function(deg)
+  local PD, keys;
+  PD := List([1..NrPrimitiveGroups(deg)], t -> PRIMGrp(deg, t));
+  keys := List(PD, e -> [e[2], e[4], Set(e[5]), e[6]]);
+  return List(Filtered(Collected(keys), c -> c[2] > 1 and c[1][2] <> "4c"),
+              c -> Filtered([1..Length(PD)], i -> keys[i] = c[1]));
+end);
+
+BindGlobal("PRIMGRP_IdClassDataFromTypes", function(nrs, signs, cts)
+  local all, common, types;
+
+  # a collision between two cycle types of one class could rule out the
+  # right group
+  all := Union(cts);
+  if Length(Set(all, PRIMGRP_CycleTypeHash)) <> Length(all) then
+    Error("hash collision for groups ", nrs);
+  fi;
+
+  cts := List(cts, ct -> Set(ct, PRIMGRP_CycleTypeHash));
+  all := Union(cts);
+  common := Intersection(cts);
+  types := Difference(all, common);
+  return [ nrs, signs, types,
+           List(cts, ct -> Sum(Filtered([1..Length(types)],
+                                        j -> types[j] in ct), j -> 2^(j-1))) ];
+end);
+
+BindGlobal("PRIMGRP_IdClassData", function(deg, nrs)
+  local groups;
+  groups := List(nrs, i -> PrimitiveGroup(deg, i));
+  return PRIMGRP_IdClassDataFromTypes(nrs, List(groups, SignPermGroup),
+    List(groups, G -> Set(ConjugacyClasses(G : onlysizes),
+                          c -> CycleStructurePerm(Representative(c)))));
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_FilterByCycleTypes( <G>, <PD> )
+##
+##  <PD> are the library entries that agree with <G> in all fields stored in
+##  data/.  Return those not ruled out by the data of data/primid.g (see
+##  dev/primid-invariants.g): by the sign of <G>, and by the cycle types of
+##  random elements of <G>.  An element whose cycle type a group lacks rules
+##  that group out, so the group <G> belongs to is never ruled out, and no
+##  library group is built.
+##
+BindGlobal("PRIMGRP_IDDATA", rec( read := false, data := [] ));
+
+# the data of data/primid.g for degree <deg>, read on first use
+BindGlobal("PRIMGRP_IdData", function(deg)
+  if not PRIMGRP_IDDATA.read then
+    ReadPackage("primgrp", "data/primid.g");
+    PRIMGRP_IDDATA.read := true;
+  fi;
+  if not IsBound(PRIMGRP_IDDATA.data[deg]) then
+    return [];
+  fi;
+  return PRIMGRP_IDDATA.data[deg];
+end);
+
+BindGlobal("PRIMGRP_FilterByCycleTypes", function(G, PD)
+  local deg, data, pos, s, keep, tries, j, bit;
+  deg := NrMovedPoints(G);
+  data := First(PRIMGRP_IdData(deg), c -> PD[1][1] in c[1]);
+  if data = fail then
+    return PD;
+  fi;
+  pos := List(PD, primdata -> Position(data[1], primdata[1]));
+  if fail in pos then
+    return PD;
+  fi;
+
+  s := SignPermGroup(G);
+  keep := Filtered([1..Length(PD)], i -> data[2][pos[i]] = s);
+
+  # while the remaining groups differ in their cycle types
+  tries := 0;
+  while Length(keep) > 1 and tries < 100
+        and Length(Set(keep, i -> data[4][pos[i]])) > 1 do
+    tries := tries + 1;
+    j := Position(data[3], PRIMGRP_CycleTypeHash(CycleStructurePerm(PseudoRandom(G))));
+    if j <> fail then
+      bit := 2^(j-1);
+      keep := Filtered(keep, i -> IsOddInt(QuoInt(data[4][pos[i]], bit)));
+    fi;
+  od;
+  return PD{keep};
+end);
+
 # local cache for `PrimitiveIdentification':
 BindGlobal("PGIdCache", rec( deg := 0, data := [] ));
 
@@ -122,6 +244,12 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
     a := Transitivity(grp, dom);
     PD := Filtered(PD, primdata -> primdata[6] = a);
   fi;
+  if Length(PD)=1 then return PD[1][1]; fi;
+
+  #
+  # sign and cycle types of random elements, against data/primid.g
+  #
+  PD := PRIMGRP_FilterByCycleTypes(grp, PD);
   if Length(PD)=1 then return PD[1][1]; fi;
 
   # now we need to create the groups
