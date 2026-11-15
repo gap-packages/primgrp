@@ -53,13 +53,21 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   # treat alternating and symmetric group: these are uniquely determined by
   # their size, and primitive.  Test them before IsPrimitive, which costs far
   # more for them: 36 s against 1 ms for Sym(3894).
+  # IsNaturalAlternatingGroup and IsNaturalSymmetricGroup are not used here:
+  # for other groups they go on to IsPrimitive and Size, which the code below
+  # avoids for solvable groups, and until gap-system/gap#6850 their first
+  # random search misses Alt(n) or Sym(n) once in about 1000 calls and then
+  # runs IsPrimitive too.
   if not HasSize(grp) and IsTransitive(grp, dom)
      and PRIMGRP_HasJordanElement(grp, dom) then
     if ForAll(GeneratorsOfGroup(grp), x -> SignPerm(x) = 1) then
       s := Factorial(deg)/2;
+      SetIsNaturalAlternatingGroup(grp, true);
     else
       s := Factorial(deg);
+      SetIsNaturalSymmetricGroup(grp, true);
     fi;
+    SetSize(grp, s);
     return First([1..NrPrimitiveGroups(deg)], i -> PRIMGrp(deg, i)[2] = s);
   fi;
 
