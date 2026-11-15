@@ -27,6 +27,10 @@
   - Add `data/primid.g`, cycle types that tell library groups apart, which
     `PrimitiveIdentification` uses to rule out candidates, and
     `dev/primid-invariants.g`, which computes it
+  - Speed up `PrimitiveIdentification` for product actions, which it now
+    identifies inside Sym(m) wr Sym(k), and find the orders of product
+    actions and of Alt(m) and Sym(m) on pairs without Schreier-Sims on all
+    points
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
     restriction from every `Size` and `Order` argument
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
