@@ -6,6 +6,10 @@ gap> Filtered([2..512], deg -> PRIMGRP_IdData(deg) <>
 >      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
 [  ]
 
+# at assertion level 2, which START_TEST sets, 6561 #4656 below takes 434 s
+# instead of 1 s
+gap> SetAssertionLevel(0);
+
 # Affine groups whose point stabilisers have order 2^13 and agree in every
 # invariant tried short of the character table; IsomorphismGroups on them
 # exhausted 64 GB in GAP 4.16
