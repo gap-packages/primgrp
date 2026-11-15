@@ -13,6 +13,34 @@
 # local cache for `PrimitiveIdentification':
 BindGlobal("PGIdCache", rec( deg := 0, data := [] ));
 
+#############################################################################
+##
+#F  PRIMGRP_HasJordanElement( <G>, <dom> )
+##
+##  For a transitive group <G> on <dom>, true if a random element shows that
+##  <G> contains Alt(n), n = |dom|; false otherwise.
+##
+##  An element with a cycle of prime length p, n/2 < p < n-2, has a power that
+##  is a p-cycle, and makes <G> primitive; so <G> contains Alt(n) by Jordan's
+##  theorem.  In Alt(n) and Sym(n), the cycle through a given point has such a
+##  length with probability about 1/(2 log n).  For n = 7526, 50 log2(n) tries
+##  miss with probability 10^-15; the first test in IsNaturalSymmetricGroup
+##  tries 10 log2(n) times, misses once in a thousand, and then spends 78 s
+##  in IsPrimitive.
+##
+BindGlobal("PRIMGRP_HasJordanElement", function(G, dom)
+  local n, pnt, i, l;
+  n := Length(dom);
+  pnt := dom[1];
+  for i in [1..50*LogInt(n, 2)] do
+    l := CycleLength(PseudoRandom(G), pnt);
+    if l > n/2 and l < n-2 and IsPrimeInt(l) then
+      return true;
+    fi;
+  od;
+  return false;
+end);
+
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
 local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
@@ -20,19 +48,34 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   if Length(dom) < 2 then
     Error("PrimitiveIdentification: <G> must move at least two points");
   fi;
-  if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
-    Error("Group must operate primitively");
-  fi;
   deg:=Length(dom);
 
   # treat alternating and symmetric group: these are uniquely determined by
-  # their size, so it is worth it to ensure we have it already
-  if not HasSize(grp) then
+  # their size, and primitive.  Test them before IsPrimitive, which costs far
+  # more for them: 36 s against 1 ms for Sym(3894).
+  if not HasSize(grp) and IsTransitive(grp, dom)
+     and PRIMGRP_HasJordanElement(grp, dom) then
+    if ForAll(GeneratorsOfGroup(grp), x -> SignPerm(x) = 1) then
+      s := Factorial(deg)/2;
+    else
+      s := Factorial(deg);
+    fi;
+    return First([1..NrPrimitiveGroups(deg)], i -> PRIMGrp(deg, i)[2] = s);
+  fi;
+
+  # For other groups the test below ends in Size, whose Schreier-Sims
+  # verification takes 143 s for D(2*8191); a solvable group gets it from a
+  # pcgs in 0.1 s instead, and IsSolvableGroup costs at most 55 ms otherwise.
+  if not HasSize(grp) and not IsSolvableGroup(grp) then
     if IsNaturalAlternatingGroup(grp) then
       SetSize(grp, Factorial(deg)/2);
     elif IsNaturalSymmetricGroup(grp) then
       SetSize(grp, Factorial(deg));
     fi;
+  fi;
+
+  if not (IsTransitive(grp,dom) and IsPrimitive(grp,dom)) then
+    Error("Group must operate primitively");
   fi;
 
   # get information of all primitive groups of the given degree
