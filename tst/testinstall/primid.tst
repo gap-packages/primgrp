@@ -62,6 +62,14 @@ gap> G := Group(List(GeneratorsOfGroup(PrimitiveGroup(961, 1)), y -> y^x));;
 gap> PRIMGRP_IdentifyProductAction(G, PD) = PD;
 true
 
+# no conjugating permutation: the groups are not isomorphic, or, for S4 on
+# the cosets of C4 and of a non-normal 2^2, no isomorphism maps point
+# stabilisers to point stabilisers
+gap> PRIMGRP_ConjugatingPermutation(Group((1,2,3,4,5)), AlternatingGroup(5));
+fail
+gap> PRIMGRP_ConjugatingPermutation(TransitiveGroup(6, 7), TransitiveGroup(6, 8));
+fail
+
 # data/primid.g holds what PRIMGRP_IdClassData computes
 gap> ForAll([9, 10, 16, 64, 81], deg -> PRIMGRP_IdData(deg) =
 >      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
