@@ -21,6 +21,9 @@
   - Many improvements made in the manual
   - Add `IsAlmostSimpleGroup` to the properties for which
     `AllPrimitiveGroups` and `OnePrimitiveGroup` need not compute the values
+  - Speed up `PrimitiveIdentification` for Alt(n) and Sym(n), which it now
+    recognises before testing primitivity, and for solvable groups, whose
+    order it now takes from a pcgs instead of Schreier-Sims
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
     restriction from every `Size` and `Order` argument
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`

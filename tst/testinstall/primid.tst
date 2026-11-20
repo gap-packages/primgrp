@@ -10,6 +10,19 @@ true
 gap> ForAll([4001..4095], n -> PrimitiveIdentification(OnePrimitiveGroup(NrMovedPoints,n))=1);
 true
 
+# Recognising Alt(n) or Sym(n) records what it found.
+gap> x := PermList(Reversed([1..20]));;
+gap> G := Group(List(GeneratorsOfGroup(SymmetricGroup(20)), y -> y^x));;
+gap> PrimitiveIdentification(G);
+4
+gap> HasIsNaturalSymmetricGroup(G) and IsNaturalSymmetricGroup(G) and HasSize(G);
+true
+gap> G := Group(List(GeneratorsOfGroup(AlternatingGroup(20)), y -> y^x));;
+gap> PrimitiveIdentification(G);
+3
+gap> HasIsNaturalAlternatingGroup(G) and IsNaturalAlternatingGroup(G) and HasSize(G);
+true
+
 # A library group knows its own number, so the tests above compute nothing.
 # Conjugated generators give a group that has to be identified for real.
 gap> roundtrip := function(n)
