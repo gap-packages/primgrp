@@ -12,6 +12,170 @@
 
 #############################################################################
 ##
+#F  PRIMGRP_AffinePointStabilizer( <G> )
+##
+##  For a primitive group <G> of affine type, a record describing a point
+##  stabiliser: a faithful representation `group', a pc group if it is
+##  solvable and a permutation group of small degree otherwise, and what is
+##  needed to write its elements as matrices over the socle.
+##
+##  The smallest orbit can be regular: for degree 13^3, the permutation
+##  representation of a stabiliser of order 2196 has degree 2196, and its
+##  character table took 227 s against 1.6 s for the pc group.
+##
+BindGlobal("PRIMGRP_AffinePointStabilizer", function(G)
+  local dom, stab, orbs, hom;
+  dom := MovedPoints(G);
+  stab := Stabilizer(G, dom[1]);
+
+  # the stabiliser acts irreducibly on the socle, so an orbit of non-zero
+  # vectors spans it, and the action on any such orbit is faithful
+  orbs := Orbits(stab, dom{[2..Length(dom)]});
+  hom := ActionHomomorphism(stab, orbs[PositionMinimum(orbs, Length)],
+                            "surjective");
+  if IsSolvableGroup(Image(hom)) then
+    hom := hom * IsomorphismPcGroup(Image(hom));
+  fi;
+
+  # Socle is faster once solvability is known: 90 ms against 460 ms in
+  # degree 6859
+  IsSolvableGroup(G);
+
+  return rec( stab := stab, hom := hom, group := Image(hom),
+              pcgs := Pcgs(Socle(G)),
+              field := GF(Factors(Length(dom))[1]) );
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IsConjugateAffine( <a>, <b> )
+##
+##  Two primitive groups of affine type and equal degree are conjugate in the
+##  symmetric group if and only if their point stabilisers are conjugate in
+##  GL(d,p): that is, if some isomorphism between the stabilisers carries the
+##  natural module of one to that of the other.  An inner automorphism does not
+##  change a module up to isomorphism, so one isomorphism for each class of
+##  outer automorphisms is tried.
+##
+##  Searching GL(d,p) for a conjugating element instead can run for hours
+##  when there is none.
+##
+##  <a> and <b> are the records PRIMGRP_AffinePointStabilizer returns for the
+##  two groups.  They are arguments so that a caller comparing one group with
+##  many computes its record, and the automorphism group stored in a.group,
+##  once.
+##
+BindGlobal("PRIMGRP_IsConjugateAffine", function(a, b)
+  local iso, gens, module, m, aut, inn;
+
+  # cyclic groups of prime order
+  if IsTrivial(a.group) then
+    return IsTrivial(b.group);
+  fi;
+
+  iso := IsomorphismGroups(a.group, b.group);
+  if iso = fail then
+    return false;
+  fi;
+
+  # the natural module of the stabiliser in <r>, with the generators in <elms>
+  module := function(r, elms)
+    elms := List(elms, x -> PreImagesRepresentative(r.hom, x));
+    return GModuleByMats(LinearActionLayer(r.stab, elms, r.pcgs), r.field);
+  end;
+
+  gens := GeneratorsOfGroup(a.group);
+  m := module(a, gens);
+  aut := AutomorphismGroup(a.group);
+  inn := InnerAutomorphismsAutomorphismGroup(aut);
+  return ForAny(RightTransversal(aut, inn), alpha ->
+    MTX.IsomorphismModules(m,
+      module(b, List(gens, x -> Image(iso, Image(alpha, x))))) <> fail);
+end);
+
+#############################################################################
+##
+#F  PRIMGRP_IdentifyAffine( <G>, <PD> )
+##
+##  <G> is a primitive group of affine type and <PD> a list of library entries
+##  of that type and the degree and order of <G>.  Return the entry to which
+##  <G> is conjugate in the symmetric group.
+##
+##  Everything is computed on the point stabilisers, in the representations
+##  PRIMGRP_AffinePointStabilizer gives.  SylowSubgroup of a non-solvable group
+##  of degree 6561 took 8 s or 488 s, depending on the random state.
+##
+BindGlobal("PRIMGRP_IdentifyAffine", function(G, PD)
+  local deg, recs, f, a, p;
+  deg := NrMovedPoints(G);
+  recs := List(PD, primdata ->
+    PRIMGRP_AffinePointStabilizer(PrimitiveGroup(deg, primdata[1])));
+
+  # invariants under conjugacy of the stabiliser in Sym(deg); for a
+  # non-trivial one, the abelian invariants are those of the whole group.
+  # The last is one of the character table of a solvable stabiliser under
+  # permutations of rows and columns: each class with its power classes and
+  # the values on it, each character with its values on these classes.
+  #
+  # Irr costs about the square of the class number: 0.2 s for 95 classes,
+  # 10 s for 810.  It spares IsomorphismGroups 40 s on 6561 #6048 and #6131;
+  # above 300 classes, in degree 6859, it separates nothing and the
+  # conjugacy test takes 2 s.  The second invariant fixes the class number.
+  for f in [
+    r -> AbelianInvariants(r.group),
+    r -> Collected(List(ConjugacyClasses(r.group), c -> [Size(c),
+           CycleStructurePerm(PreImagesRepresentative(r.hom, Representative(c)))])),
+    function(r)
+      local tbl, irr, vals, ord, cen, pow, cls, set;
+      if not IsPcGroup(r.group) or NrConjugacyClasses(r.group) > 300 then
+        return fail;
+      fi;
+      tbl := CharacterTable(r.group);
+      irr := List(Irr(tbl), ValuesOfClassFunction);
+
+      # values replaced by their positions among all values, since sorting
+      # lists of cyclotomics took 80 s for a group of order 3429
+      vals := Set(Concatenation(irr));
+      irr := List(irr, x -> List(x, v -> PositionSorted(vals, v)));
+
+      ord := OrdersClassRepresentatives(tbl);
+      cen := SizesCentralizers(tbl);
+      pow := List(PrimeDivisors(Size(tbl)), q -> PowerMap(tbl, q));
+      cls := List([1..Length(irr)], j -> [ord[j], cen[j],
+               List(pow, m -> [ord[m[j]], cen[m[j]]]),
+               Collected(List(irr, x -> [x[1], x[j]]))]);
+      set := Set(cls);
+      cls := List(cls, c -> PositionSorted(set, c));
+      return [vals, set, Collected(cls),
+              Collected(List(irr, x -> Collected(List([1..Length(irr)],
+                                                      j -> [cls[j], x[j]]))))];
+    end
+  ] do
+    if Length(PD) = 1 then
+      return PD[1];
+    fi;
+    if not IsBound(a) then
+      a := PRIMGRP_AffinePointStabilizer(G);
+    fi;
+    p := f(a);
+    p := Filtered([1..Length(PD)], i -> f(recs[i]) = p);
+    PD := PD{p};
+    recs := recs{p};
+  od;
+
+  # G is conjugate to one of PD, so the last needs no test.  IsomorphismGroups
+  # takes 40 s on the stabilisers of order 2^13 of 6561 #6048 and #6131,
+  # which the invariants above tell apart.
+  p := PositionProperty(recs{[1..Length(recs)-1]}, r ->
+    PRIMGRP_IsConjugateAffine(a, r));
+  if p = fail then
+    p := Length(PD);
+  fi;
+  return PD[p];
+end);
+
+#############################################################################
+##
 ##  Groups of type 4c, that is, in product action on the m^k tuples over a set
 ##  of size m, with socle T^k for a non-abelian simple T that acts on each
 ##  coordinate.  Such a group lies in W = Sym(m) wr Sym(k), and two of them are
@@ -676,7 +840,7 @@ end);
 
 InstallMethod(PrimitiveIdentification,"generic",true,[IsPermGroup],0,
 function(grp)
-local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
+local dom,deg,PD,s,cand,a,p,f,q,gl;
   dom:=MovedPoints(grp);
   if Length(dom) < 2 then
     Error("PrimitiveIdentification: <G> must move at least two points");
@@ -788,6 +952,13 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
   #
   PD := PRIMGRP_FilterByCycleTypes(grp, PD);
   if Length(PD)=1 then return PD[1][1]; fi;
+
+  #
+  # affine: decided outright, by the point stabilisers
+  #
+  if PD[1][4] = "1" then
+    return PRIMGRP_IdentifyAffine(grp, PD)[1];
+  fi;
 
   #
   # product action: decided outright, on m*k points instead of m^k
@@ -903,24 +1074,6 @@ local dom,deg,PD,s,cand,a,p,b,f,q,gl,hom;
 
     a := f(grp);
     cand := Filtered(cand, g -> f(g) = a);
-  fi;
-
-  #
-  # affine case
-  #
-  if Length(cand) > 1 and ONanScottType(grp) = "1" then
-    Assert(0, ForAll(cand, g -> ONanScottType(g) = "1"));
-
-    # degree must be a prime power
-    gl := Factors(deg);
-    gl := GL(Length(gl), gl[1]);
-    hom := IsomorphismPermGroup(gl);  # nasty
-
-    # map group by its linear action into GL, and then further via hom
-    f := g -> Image(hom, Subgroup(gl, LinearActionLayer(g, Pcgs(Socle(g)))));
-    a := f(grp);
-    b := Image(hom, gl);
-    cand := Filtered(cand, g -> RepresentativeAction(b, f(g), a) <> fail);
   fi;
 
   if Length(cand) > 1 then

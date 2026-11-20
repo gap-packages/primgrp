@@ -40,6 +40,20 @@ gap> roundtrip := function(n)
 gap> Filtered([2..100], n -> not roundtrip(n));
 [  ]
 
+# Affine groups that agree in every invariant tried: the point stabilisers
+# are two embeddings of SmallGroup(208,3) into GL(4,5), not conjugate there.
+gap> x := PermList(Reversed([1..625]));;
+gap> List([528, 529], i -> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(625, i)), y -> y^x))));
+[ 528, 529 ]
+
+# point stabilisers that are trivial, C2 or C4: the library never leaves two
+# such candidates, so compare them directly
+gap> r := List([1..3], i -> PRIMGRP_AffinePointStabilizer(PrimitiveGroup(5, i)));;
+gap> List([[1, 1], [1, 2], [2, 2], [2, 3]], p ->
+>      PRIMGRP_IsConjugateAffine(r[p[1]], r[p[2]]));
+[ true, false, true, false ]
+
 # Product action.  The first seven agree in order, suborbits and transitivity
 # and have socle Alt(6)^3 on 10^3 points; the next two have socle Alt(8)^4, and
 # telling them apart by conjugacy classes took a quarter of an hour each.

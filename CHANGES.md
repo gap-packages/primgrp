@@ -31,6 +31,12 @@
     identifies inside Sym(m) wr Sym(k), and find the orders of product
     actions and of Alt(m) and Sym(m) on pairs without Schreier-Sims on all
     points
+  - Speed up `PrimitiveIdentification` for affine groups, which it now
+    tells apart by their point stabilisers and natural modules.  With the
+    changes above, of the 54334 library groups of degree up to 8191, all
+    are identified in under 16 s and all but 3121 in under a second.
+    Before, it could run for hours or exhaust memory, as for some affine
+    groups of degree 625 and product actions with socle Alt(13)^3
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
     restriction from every `Size` and `Order` argument
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`

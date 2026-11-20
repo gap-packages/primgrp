@@ -6,6 +6,18 @@ gap> Filtered([2..512], deg -> PRIMGRP_IdData(deg) <>
 >      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
 [  ]
 
+# at assertion level 2, which START_TEST sets, 6561 #4656 below takes 434 s
+# instead of 1 s
+gap> SetAssertionLevel(0);
+
+# Affine groups whose point stabilisers have order 2^13 and agree in every
+# invariant tried short of the character table; IsomorphismGroups on them
+# exhausted 64 GB in GAP 4.16
+gap> x := PermList(Reversed([1..6561]));;
+gap> List([6048, 6131], i -> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(6561, i)), y -> y^x))));
+[ 6048, 6131 ]
+
 # Size of D(2*8191) by Schreier-Sims takes minutes
 gap> x := PermList(Reversed([1..8191]));;
 gap> PrimitiveIdentification(
@@ -30,4 +42,10 @@ gap> x := PermList(Reversed([1..8128]));;
 gap> PrimitiveIdentification(
 >      Group(List(GeneratorsOfGroup(PrimitiveGroup(8128, 9)), y -> y^x)));
 9
+
+# solvable point stabilisers of order 3200 with equivalent character tables
+gap> x := PermList(Reversed([1..6561]));;
+gap> PrimitiveIdentification(
+>      Group(List(GeneratorsOfGroup(PrimitiveGroup(6561, 4656)), y -> y^x)));
+4656
 gap> STOP_TEST("primid.tst", 1);
