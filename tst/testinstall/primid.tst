@@ -39,4 +39,18 @@ gap> roundtrip := function(n)
 > end;;
 gap> Filtered([2..100], n -> not roundtrip(n));
 [  ]
+
+# data/primid.g holds what PRIMGRP_IdClassData computes
+gap> ForAll([9, 10, 16, 64, 81], deg -> PRIMGRP_IdData(deg) =
+>      List(PRIMGRP_IdClasses(deg), c -> PRIMGRP_IdClassData(deg, c)));
+true
+
+# a candidate outside the stored class leaves the candidates unchanged
+gap> PD := List([3, 1], i -> PRIMGrp(9, i));;
+gap> PRIMGRP_FilterByCycleTypes(PrimitiveGroup(9, 3), PD) = PD;
+true
+
+# cycle counts that differ by the hash modulus collide
+gap> PRIMGRP_IdClassDataFromTypes([1, 2], [1, 1], [[[1]], [[2147483648]]]);
+Error, hash collision for groups [ 1, 2 ]
 gap> STOP_TEST( "primid.tst", 1);

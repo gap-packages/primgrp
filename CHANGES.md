@@ -24,6 +24,9 @@
   - Speed up `PrimitiveIdentification` for Alt(n) and Sym(n), which it now
     recognises before testing primitivity, and for solvable groups, whose
     order it now takes from a pcgs instead of Schreier-Sims
+  - Add `data/primid.g`, cycle types that tell library groups apart, which
+    `PrimitiveIdentification` uses to rule out candidates, and
+    `dev/primid-invariants.g`, which computes it
   - Speed up `AllPrimitiveGroups` and friends by deriving a degree
     restriction from every `Size` and `Order` argument
   - Fix `AllPrimitiveGroups` and friends to honour every `NrMovedPoints`
